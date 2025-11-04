@@ -15,7 +15,7 @@ Aquí encontrarás toda la información sobre nuestro gran día, así como el fo
 
 ## 🌐 Sitio web
 
-👉 **[Ver la invitación online](https://joyful-gumdrop-f5fb1a.netlify.app/)**  
+👉 **[Ver la invitación online](https://boda-andres-mari.netlify.app/)**  
 
 > Si estás viendo este repositorio desde GitHub Pages, también puedes acceder desde:  
 > `https://ajover93.github.io/boda-andres-y-mari/`
