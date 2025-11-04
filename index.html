@@ -113,7 +113,7 @@
 
   <section id="ubicacion">
     <h2>Ubicación</h2>
-    <p>Iglesia de Abanilla</p>
+    <p>Iglesia de San José de Abanilla</p>
     <iframe src="https://www.google.com/maps?q=Iglesia+de+Abanilla&output=embed"></iframe>
     <p>El Casón de la Vega</p>
     <iframe src="https://www.google.com/maps?q=El+Cason+de+la+Vega&output=embed"></iframe>
@@ -121,7 +121,12 @@
 
   <section id="rsvp">
     <h2>Confirma tu asistencia</h2>
-    <form name="rsvp" method="POST" data-netlify="true">
+    <form name="rsvp" method="POST" data-netlify="true" netlify-honeypot="bot-field">
+      <input type="hidden" name="form-name" value="rsvp" />
+      <p style="display:none">
+        <label>No rellenes esto: <input name="bot-field" /></label>
+      </p>
+
       <input type="text" name="nombre" placeholder="Tu nombre" required />
       <select name="asistencia" required>
         <option value="">¿Asistirás?</option>
