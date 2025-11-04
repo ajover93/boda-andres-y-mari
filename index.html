@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Boda de Andrés & María del Carmen</title>
+  <style>
+    body {
+      font-family: "Poppins", sans-serif;
+      margin: 0;
+      padding: 0;
+      color: #333;
+      background-color: #f9fbfd;
+      scroll-behavior: smooth;
+    }
+
+    header {
+      background: linear-gradient(180deg, #b3d9ff 0%, #e6f3ff 100%);
+      text-align: center;
+      padding: 5rem 1rem;
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      margin-bottom: 0.3rem;
+      color: #004c91;
+    }
+
+    .fecha {
+      font-size: 1.2rem;
+      color: #005fa3;
+      margin-bottom: 1rem;
+    }
+
+    section {
+      padding: 3rem 1rem;
+      text-align: center;
+      max-width: 800px;
+      margin: auto;
+    }
+
+    h2 {
+      color: #004c91;
+      margin-bottom: 1rem;
+    }
+
+    p {
+      font-size: 1.1rem;
+      line-height: 1.6;
+    }
+
+    iframe {
+      width: 100%;
+      height: 300px;
+      border: none;
+      border-radius: 12px;
+      margin-top: 1rem;
+    }
+
+    form {
+      max-width: 400px;
+      margin: 2rem auto;
+      background: #fff;
+      padding: 1.5rem;
+      border-radius: 12px;
+      box-shadow: 0 0 12px rgba(0, 0, 0, 0.1);
+    }
+
+    input, select, button {
+      width: 100%;
+      padding: 0.8rem;
+      margin: 0.5rem 0;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      font-size: 1rem;
+    }
+
+    button {
+      background-color: #6bb8ff;
+      color: #fff;
+      border: none;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #559de0;
+    }
+
+    footer {
+      background-color: #e6f3ff;
+      color: #004c91;
+      padding: 1rem;
+      text-align: center;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Boda de Andrés & María del Carmen</h1>
+    <p class="fecha">05 de diciembre de 2026</p>
+    <p>¡Nos casamos y queremos compartir este día tan especial contigo!</p>
+  </header>
+
+  <section id="detalles">
+    <h2>Detalles del evento</h2>
+    <p><strong>Ceremonia:</strong> Iglesia de Abanilla – 12:00 h</p>
+    <p><strong>Banquete:</strong> El Casón de la Vega – 13:30 h</p>
+    <p><strong>Código de vestimenta:</strong> Formal</p>
+  </section>
+
+  <section id="ubicacion">
+    <h2>Ubicación</h2>
+    <p>Iglesia de Abanilla</p>
+    <iframe src="https://www.google.com/maps?q=Iglesia+de+Abanilla&output=embed"></iframe>
+    <p>El Casón de la Vega</p>
+    <iframe src="https://www.google.com/maps?q=El+Cason+de+la+Vega&output=embed"></iframe>
+  </section>
+
+  <section id="rsvp">
+    <h2>Confirma tu asistencia</h2>
+    <form name="rsvp" method="POST" data-netlify="true">
+      <input type="text" name="nombre" placeholder="Tu nombre" required />
+      <select name="asistencia" required>
+        <option value="">¿Asistirás?</option>
+        <option value="Sí asistiré">Sí asistiré</option>
+        <option value="No podré asistir">No podré asistir</option>
+      </select>
+      <input type="text" name="acompañantes" placeholder="Número de acompañantes" />
+      <button type="submit">Enviar confirmación</button>
+    </form>
+  </section>
+
+  <footer>
+    <p>Hecho con 💙 por Andrés & María del Carmen — 2026</p>
+  </footer>
+
+</body>
+</html>
