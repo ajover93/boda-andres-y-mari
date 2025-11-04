@@ -18,7 +18,7 @@ Aquí encontrarás toda la información sobre nuestro gran día, así como el fo
 👉 **[Ver la invitación online](https://joyful-gumdrop-f5fb1a.netlify.app/)**  
 
 > Si estás viendo este repositorio desde GitHub Pages, también puedes acceder desde:  
-> `https://tuusuario.github.io/boda-andres-mariadelcarmen/`
+> `https://ajover93.github.io/boda-andres-y-mari/`
 
 ---
 
