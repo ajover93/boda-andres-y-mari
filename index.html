@@ -34,17 +34,17 @@
       width: 100%;
       height: 100%;
       object-fit: cover;
-      filter: blur(4px); /* Difuminado suave */
+      filter: blur(4px);
     }
 
-    /* Capa semitransparente para mejorar la legibilidad */
+    /* Capa semitransparente */
     .video-background .overlay {
       position: absolute;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
-      background: rgba(0, 100, 200, 0.35); /* tono celeste translúcido */
+      background: rgba(0, 100, 200, 0.35);
     }
 
     /* Contenido del encabezado */
@@ -71,6 +71,25 @@
     header p {
       color: #f4faff;
       font-size: 1.1rem;
+    }
+
+    /* ==== BOTÓN DE MÚSICA ==== */
+    .btn-musica {
+      background-color: rgba(255,255,255,0.85);
+      color: #004c91;
+      border: none;
+      border-radius: 50px;
+      padding: 0.8rem 1.6rem;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 1.5rem;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(5px);
+    }
+
+    .btn-musica:hover {
+      background-color: rgba(255,255,255,1);
+      transform: scale(1.05);
     }
 
     /* ==== SECCIONES ==== */
@@ -147,32 +166,12 @@
       header h1 {
         font-size: 2rem;
       }
-
       header .fecha {
         font-size: 1.1rem;
       }
-
       section {
         padding: 2rem 1rem;
       }
-    }
-
-    .btn-musica {
-      background-color: rgba(255,255,255,0.85);
-      color: #004c91;
-      border: none;
-      border-radius: 50px;
-      padding: 0.8rem 1.6rem;
-      font-weight: bold;
-      cursor: pointer;
-      margin-top: 1.5rem;
-      transition: all 0.3s ease;
-      backdrop-filter: blur(5px);
-    }
-
-    .btn-musica:hover {
-      background-color: rgba(255,255,255,1);
-      transform: scale(1.05);
     }
   </style>
 </head>
@@ -180,7 +179,7 @@
 
   <header>
     <div class="video-background">
-      <video autoplay muted loop playsinline>
+      <video id="videoFondo" autoplay muted loop playsinline>
         <source src="media/video.mp4" type="video/mp4" />
         Tu navegador no soporta video de fondo.
       </video>
@@ -191,6 +190,7 @@
       <h1>Boda de Andrés & María del Carmen</h1>
       <p class="fecha">05 de diciembre de 2026</p>
       <p>¡Nos casamos y queremos compartir este día tan especial contigo!</p>
+      <button id="btnMusica" class="btn-musica">🎵 Ver lugar y escuchar música</button>
     </div>
   </header>
 
@@ -216,7 +216,6 @@
       <p style="display:none">
         <label>No rellenes esto: <input name="bot-field" /></label>
       </p>
-
       <input type="text" name="nombre" placeholder="Tu nombre" required />
       <select name="asistencia" required>
         <option value="">¿Asistirás?</option>
@@ -232,5 +231,17 @@
     <p>Hecho con 💙 por Andrés & María del Carmen — 2026</p>
   </footer>
 
+  <!-- Script para activar el audio -->
+  <script>
+    const btn = document.getElementById('btnMusica');
+    const video = document.getElementById('videoFondo');
+
+    btn.addEventListener('click', () => {
+      video.muted = false;
+      video.play();
+      btn.style.display = 'none';
+      document.getElementById('detalles').scrollIntoView({ behavior: 'smooth' });
+    });
+  </script>
 </body>
 </html>
