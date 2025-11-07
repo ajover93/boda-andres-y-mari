@@ -9,12 +9,114 @@
       font-family: "Poppins", sans-serif;
       margin: 0;
       padding: 0;
-      color: #333;
-      background-color: #f9fbfd;
-      scroll-behavior: smooth;
+      overflow: hidden;
+      background: #e3f2fd;
+      perspective: 1000px;
     }
 
-    /* ==== HERO CON VIDEO ==== */
+    /* === PANTALLA DEL SOBRE === */
+    .envelope-screen {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100vh;
+      background: linear-gradient(180deg, #f5f9ff, #cfe4ff);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      z-index: 10;
+      transition: opacity 1s ease;
+      overflow: hidden;
+    }
+
+    .envelope {
+      position: relative;
+      width: 300px;
+      height: 200px;
+      background: #fdfdfd;
+      border: 2px solid #bcd1f3;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+      border-radius: 8px;
+      transform-style: preserve-3d;
+      transition: transform 1.5s ease-in-out;
+    }
+
+    /* Parte frontal del sobre */
+    .front {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background: url('media/papel-textura.jpg') center/cover no-repeat;
+      border-radius: 8px;
+      backface-visibility: hidden;
+      z-index: 1;
+    }
+
+    /* Solapa superior con efecto 3D */
+    .flap {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 50%;
+      background: url('media/papel-textura.jpg') center/cover no-repeat;
+      clip-path: polygon(0 0, 50% 100%, 100% 0);
+      transform-origin: top;
+      transition: transform 1.5s ease-in-out;
+      z-index: 2;
+    }
+
+    /* Sello en el centro */
+    .seal {
+      position: absolute;
+      top: 45%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 70px;
+      height: 70px;
+      background: url('media/seal.png') center/cover no-repeat;
+      border-radius: 50%;
+      cursor: pointer;
+      z-index: 3;
+      transition: transform 0.6s ease, opacity 0.8s ease;
+    }
+
+    /* Animación de romper sello */
+    .seal.broken {
+      transform: scale(1.4) rotate(25deg);
+      opacity: 0;
+    }
+
+    /* Cuando se abre el sobre */
+    .envelope.open .flap {
+      transform: rotateX(-180deg);
+    }
+
+    .open-text {
+      margin-top: 2rem;
+      color: #004c91;
+      font-weight: 600;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.6; }
+    }
+
+    /* === INVITACIÓN PRINCIPAL === */
+    .main-content {
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 2s ease;
+    }
+
+    .main-content.visible {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    /* === HERO VIDEO === */
     header {
       position: relative;
       height: 100vh;
@@ -26,7 +128,6 @@
       overflow: hidden;
     }
 
-    /* Contenedor del video */
     .video-background video {
       position: absolute;
       top: 0;
@@ -37,8 +138,7 @@
       filter: blur(4px);
     }
 
-    /* Capa semitransparente */
-    .video-background .overlay {
+    .overlay {
       position: absolute;
       top: 0;
       left: 0;
@@ -47,7 +147,6 @@
       background: rgba(0, 100, 200, 0.35);
     }
 
-    /* Contenido del encabezado */
     .header-content {
       position: relative;
       z-index: 2;
@@ -73,26 +172,6 @@
       font-size: 1.1rem;
     }
 
-    /* ==== BOTÓN DE MÚSICA ==== */
-    .btn-musica {
-      background-color: rgba(255,255,255,0.85);
-      color: #004c91;
-      border: none;
-      border-radius: 50px;
-      padding: 0.8rem 1.6rem;
-      font-weight: bold;
-      cursor: pointer;
-      margin-top: 1.5rem;
-      transition: all 0.3s ease;
-      backdrop-filter: blur(5px);
-    }
-
-    .btn-musica:hover {
-      background-color: rgba(255,255,255,1);
-      transform: scale(1.05);
-    }
-
-    /* ==== SECCIONES ==== */
     section {
       padding: 3rem 1rem;
       text-align: center;
@@ -110,7 +189,6 @@
       line-height: 1.6;
     }
 
-    /* ==== MAPAS ==== */
     iframe {
       width: 100%;
       height: 300px;
@@ -119,40 +197,6 @@
       margin-top: 1rem;
     }
 
-    /* ==== FORMULARIO ==== */
-    form {
-      max-width: 400px;
-      margin: 2rem auto;
-      background: #fff;
-      padding: 1.5rem;
-      border-radius: 12px;
-      box-shadow: 0 0 12px rgba(0, 0, 0, 0.1);
-    }
-
-    input, select, button {
-      width: 100%;
-      padding: 0.8rem;
-      margin: 0.5rem 0;
-      border-radius: 8px;
-      border: 1px solid #ccc;
-      font-size: 1rem;
-    }
-
-    button {
-      background-color: #6bb8ff;
-      color: #fff;
-      border: none;
-      font-weight: bold;
-      cursor: pointer;
-      transition: all 0.3s ease;
-    }
-
-    button:hover {
-      background-color: #559de0;
-      transform: scale(1.03);
-    }
-
-    /* ==== PIE ==== */
     footer {
       background-color: #e6f3ff;
       color: #004c91;
@@ -161,86 +205,88 @@
       font-size: 0.9rem;
     }
 
-    /* ==== RESPONSIVE ==== */
     @media (max-width: 768px) {
-      header h1 {
-        font-size: 2rem;
-      }
-      header .fecha {
-        font-size: 1.1rem;
-      }
-      section {
-        padding: 2rem 1rem;
-      }
+      header h1 { font-size: 2.1rem; }
+      header .fecha { font-size: 1.1rem; }
+      .envelope { width: 240px; height: 160px; }
     }
   </style>
 </head>
 <body>
 
-  <header>
-    <div class="video-background">
-      <video id="videoFondo" autoplay muted loop playsinline>
-        <source src="media/video.mp4" type="video/mp4" />
-        Tu navegador no soporta video de fondo.
-      </video>
-      <div class="overlay"></div>
+  <!-- 💌 SOBRE ANIMADO -->
+  <div class="envelope-screen" id="envelopeScreen">
+    <div class="envelope" id="envelope">
+      <div class="front"></div>
+      <div class="flap"></div>
+      <div class="seal" id="seal"></div>
     </div>
+    <div class="open-text">Toca el sello para abrir tu invitación 💌</div>
+  </div>
 
-    <div class="header-content">
-      <h1>Boda de Andrés & María del Carmen</h1>
-      <p class="fecha">05 de diciembre de 2026</p>
-      <p>¡Nos casamos y queremos compartir este día tan especial contigo!</p>
-      <button id="btnMusica" class="btn-musica">🎵 Ver lugar y escuchar música</button>
-    </div>
-  </header>
+  <!-- 💍 CONTENIDO PRINCIPAL -->
+  <div class="main-content" id="mainContent">
+    <header>
+      <div class="video-background">
+        <video id="videoFondo" autoplay muted loop playsinline>
+          <source src="media/video.mp4" type="video/mp4" />
+        </video>
+        <div class="overlay"></div>
+      </div>
 
-  <section id="detalles">
-    <h2>Detalles del evento</h2>
-    <p><strong>Ceremonia:</strong> Iglesia de Abanilla – 12:00 h</p>
-    <p><strong>Banquete:</strong> El Casón de la Vega – 13:30 h</p>
-    <p><strong>Código de vestimenta:</strong> Formal</p>
-  </section>
+      <div class="header-content">
+        <h1>Boda de Andrés & María del Carmen</h1>
+        <p class="fecha">05 de diciembre de 2026</p>
+        <p>¡Nos casamos y queremos compartir este día tan especial contigo!</p>
+      </div>
+    </header>
 
-  <section id="ubicacion">
-    <h2>Ubicación</h2>
-    <p>Iglesia de San José de Abanilla</p>
-    <iframe src="https://www.google.com/maps?q=Iglesia+de+Abanilla&output=embed"></iframe>
-    <p>El Casón de la Vega</p>
-    <iframe src="https://www.google.com/maps?q=El+Cason+de+la+Vega&output=embed"></iframe>
-  </section>
+    <section id="detalles">
+      <h2>Detalles del evento</h2>
+      <p><strong>Ceremonia:</strong> Iglesia de Abanilla – 12:00 h</p>
+      <p><strong>Banquete:</strong> El Casón de la Vega – 13:30 h</p>
+      <p><strong>Código de vestimenta:</strong> Formal</p>
+    </section>
 
-  <section id="rsvp">
-    <h2>Confirma tu asistencia</h2>
-    <form name="rsvp" method="POST" data-netlify="true" netlify-honeypot="bot-field" action="/gracias.html">
-      <input type="hidden" name="form-name" value="rsvp" />
-      <p style="display:none">
-        <label>No rellenes esto: <input name="bot-field" /></label>
-      </p>
-      <input type="text" name="nombre" placeholder="Tu nombre" required />
-      <select name="asistencia" required>
-        <option value="">¿Asistirás?</option>
-        <option value="Sí asistiré">Sí asistiré</option>
-        <option value="No podré asistir">No podré asistir</option>
-      </select>
-      <input type="text" name="acompañantes" placeholder="Número de acompañantes" />
-      <button type="submit">Enviar confirmación</button>
-    </form>
-  </section>
+    <section id="ubicacion">
+      <h2>Ubicación</h2>
+      <p>Iglesia de San José de Abanilla</p>
+      <iframe src="https://www.google.com/maps?q=Iglesia+de+Abanilla&output=embed"></iframe>
+      <p>El Casón de la Vega</p>
+      <iframe src="https://www.google.com/maps?q=El+Cason+de+la+Vega&output=embed"></iframe>
+    </section>
 
-  <footer>
-    <p>Hecho con 💙 por Andrés & María del Carmen — 2026</p>
-  </footer>
+    <footer>
+      <p>Hecho con 💙 por Andrés & María del Carmen — 2026</p>
+    </footer>
+  </div>
 
-  <!-- Script para activar el audio -->
   <script>
-    const btn = document.getElementById('btnMusica');
+    const seal = document.getElementById('seal');
+    const envelope = document.getElementById('envelope');
+    const envelopeScreen = document.getElementById('envelopeScreen');
+    const mainContent = document.getElementById('mainContent');
     const video = document.getElementById('videoFondo');
 
-    btn.addEventListener('click', () => {
-      video.muted = false;
-      video.play();
-      btn.style.display = 'none';
-      document.getElementById('detalles').scrollIntoView({ behavior: 'smooth' });
+    seal.addEventListener('click', () => {
+      seal.classList.add('broken');
+
+      // Abre la solapa
+      setTimeout(() => {
+        envelope.classList.add('open');
+      }, 600);
+
+      // Transición hacia la invitación
+      setTimeout(() => {
+        envelopeScreen.style.opacity = '0';
+        setTimeout(() => {
+          envelopeScreen.style.display = 'none';
+          mainContent.classList.add('visible');
+          video.muted = false;
+          video.play();
+          document.body.style.overflow = 'auto';
+        }, 1000);
+      }, 2500);
     });
   </script>
 </body>
