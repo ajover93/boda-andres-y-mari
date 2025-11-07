@@ -31,40 +31,40 @@
 
     .envelope {
       position: relative;
-      width: 300px;
-      height: 200px;
-      background: #fdfdfd;
-      border: 2px solid #bcd1f3;
-      box-shadow: 0 8px 20px rgba(0,0,0,0.15);
-      border-radius: 8px;
-      transform-style: preserve-3d;
-      transition: transform 1.5s ease-in-out;
+      width: 500px;          /* 🔹 Aumenta el ancho */
+      height: 350px;         /* 🔹 Aumenta la altura */
+      perspective: 1000px;
+      cursor: pointer;
+      transition: transform 0.6s ease;
     }
 
-    /* Parte frontal del sobre */
     .front {
       position: absolute;
       width: 100%;
       height: 100%;
       background: url('media/papel-textura.jpg') center/cover no-repeat;
-      border-radius: 8px;
+      border-radius: 12px;
       backface-visibility: hidden;
       z-index: 1;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
     }
 
-    /* Solapa superior con efecto 3D */
     .flap {
       position: absolute;
       top: 0;
       left: 0;
       width: 100%;
-      height: 50%;
+      height: 55%; /* ligeramente más largo para mejor solape */
       background: url('media/papel-textura.jpg') center/cover no-repeat;
       clip-path: polygon(0 0, 50% 100%, 100% 0);
       transform-origin: top;
       transition: transform 1.5s ease-in-out;
       z-index: 2;
-      box-shadow: inset 0 -10px 20px rgba(0, 0, 0, 0.15);
+      box-shadow: inset 0 -10px 25px rgba(0, 0, 0, 0.2);
+    }
+
+    .envelope.open .flap {
+      transform: rotateX(-150deg);
     }
 
 
