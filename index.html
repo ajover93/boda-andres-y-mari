@@ -11,13 +11,14 @@
       padding: 0;
       overflow: hidden;
       background: #e3f2fd;
-      perspective: 1200px;
+      perspective: 1000px;
     }
 
     /* === PANTALLA DEL SOBRE === */
     .envelope-screen {
       position: fixed;
-      inset: 0;
+      top: 0; left: 0;
+      width: 100%; height: 100vh;
       background: linear-gradient(180deg, #f5f9ff, #cfe4ff);
       display: flex;
       align-items: center;
@@ -25,7 +26,6 @@
       flex-direction: column;
       z-index: 10;
       transition: opacity 1s ease;
-      perspective: 1200px;
       overflow: hidden;
     }
 
@@ -34,31 +34,48 @@
       position: relative;
       width: 520px;
       height: 360px;
-      transform-style: preserve-3d;
+      perspective: 1200px;
       cursor: pointer;
-      transition: transform 1s ease;
+      transform-style: preserve-3d;
     }
 
     /* Interior del sobre */
     .envelope-inner {
-      /*position: absolute;
-      inset: 0;
+      position: absolute;
+      width: 100%;
+      height: 100%;
       background: url('media/papel-textura-interior.jpg') center/cover no-repeat;
-      border-radius: 10px;
-      z-index: 0;
-      box-shadow: inset 0 0 25px rgba(0,0,0,0.2);*/
-      background: #f5deb3;
+      border-radius: 8px;
+      box-shadow: inset 0 0 20px rgba(0,0,0,0.15);
+      z-index: 1; /* debajo de flap-top */
+    }
 
+    /* Solapa superior (abre) */
+    .flap-top {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 55%;
+      background: url('media/papel-textura-exterior.jpg') center/cover no-repeat;
+      clip-path: polygon(0 0, 50% 100%, 100% 0);
+      transform-origin: top center;
+      z-index: 5; /* encima del interior */
+      backface-visibility: hidden;
+      transition: transform 2s ease-in-out;
+      transform: rotateX(0deg); /* estado inicial cerrado */
+      box-shadow: inset 0 -10px 25px rgba(0,0,0,0.25);
+    }
+
+    .envelope.open .flap-top {
+      transform: rotateX(-150deg); /* abre suavemente */
     }
 
     /* Solapas exteriores */
     .flap {
-      /*position: absolute;
+      position: absolute;
       background: url('media/papel-textura-exterior.jpg') center/cover no-repeat;
       transition: transform 1.5s ease-in-out;
-      backface-visibility: hidden;*/
-      background: #deb887;
-
+      z-index: 2;
+      backface-visibility: hidden;
     }
 
     .flap-bottom {
@@ -68,7 +85,6 @@
       height: 55%;
       clip-path: polygon(0 100%, 50% 0, 100% 100%);
       box-shadow: 0 -6px 12px rgba(0,0,0,0.25);
-      z-index: 2;
     }
 
     .flap-left {
@@ -77,8 +93,7 @@
       width: 50%;
       height: 100%;
       clip-path: polygon(0 0, 0 100%, 100% 50%);
-      box-shadow: 4px 0 12px rgba(0,0,0,0.15);
-      z-index: 2;
+      box-shadow: 4px 0 10px rgba(0,0,0,0.15);
     }
 
     .flap-right {
@@ -87,43 +102,13 @@
       width: 50%;
       height: 100%;
       clip-path: polygon(0 50%, 100% 0, 100% 100%);
-      box-shadow: -4px 0 12px rgba(0,0,0,0.15);
-      z-index: 2;
-    }
-
-    /* Solapa superior (la que se abre) */
-    .flap-top {
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 55%;
-      clip-path: polygon(0 0, 50% 100%, 100% 0);
-      transform-origin: top center;
-      background: url('media/papel-textura-exterior.jpg') center/cover no-repeat;
-      z-index: 3;
-      box-shadow: inset 0 -10px 25px rgba(0,0,0,0.25);
-      transition: transform 1.8s cubic-bezier(0.45, 0, 0.2, 1.2);
-    }
-
-    /* Interior de la solapa */
-    .flap-top::after {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background: url('media/papel-textura-interior.jpg') center/cover no-repeat;
-      transform: rotateY(180deg);
-      backface-visibility: hidden;
-    }
-
-    /* Animación de apertura */
-    .envelope.open .flap-top {
-      transform: rotateX(-180deg);
+      box-shadow: -4px 0 10px rgba(0,0,0,0.15);
     }
 
     /* Sello */
     .seal {
-      /*position: absolute;
-      top: 47%;
+      position: absolute;
+      top: 48%;
       left: 50%;
       transform: translate(-50%, -50%);
       width: 80px;
@@ -131,11 +116,8 @@
       background: url('media/sello.png') center/contain no-repeat;
       border-radius: 50%;
       cursor: pointer;
-      z-index: 5;
+      z-index: 6;
       transition: transform 0.6s ease, opacity 0.8s ease;
-      */
-      background: #b5651d;
-
     }
 
     .seal.broken {
@@ -143,7 +125,6 @@
       opacity: 0;
     }
 
-    /* Texto animado */
     .open-text {
       margin-top: 2rem;
       color: #004c91;
@@ -273,7 +254,7 @@
       <div class="flap flap-bottom"></div>
       <div class="flap flap-left"></div>
       <div class="flap flap-right"></div>
-      <div class="flap flap-top"></div>
+      <div class="flap-top"></div>
       <div class="seal" id="seal"></div>
     </div>
     <div class="open-text">Toca el sello para abrir tu invitación 💌</div>
@@ -325,10 +306,13 @@
 
     seal.addEventListener('click', () => {
       seal.classList.add('broken');
+
+      // Abre la solapa suavemente
       setTimeout(() => {
         envelope.classList.add('open');
-      }, 600);
+      }, 300);
 
+      // Transición a la invitación
       setTimeout(() => {
         envelopeScreen.style.opacity = '0';
         setTimeout(() => {
@@ -338,7 +322,7 @@
           video.play();
           document.body.style.overflow = 'auto';
         }, 1000);
-      }, 2600);
+      }, 2500);
     });
   </script>
 </body>
