@@ -80,7 +80,7 @@
       box-shadow: -4px 0 10px rgba(0,0,0,0.15);
     }
 
-    /* Solapa superior - SOLUCIÓN SIMPLE Y FUNCIONAL */
+    /* Solapa superior */
     .flap-top {
       position: absolute;
       top: 0;
@@ -97,6 +97,49 @@
     }
 
     .envelope.open .flap-top {
+      transform: rotateX(-180deg);
+    }
+
+    /* Bordes como elementos separados - POSICIÓN CORREGIDA */
+    .border {
+      position: absolute;
+      pointer-events: none;
+    }
+
+    /* BORDE EXTERIOR DEL CUADRADO CON SVG */
+    .border-outline {
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: url("data:image/svg+xml,%3Csvg width='520' height='360' xmlns='http://www.w3.org/2000/svg'%3E%3Crect x='1' y='1' width='518' height='358' fill='none' stroke='rgba(0,0,0,0.4)' stroke-width='2'/%3E%3C/svg%3E") center/contain no-repeat;
+      z-index: 3;
+    }
+
+    /* Borde inferior - COMPLETO */
+    .border-bottom {
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 55%;
+      background: url("data:image/svg+xml,%3Csvg width='520' height='198' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0,198 L260,0 L520,198' fill='none' stroke='rgba(0,0,0,0.3)' stroke-width='2'/%3E%3C/svg%3E") center/contain no-repeat;
+      z-index: 6;
+    }
+
+    /* Borde superior */
+    .border-top {
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 55%;
+      background: url("data:image/svg+xml,%3Csvg width='520' height='198' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0,0 L260,198 L520,0' fill='none' stroke='rgba(0,0,0,0.3)' stroke-width='2'/%3E%3C/svg%3E") center/contain no-repeat;
+      z-index: 15;
+      transform-origin: top;
+      transition: all 3s cubic-bezier(0.4, 0, 0.2, 1);
+      transform: rotateX(0deg);
+    }
+
+    .envelope.open .border-top {
       transform: rotateX(-180deg);
     }
 
@@ -237,6 +280,22 @@
       header h1 { font-size: 2.1rem; }
       header .fecha { font-size: 1.1rem; }
       .envelope { width: 260px; height: 180px; }
+      /* Actualizar SVGs para móvil */
+      .border-outline {
+        background: url("data:image/svg+xml,%3Csvg width='260' height='180' xmlns='http://www.w3.org/2000/svg'%3E%3Crect x='0.75' y='0.75' width='258.5' height='178.5' fill='none' stroke='rgba(0,0,0,0.4)' stroke-width='1.5'/%3E%3C/svg%3E") center/contain no-repeat;
+      }
+      .border-bottom {
+        background: url("data:image/svg+xml,%3Csvg width='260' height='99' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0,99 L130,0 L260,99' fill='none' stroke='rgba(0,0,0,0.3)' stroke-width='1.5'/%3E%3C/svg%3E") center/contain no-repeat;
+      }
+      .border-left {
+        background: url("data:image/svg+xml,%3Csvg width='130' height='180' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0,0 L0,81 L130,40.5' fill='none' stroke='rgba(0,0,0,0.3)' stroke-width='1.5'/%3E%3C/svg%3E") center top/contain no-repeat;
+      }
+      .border-right {
+        background: url("data:image/svg+xml,%3Csvg width='130' height='180' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0,40.5 L130,0 L130,81' fill='none' stroke='rgba(0,0,0,0.3)' stroke-width='1.5'/%3E%3C/svg%3E") center top/contain no-repeat;
+      }
+      .border-top {
+        background: url("data:image/svg+xml,%3Csvg width='260' height='99' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0,0 L130,99 L260,0' fill='none' stroke='rgba(0,0,0,0.3)' stroke-width='1.5'/%3E%3C/svg%3E") center/contain no-repeat;
+      }
     }
   </style>
 </head>
@@ -250,6 +309,14 @@
       <div class="flap flap-left"></div>
       <div class="flap flap-right"></div>
       <div class="flap-top"></div>
+      
+      <!-- Bordes en ORDEN CORRECTO -->
+      <div class="border border-outline"></div>
+      <div class="border border-left"></div>
+      <div class="border border-right"></div>
+      <div class="border border-bottom"></div>
+      <div class="border border-top"></div>
+      
       <div class="seal" id="seal"></div>
     </div>
     <div class="open-text">Toca el sello para abrir tu invitación 💌</div>
