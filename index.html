@@ -126,7 +126,7 @@
       z-index: 6;
     }
 
-    /* Borde superior */
+    /* Borde superior animado (triángulo) */
     .border-top {
       top: 0;
       left: 0;
@@ -143,6 +143,19 @@
       transform: rotateX(-180deg);
     }
 
+    /* LÍNEA HORIZONTAL FIJA - SIEMPRE POR DELANTE */
+    .border-top2 {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      background: rgba(0, 0, 0, 0.3);
+      z-index: 25; /* Mayor que todos los demás elementos */
+      pointer-events: none;
+      /* SIN transformaciones, completamente fijo */
+    }
+
     /* Sello */
     .seal {
       position: absolute;
@@ -154,7 +167,7 @@
       background: url('media/sello.png') center/contain no-repeat;
       border-radius: 50%;
       cursor: pointer;
-      z-index: 20;
+      z-index: 20; /* Menor que border-top2 */
       transition: transform 1s ease, opacity 1.2s ease;
     }
 
@@ -296,6 +309,9 @@
       .border-top {
         background: url("data:image/svg+xml,%3Csvg width='260' height='99' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0,0 L130,99 L260,0' fill='none' stroke='rgba(0,0,0,0.3)' stroke-width='1.5'/%3E%3C/svg%3E") center/contain no-repeat;
       }
+      .border-top2 {
+        height: 1.5px;
+      }
     }
   </style>
 </head>
@@ -316,6 +332,9 @@
       <div class="border border-right"></div>
       <div class="border border-bottom"></div>
       <div class="border border-top"></div>
+      
+      <!-- LÍNEA HORIZONTAL FIJA - AÑADIDA AL HTML -->
+      <div class="border-top2"></div>
       
       <div class="seal" id="seal"></div>
     </div>
