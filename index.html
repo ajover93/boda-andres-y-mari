@@ -11,14 +11,13 @@
       padding: 0;
       overflow: hidden;
       background: #e3f2fd;
-      perspective: 1000px;
+      perspective: 1200px;
     }
 
     /* === PANTALLA DEL SOBRE === */
     .envelope-screen {
       position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100vh;
+      inset: 0;
       background: linear-gradient(180deg, #f5f9ff, #cfe4ff);
       display: flex;
       align-items: center;
@@ -26,74 +25,125 @@
       flex-direction: column;
       z-index: 10;
       transition: opacity 1s ease;
+      perspective: 1200px;
       overflow: hidden;
     }
 
+    /* === SOBRE REALISTA === */
     .envelope {
       position: relative;
-      width: 500px;          /* 🔹 Aumenta el ancho */
-      height: 350px;         /* 🔹 Aumenta la altura */
-      perspective: 1000px;
+      width: 520px;
+      height: 360px;
+      transform-style: preserve-3d;
       cursor: pointer;
-      transition: transform 0.6s ease;
+      transition: transform 1s ease;
     }
 
-    .front {
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      background: url('media/papel-textura.jpg') center/cover no-repeat;
-      border-radius: 12px;
-      backface-visibility: hidden;
-      z-index: 1;
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+    /* Interior del sobre */
+    .envelope-inner {
+      /*position: absolute;
+      inset: 0;
+      background: url('media/papel-textura-interior.jpg') center/cover no-repeat;
+      border-radius: 10px;
+      z-index: 0;
+      box-shadow: inset 0 0 25px rgba(0,0,0,0.2);*/
+      background: #f5deb3;
+
     }
 
+    /* Solapas exteriores */
     .flap {
-      position: absolute;
+      /*position: absolute;
+      background: url('media/papel-textura-exterior.jpg') center/cover no-repeat;
+      transition: transform 1.5s ease-in-out;
+      backface-visibility: hidden;*/
+      background: #deb887;
+
+    }
+
+    .flap-bottom {
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 55%;
+      clip-path: polygon(0 100%, 50% 0, 100% 100%);
+      box-shadow: 0 -6px 12px rgba(0,0,0,0.25);
+      z-index: 2;
+    }
+
+    .flap-left {
+      top: 0;
+      left: 0;
+      width: 50%;
+      height: 100%;
+      clip-path: polygon(0 0, 0 100%, 100% 50%);
+      box-shadow: 4px 0 12px rgba(0,0,0,0.15);
+      z-index: 2;
+    }
+
+    .flap-right {
+      top: 0;
+      right: 0;
+      width: 50%;
+      height: 100%;
+      clip-path: polygon(0 50%, 100% 0, 100% 100%);
+      box-shadow: -4px 0 12px rgba(0,0,0,0.15);
+      z-index: 2;
+    }
+
+    /* Solapa superior (la que se abre) */
+    .flap-top {
       top: 0;
       left: 0;
       width: 100%;
-      height: 55%; /* ligeramente más largo para mejor solape */
-      background: url('media/papel-textura.jpg') center/cover no-repeat;
+      height: 55%;
       clip-path: polygon(0 0, 50% 100%, 100% 0);
-      transform-origin: top;
-      transition: transform 1.5s ease-in-out;
-      z-index: 2;
-      box-shadow: inset 0 -10px 25px rgba(0, 0, 0, 0.2);
+      transform-origin: top center;
+      background: url('media/papel-textura-exterior.jpg') center/cover no-repeat;
+      z-index: 3;
+      box-shadow: inset 0 -10px 25px rgba(0,0,0,0.25);
+      transition: transform 1.8s cubic-bezier(0.45, 0, 0.2, 1.2);
     }
 
-    .envelope.open .flap {
-      transform: rotateX(-150deg);
-    }
-
-
-    /* Sello en el centro */
-    .seal {
+    /* Interior de la solapa */
+    .flap-top::after {
+      content: "";
       position: absolute;
-      top: 45%;
+      inset: 0;
+      background: url('media/papel-textura-interior.jpg') center/cover no-repeat;
+      transform: rotateY(180deg);
+      backface-visibility: hidden;
+    }
+
+    /* Animación de apertura */
+    .envelope.open .flap-top {
+      transform: rotateX(-180deg);
+    }
+
+    /* Sello */
+    .seal {
+      /*position: absolute;
+      top: 47%;
       left: 50%;
       transform: translate(-50%, -50%);
-      width: 70px;
-      height: 70px;
-      background: url('media/seal.png') center/cover no-repeat;
+      width: 80px;
+      height: 80px;
+      background: url('media/sello.png') center/contain no-repeat;
       border-radius: 50%;
       cursor: pointer;
-      z-index: 3;
+      z-index: 5;
       transition: transform 0.6s ease, opacity 0.8s ease;
+      */
+      background: #b5651d;
+
     }
 
-    /* Animación de romper sello */
     .seal.broken {
       transform: scale(1.4) rotate(25deg);
       opacity: 0;
     }
 
-    /* Cuando se abre el sobre */
-    .envelope.open .flap {
-      transform: rotateX(-180deg);
-    }
-
+    /* Texto animado */
     .open-text {
       margin-top: 2rem;
       color: #004c91;
@@ -210,7 +260,7 @@
     @media (max-width: 768px) {
       header h1 { font-size: 2.1rem; }
       header .fecha { font-size: 1.1rem; }
-      .envelope { width: 240px; height: 160px; }
+      .envelope { width: 260px; height: 180px; }
     }
   </style>
 </head>
@@ -219,8 +269,11 @@
   <!-- 💌 SOBRE ANIMADO -->
   <div class="envelope-screen" id="envelopeScreen">
     <div class="envelope" id="envelope">
-      <div class="front"></div>
-      <div class="flap"></div>
+      <div class="envelope-inner"></div>
+      <div class="flap flap-bottom"></div>
+      <div class="flap flap-left"></div>
+      <div class="flap flap-right"></div>
+      <div class="flap flap-top"></div>
       <div class="seal" id="seal"></div>
     </div>
     <div class="open-text">Toca el sello para abrir tu invitación 💌</div>
@@ -272,13 +325,10 @@
 
     seal.addEventListener('click', () => {
       seal.classList.add('broken');
-
-      // Abre la solapa
       setTimeout(() => {
         envelope.classList.add('open');
       }, 600);
 
-      // Transición hacia la invitación
       setTimeout(() => {
         envelopeScreen.style.opacity = '0';
         setTimeout(() => {
@@ -288,7 +338,7 @@
           video.play();
           document.body.style.overflow = 'auto';
         }, 1000);
-      }, 2500);
+      }, 2600);
     });
   </script>
 </body>
