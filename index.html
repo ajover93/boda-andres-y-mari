@@ -10,7 +10,7 @@
       margin: 0;
       padding: 0;
       overflow: hidden;
-      background: #e3f2fd;
+      background: #e3f2fd !important; /* MISMO COLOR QUE EL BODY */
     }
 
     /* === PANTALLA DEL SOBRE === */
@@ -18,7 +18,7 @@
       position: fixed;
       top: 0; left: 0;
       width: 100%; height: 100vh;
-      background: linear-gradient(180deg, #f5f9ff, #cfe4ff);
+      background: #e3f2fd !important; /* MISMO COLOR QUE EL BODY */
       display: flex;
       align-items: center;
       justify-content: center;
@@ -36,15 +36,17 @@
       cursor: pointer;
     }
 
-    /* Contenedor que oculta la parte inferior de la invitación */
+    /* MÁSCARA para ocultar la parte inferior de la invitación */
     .envelope-mask {
       position: absolute;
-      top: 0;
+      top: 100%; /* Justo debajo del sobre */
       left: 0;
       width: 100%;
-      height: 100%;
-      overflow: hidden; /* Oculta lo que sale de los límites */
-      z-index: 2;
+      height: 100vh; /* Ocupa toda la altura de la pantalla */
+      background: #e3f2fd !important; /* MISMO COLOR QUE EL BODY */
+      z-index: 1000 !important;
+      pointer-events: none;
+      /* Quitamos el borde y opacidad temporal */
     }
 
     /* Interior del sobre */
@@ -71,6 +73,7 @@
       height: 55%;
       clip-path: polygon(0 100%, 50% 0, 100% 100%);
       box-shadow: 0 -6px 12px rgba(0,0,0,0.25);
+      z-index: 5; /* Por encima de la invitación */
     }
 
     .flap-left {
@@ -80,6 +83,7 @@
       height: 100%;
       clip-path: polygon(0 0, 0 100%, 100% 50%);
       box-shadow: 4px 0 10px rgba(0,0,0,0.15);
+      z-index: 5; /* Por encima de la invitación */
     }
 
     .flap-right {
@@ -89,6 +93,7 @@
       height: 100%;
       clip-path: polygon(0 50%, 100% 0, 100% 100%);
       box-shadow: -4px 0 10px rgba(0,0,0,0.15);
+      z-index: 5; /* Por encima de la invitación */
     }
 
     /* Solapa superior - DETRÁS de la invitación cuando se abre */
@@ -127,6 +132,7 @@
 
     .envelope.open .flap-top {
       transform: rotateX(-180deg);
+      z-index: 1;
     }
 
     /* Bordes como elementos separados */
@@ -135,22 +141,13 @@
       pointer-events: none;
     }
 
-    .border-outline {
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: url("data:image/svg+xml,%3Csvg width='520' height='360' xmlns='http://www.w3.org/2000/svg'%3E%3Crect x='1' y='1' width='518' height='358' fill='none' stroke='rgba(0,0,0,0.4)' stroke-width='2'/%3E%3C/svg%3E") center/contain no-repeat;
-      z-index: 3;
-    }
-
     .border-bottom {
       bottom: 0;
       left: 0;
       width: 100%;
       height: 55%;
       background: url("data:image/svg+xml,%3Csvg width='520' height='198' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0,198 L260,0 L520,198' fill='none' stroke='rgba(0,0,0,0.3)' stroke-width='2'/%3E%3C/svg%3E") center/contain no-repeat;
-      z-index: 6; /* Por encima de las solapas */
+      z-index: 7; /* Por encima de las solapas */
     }
 
     .border-top {
@@ -167,17 +164,7 @@
 
     .envelope.open .border-top {
       transform: rotateX(-180deg);
-    }
-
-    .border-top2 {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 2px;
-      background: rgba(0, 0, 0, 0.3);
-      z-index: 25;
-      pointer-events: none;
+      z-index: 2
     }
 
     /* Sello */
@@ -208,7 +195,7 @@
       transform: translateX(-50%);
       width: 70%;
       max-width: 350px;
-      z-index: 7; /* Por delante de la solapa superior (6) */
+      z-index: 3; /* Por delante de la solapa superior (6) */
       transition: top 2.5s cubic-bezier(0.2, 0.7, 0.3, 1) 1.5s;
       border-radius: 4px;
       box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
@@ -335,8 +322,9 @@
       header h1 { font-size: 2.1rem; }
       header .fecha { font-size: 1.1rem; }
       .envelope { width: 260px; height: 180px; }
-      .border-outline {
-        background: url("data:image/svg+xml,%3Csvg width='260' height='180' xmlns='http://www.w3.org/2000/svg'%3E%3Crect x='0.75' y='0.75' width='258.5' height='178.5' fill='none' stroke='rgba(0,0,0,0.4)' stroke-width='1.5'/%3E%3C/svg%3E") center/contain no-repeat;
+      .envelope-mask {
+        width: 260px;
+        height: 100px;
       }
       .border-bottom {
         background: url("data:image/svg+xml,%3Csvg width='260' height='99' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0,99 L130,0 L260,99' fill='none' stroke='rgba(0,0,0,0.3)' stroke-width='1.5'/%3E%3C/svg%3E") center/contain no-repeat;
@@ -350,9 +338,7 @@
       .border-top {
         background: url("data:image/svg+xml,%3Csvg width='260' height='99' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0,0 L130,99 L260,0' fill='none' stroke='rgba(0,0,0,0.3)' stroke-width='1.5'/%3E%3C/svg%3E") center/contain no-repeat;
       }
-      .border-top2 {
-        height: 1.5px;
-      }
+
       .invitation-image {
         width: 80%;
         max-width: 200px;
@@ -369,13 +355,9 @@
   <div class="envelope-screen" id="envelopeScreen">
     <div class="envelope" id="envelope">
       <div class="envelope-inner"></div>
-      
-      <!-- Contenedor que oculta la parte de la invitación que no debe verse -->
-      <div class="envelope-mask">
-        <!-- Imagen de invitación que sale del sobre -->
-        <img src="media/invitacion.jpg" alt="Invitación" class="invitation-image" id="invitationImage">
-      </div>
-      
+  
+      <img src="media/invitacion.jpg" alt="Invitación" class="invitation-image" id="invitationImage">
+
       <div class="flap flap-bottom"></div>
       <div class="flap flap-left"></div>
       <div class="flap flap-right"></div>
@@ -387,7 +369,6 @@
       </div>
       
       <!-- Bordes en ORDEN CORRECTO -->
-      <div class="border border-outline"></div>
       <div class="border border-left"></div>
       <div class="border border-right"></div>
       <div class="border border-bottom"></div>
@@ -396,8 +377,12 @@
       <!-- LÍNEA HORIZONTAL FIJA - AÑADIDA AL HTML -->
       <div class="border-top2"></div>
       
+      <!-- MÁSCARA DENTRO del sobre para posicionamiento relativo -->
+      <div class="envelope-mask"></div>
+      
       <div class="seal" id="seal"></div>
     </div>
+    
     <div class="open-text">Toca el sello para abrir tu invitación 💌</div>
   </div>
 
