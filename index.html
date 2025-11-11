@@ -23,7 +23,7 @@
       align-items: center;
       justify-content: center;
       flex-direction: column;
-      z-index: 10;
+      z-index: 30;
       transition: opacity 1s ease;
       overflow: hidden;
     }
@@ -55,14 +55,14 @@
       height: 100%;
       background: url('media/papel-textura-interior.jpg') center/cover no-repeat;
       box-shadow: inset 0 0 20px rgba(0,0,0,0.15);
-      z-index: 1;
+      z-index: 3;
     }
 
     /* Solapas exteriores - DELANTE de la invitación */
     .flap {
       position: absolute;
       background: url('media/papel-textura-exterior.jpg') center/cover no-repeat;
-      z-index: 2;
+      z-index: 6;
     }
 
     .flap-bottom {
@@ -72,7 +72,7 @@
       height: 55%;
       clip-path: polygon(0 100%, 50% 0, 100% 100%);
       box-shadow: 0 -6px 12px rgba(0,0,0,0.25);
-      z-index: 5;
+      z-index: 15;
     }
 
     .flap-left {
@@ -82,7 +82,7 @@
       height: 100%;
       clip-path: polygon(0 0, 0 100%, 100% 50%);
       box-shadow: 4px 0 10px rgba(0,0,0,0.15);
-      z-index: 5;
+      z-index: 15;
     }
 
     .flap-right {
@@ -92,7 +92,7 @@
       height: 100%;
       clip-path: polygon(0 50%, 100% 0, 100% 100%);
       box-shadow: -4px 0 10px rgba(0,0,0,0.15);
-      z-index: 5;
+      z-index: 15;
     }
 
     /* Solapa superior - DETRÁS de la invitación cuando se abre */
@@ -106,7 +106,7 @@
       transform-origin: top;
       transition: all 3s cubic-bezier(0.4, 0, 0.2, 1);
       transform: rotateX(0deg);
-      z-index: 10;
+      z-index: 30;
     }
 
     .flap-top-face {
@@ -131,7 +131,7 @@
 
     .envelope.open .flap-top {
       transform: rotateX(-180deg);
-      z-index: 1;
+      z-index: 3;
     }
 
     /* Bordes como elementos separados */
@@ -146,7 +146,7 @@
       width: 100%;
       height: 55%;
       background: url("data:image/svg+xml,%3Csvg width='520' height='198' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0,198 L260,0 L520,198' fill='none' stroke='rgba(0,0,0,0.3)' stroke-width='2'/%3E%3C/svg%3E") center/contain no-repeat;
-      z-index: 7;
+      z-index: 21;
     }
 
     .border-top {
@@ -155,7 +155,7 @@
       width: 100%;
       height: 55%;
       background: url("data:image/svg+xml,%3Csvg width='520' height='198' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0,0 L260,198 L520,0' fill='none' stroke='rgba(0,0,0,0.3)' stroke-width='2'/%3E%3C/svg%3E") center/contain no-repeat;
-      z-index: 15;
+      z-index: 45;
       transform-origin: top;
       transition: all 3s cubic-bezier(0.4, 0, 0.2, 1);
       transform: rotateX(0deg);
@@ -163,7 +163,7 @@
 
     .envelope.open .border-top {
       transform: rotateX(-180deg);
-      z-index: 2;
+      z-index: 6;
     }
 
     /* Sello */
@@ -177,7 +177,7 @@
       background: url('media/sello.png') center/contain no-repeat;
       border-radius: 50%;
       cursor: pointer;
-      z-index: 20;
+      z-index: 60;
       transition: transform 1s ease, opacity 1.2s ease;
     }
 
@@ -194,7 +194,7 @@
       transform: translateX(-50%);
       width: 70%;
       max-width: 350px;
-      z-index: 3;
+      z-index: 9;
       transition: top 2.5s cubic-bezier(0.2, 0.7, 0.3, 1) 1.5s;
       border-radius: 4px;
       box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
@@ -261,7 +261,7 @@
 
     .header-content {
       position: relative;
-      z-index: 2;
+      z-index: 6;
       max-width: 700px;
       padding: 2rem;
     }
@@ -330,50 +330,10 @@
       .invitation-image {
         width: 80%;
         max-width: 200px;
-        z-index: 25; /* Solo en móviles le damos más prioridad */
       }
-
-      .flap-bottom {
-        z-index: 30;
-      }
-
-      .flap-left {
-        z-index: 30;
-      }
-
-      .flap-right {
-        z-index: 30;
-      }
-
-      /* Solapa superior - DETRÁS de la invitación cuando se abre */
-      .flap-top {
-        z-index: 35;
-      }
-
-      .border-bottom {
-        bottom: 0;
-        left: 0;
-        width: 100%;
-        height: 55%;
-        background: url("data:image/svg+xml,%3Csvg width='520' height='198' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0,198 L260,0 L520,198' fill='none' stroke='rgba(0,0,0,0.3)' stroke-width='2'/%3E%3C/svg%3E") center/contain no-repeat;
-        z-index: 40;
-      }
-
-      .border-top {
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 55%;
-        background: url("data:image/svg+xml,%3Csvg width='520' height='198' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0,0 L260,198 L520,0' fill='none' stroke='rgba(0,0,0,0.3)' stroke-width='2'/%3E%3C/svg%3E") center/contain no-repeat;
-        z-index: 40;
-        transform-origin: top;
-        transition: all 3s cubic-bezier(0.4, 0, 0.2, 1);
-        transform: rotateX(0deg);
-      }
-
-      .envelope.open .border-top {
-        transform: rotateX(-180deg);
-        z-index: 2;
+      
+      .envelope.open .invitation-image {
+        top: -20%;
       }
       
       .seal {
