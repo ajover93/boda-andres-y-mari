@@ -80,20 +80,38 @@
       box-shadow: -4px 0 10px rgba(0,0,0,0.15);
     }
 
-    /* Solapa superior */
+    /* Solapa superior con dos caras */
     .flap-top {
       position: absolute;
       top: 0;
       left: 0;
       width: 100%;
       height: 55%;
-      background: url('media/papel-textura-exterior.jpg') center/cover no-repeat;
-      clip-path: polygon(0 0, 50% 100%, 100% 0);
-      z-index: 10;
+      transform-style: preserve-3d;
       transform-origin: top;
       transition: all 3s cubic-bezier(0.4, 0, 0.2, 1);
       transform: rotateX(0deg);
+      z-index: 10;
+    }
+
+    .flap-top-face {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      backface-visibility: hidden;
+      clip-path: polygon(0 0, 50% 100%, 100% 0);
+    }
+
+    .flap-top-front {
+      background: url('media/papel-textura-exterior.jpg') center/cover no-repeat;
       box-shadow: inset 0 -10px 25px rgba(0,0,0,0.25);
+    }
+
+    .flap-top-back {
+      background: url('media/papel-textura-interior.jpg') center/cover no-repeat;
+      transform: rotateX(180deg) rotate(180deg); /* Rotamos 180° en ambos ejes */
     }
 
     .envelope.open .flap-top {
@@ -324,7 +342,12 @@
       <div class="flap flap-bottom"></div>
       <div class="flap flap-left"></div>
       <div class="flap flap-right"></div>
-      <div class="flap-top"></div>
+      
+      <!-- Solapa superior con dos caras -->
+      <div class="flap-top">
+        <div class="flap-top-face flap-top-front"></div>
+        <div class="flap-top-face flap-top-back"></div>
+      </div>
       
       <!-- Bordes en ORDEN CORRECTO -->
       <div class="border border-outline"></div>
