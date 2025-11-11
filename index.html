@@ -42,12 +42,12 @@
       top: 100%;
       left: 0;
       width: 100%;
-      height: 200vh; /* Siempre suficiente altura */
+      height: 100vh;
       background: #e3f2fd !important;
       z-index: 1000 !important;
       pointer-events: none;
     }
-    
+
     /* Interior del sobre */
     .envelope-inner {
       position: absolute;
@@ -204,22 +204,23 @@
       top: -25%;
     }
 
-    /* TEXTO COMPLETAMENTE INDEPENDIENTE */
+    /* TEXTO dentro de envelope-screen pero fuera de envelope */
     .open-text {
-      position: fixed;
-      top: 80vh;
-      left: 0;
-      width: 100%;
+      position: absolute;
+      top: 80vh; /* Desde arriba del viewport */
+      left: 50%;
+      transform: translateX(-50%);
       color: #004c91;
       font-weight: 600;
       animation: pulse 2s infinite;
-      z-index: 9999;
+      z-index: 1001;
       text-align: center;
-      padding: 1rem;
+      width: 100%;
+      padding: 0 1rem;
       pointer-events: none;
-      margin: 0;
+      white-space: nowrap;
     }
-
+    
     @keyframes pulse {
       0%, 100% { opacity: 1; }
       50% { opacity: 0.6; }
@@ -335,7 +336,7 @@
       }
       .envelope-mask {
         width: 260px;
-        height: 250vh; /* Extra seguro en móviles */
+        height: 150px; /* Suficiente para tapar en móviles */
       }
       .border-bottom {
         background: url("data:image/svg+xml,%3Csvg width='260' height='99' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0,99 L130,0 L260,99' fill='none' stroke='rgba(0,0,0,0.3)' stroke-width='1.5'/%3E%3C/svg%3E") center/contain no-repeat;
@@ -355,16 +356,19 @@
         height: 80px;
       }
       .open-text {
-        top: 75vh;
-        font-size: 1rem;
-        padding: 0.5rem;
+        top: 75vh; /* Un poco más arriba en móviles */
+        font-size: 0.9rem;
+        white-space: normal;
       }
     }
 
     @media (max-width: 480px) {
+      .envelope-mask {
+        height: 200px; /* Más altura en móviles pequeños */
+      }
       .open-text {
-        top: 70vh;
-        font-size: 0.9rem;
+        top: calc(100% + 0.5rem);
+        font-size: 0.85rem;
       }
     }
   </style>
@@ -402,10 +406,10 @@
       
       <div class="seal" id="seal"></div>
     </div>
+    
+    <!-- TEXTO DENTRO del envelope-screen pero FUERA del envelope -->
+    <div class="open-text" id="openText">Toca el sello para abrir tu invitación 💌</div>
   </div>
-
-  <!-- TEXTO COMPLETAMENTE FUERA -->
-  <div class="open-text" id="openText">Toca el sello para abrir tu invitación 💌</div>
 
   <!-- 💍 CONTENIDO PRINCIPAL -->
   <div class="main-content" id="mainContent">
@@ -469,10 +473,8 @@
       setTimeout(() => {
         console.log("Mostrando contenido principal...");
         envelopeScreen.style.opacity = '0';
-        openText.style.opacity = '0';
         setTimeout(() => {
           envelopeScreen.style.display = 'none';
-          openText.style.display = 'none';
           mainContent.classList.add('visible');
           video.muted = false;
           video.play();
