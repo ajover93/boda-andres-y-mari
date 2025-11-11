@@ -25,7 +25,8 @@
       flex-direction: column;
       z-index: 10;
       transition: opacity 1s ease;
-      overflow: hidden;
+      /* QUITAMOS overflow: hidden */
+      overflow: visible;
     }
 
     /* === SOBRE REALISTA === */
@@ -36,13 +37,13 @@
       cursor: pointer;
     }
 
-    /* MÁSCARA RESPONSIVE */
+    /* MÁSCARA MUY GRANDE */
     .envelope-mask {
       position: absolute;
       top: 100%;
       left: 0;
       width: 100%;
-      height: 50vh;
+      height: 500px; /* MUY GRANDE para tapar todo */
       background: #e3f2fd !important;
       z-index: 1000 !important;
       pointer-events: none;
@@ -204,21 +205,20 @@
       top: -25%;
     }
 
-    /* TEXTO visible en todos los dispositivos */
+    /* TEXTO FIJO EN LA PARTE INFERIOR */
     .open-text {
-      position: absolute;
-      top: 80vh;
+      position: fixed;
+      bottom: 3rem;
       left: 50%;
       transform: translateX(-50%);
       color: #004c91;
       font-weight: 600;
       animation: pulse 2s infinite;
-      z-index: 1001;
+      z-index: 9999;
       text-align: center;
       width: 100%;
       padding: 0 1rem;
       pointer-events: none;
-      white-space: nowrap;
     }
 
     @keyframes pulse {
@@ -335,10 +335,10 @@
         height: 180px; 
       }
       
-      /* MÁSCARA RESPONSIVE PARA MÓVILES */
+      /* MÁSCARA MÁS GRANDE EN MÓVILES */
       .envelope-mask {
         width: 260px;
-        height: 40vh; /* Responsive para móviles */
+        height: 400px; /* MUY GRANDE en móviles */
       }
       
       .border-bottom {
@@ -359,18 +359,17 @@
         height: 80px;
       }
       .open-text {
-        top: 75vh;
+        bottom: 2rem;
         font-size: 0.9rem;
-        white-space: normal;
       }
     }
 
     @media (max-width: 480px) {
       .envelope-mask {
-        height: 35vh; /* Ajuste para móviles pequeños */
+        height: 350px;
       }
       .open-text {
-        top: 70vh;
+        bottom: 1.5rem;
         font-size: 0.85rem;
       }
     }
@@ -409,10 +408,10 @@
       
       <div class="seal" id="seal"></div>
     </div>
-    
-    <!-- TEXTO DENTRO del envelope-screen pero FUERA del envelope -->
-    <div class="open-text" id="openText">Toca el sello para abrir tu invitación 💌</div>
   </div>
+
+  <!-- TEXTO COMPLETAMENTE INDEPENDIENTE -->
+  <div class="open-text" id="openText">Toca el sello para abrir tu invitación 💌</div>
 
   <!-- 💍 CONTENIDO PRINCIPAL -->
   <div class="main-content" id="mainContent">
@@ -476,8 +475,10 @@
       setTimeout(() => {
         console.log("Mostrando contenido principal...");
         envelopeScreen.style.opacity = '0';
+        openText.style.opacity = '0';
         setTimeout(() => {
           envelopeScreen.style.display = 'none';
+          openText.style.display = 'none';
           mainContent.classList.add('visible');
           video.muted = false;
           video.play();
