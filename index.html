@@ -39,14 +39,13 @@
     /* MÁSCARA para ocultar la parte inferior de la invitación */
     .envelope-mask {
       position: absolute;
-      top: 100%; /* Justo debajo del sobre */
+      top: 100%;
       left: 0;
       width: 100%;
-      height: 100vh; /* Ocupa toda la altura de la pantalla */
-      background: #e3f2fd !important; /* MISMO COLOR QUE EL BODY */
+      height: 100vh;
+      background: #e3f2fd !important;
       z-index: 1000 !important;
       pointer-events: none;
-      /* Quitamos el borde y opacidad temporal */
     }
 
     /* Interior del sobre */
@@ -63,7 +62,7 @@
     .flap {
       position: absolute;
       background: url('media/papel-textura-exterior.jpg') center/cover no-repeat;
-      z-index: 2; /* Por encima de la invitación */
+      z-index: 2;
     }
 
     .flap-bottom {
@@ -73,7 +72,7 @@
       height: 55%;
       clip-path: polygon(0 100%, 50% 0, 100% 100%);
       box-shadow: 0 -6px 12px rgba(0,0,0,0.25);
-      z-index: 5; /* Por encima de la invitación */
+      z-index: 5;
     }
 
     .flap-left {
@@ -83,7 +82,7 @@
       height: 100%;
       clip-path: polygon(0 0, 0 100%, 100% 50%);
       box-shadow: 4px 0 10px rgba(0,0,0,0.15);
-      z-index: 5; /* Por encima de la invitación */
+      z-index: 5;
     }
 
     .flap-right {
@@ -93,7 +92,7 @@
       height: 100%;
       clip-path: polygon(0 50%, 100% 0, 100% 100%);
       box-shadow: -4px 0 10px rgba(0,0,0,0.15);
-      z-index: 5; /* Por encima de la invitación */
+      z-index: 5;
     }
 
     /* Solapa superior - DETRÁS de la invitación cuando se abre */
@@ -107,7 +106,7 @@
       transform-origin: top;
       transition: all 3s cubic-bezier(0.4, 0, 0.2, 1);
       transform: rotateX(0deg);
-      z-index: 10; /* Detrás de la invitación cuando se abre */
+      z-index: 10;
     }
 
     .flap-top-face {
@@ -147,7 +146,7 @@
       width: 100%;
       height: 55%;
       background: url("data:image/svg+xml,%3Csvg width='520' height='198' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0,198 L260,0 L520,198' fill='none' stroke='rgba(0,0,0,0.3)' stroke-width='2'/%3E%3C/svg%3E") center/contain no-repeat;
-      z-index: 7; /* Por encima de las solapas */
+      z-index: 7;
     }
 
     .border-top {
@@ -164,7 +163,7 @@
 
     .envelope.open .border-top {
       transform: rotateX(-180deg);
-      z-index: 2
+      z-index: 2;
     }
 
     /* Sello */
@@ -187,43 +186,38 @@
       opacity: 0;
     }
 
-    /* Imagen de invitación - dentro del contenedor con overflow hidden */
+    /* Imagen de invitación */
     .invitation-image {
       position: absolute;
-      top: 100%; /* Comienza completamente dentro del sobre */
+      top: 100%;
       left: 50%;
       transform: translateX(-50%);
       width: 70%;
       max-width: 350px;
-      z-index: 3; /* Por delante de la solapa superior (6) */
+      z-index: 3;
       transition: top 2.5s cubic-bezier(0.2, 0.7, 0.3, 1) 1.5s;
       border-radius: 4px;
       box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
     }
 
     .envelope.open .invitation-image {
-      top: -25%; /* Sale hasta la mitad del sobre */
+      top: -25%;
     }
 
-    /* TEXTO FUERA del envelope-screen */
+    /* TEXTO COMPLETAMENTE INDEPENDIENTE */
     .open-text {
       position: fixed;
-      top: 80%;
-      left: 50%;
-      transform: translateX(-50%);
+      top: 80vh;
+      left: 0;
+      width: 100%;
       color: #004c91;
       font-weight: 600;
       animation: pulse 2s infinite;
-      z-index: 1001;
+      z-index: 9999;
       text-align: center;
-      width: 100%;
-      padding: 0 1rem;
+      padding: 1rem;
       pointer-events: none;
-    }
-
-    /* Asegurar que desaparezca con el sobre */
-    .envelope-screen[style*="display: none"] ~ .open-text {
-      display: none;
+      margin: 0;
     }
 
     @keyframes pulse {
@@ -335,7 +329,10 @@
     @media (max-width: 768px) {
       header h1 { font-size: 2.1rem; }
       header .fecha { font-size: 1.1rem; }
-      .envelope { width: 260px; height: 180px; }
+      .envelope { 
+        width: 260px; 
+        height: 180px; 
+      }
       .envelope-mask {
         width: 260px;
         height: 100px;
@@ -351,10 +348,22 @@
         max-width: 200px;
       }
       .envelope.open .invitation-image {
-        top: -20%; /* Ajuste para móvil */
+        top: -20%;
+      }
+      .seal {
+        width: 80px;
+        height: 80px;
       }
       .open-text {
-        top: 75%;
+        top: 75vh;
+        font-size: 1rem;
+        padding: 0.5rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .open-text {
+        top: 70vh;
         font-size: 0.9rem;
       }
     }
@@ -385,17 +394,17 @@
       <div class="border border-bottom"></div>
       <div class="border border-top"></div>
       
-      <!-- LÍNEA HORIZONTAL FIJA - AÑADIDA AL HTML -->
+      <!-- LÍNEA HORIZONTAL FIJA -->
       <div class="border-top2"></div>
       
-      <!-- MÁSCARA DENTRO del sobre para posicionamiento relativo -->
+      <!-- MÁSCARA DENTRO del sobre -->
       <div class="envelope-mask"></div>
       
       <div class="seal" id="seal"></div>
     </div>
   </div>
 
-  <!-- TEXTO FUERA del envelope-screen -->
+  <!-- TEXTO COMPLETAMENTE FUERA -->
   <div class="open-text" id="openText">Toca el sello para abrir tu invitación 💌</div>
 
   <!-- 💍 CONTENIDO PRINCIPAL -->
@@ -460,15 +469,22 @@
       setTimeout(() => {
         console.log("Mostrando contenido principal...");
         envelopeScreen.style.opacity = '0';
+        openText.style.opacity = '0';
         setTimeout(() => {
           envelopeScreen.style.display = 'none';
-          openText.style.display = 'none'; // Ocultar texto también
+          openText.style.display = 'none';
           mainContent.classList.add('visible');
           video.muted = false;
           video.play();
           document.body.style.overflow = 'auto';
         }, 1000);
       }, 4000);
+    });
+
+    // Mejorar respuesta táctil en móviles
+    seal.addEventListener('touchstart', (e) => {
+      e.preventDefault();
+      seal.click();
     });
   </script>
 </body>
