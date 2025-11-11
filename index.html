@@ -10,7 +10,7 @@
       margin: 0;
       padding: 0;
       overflow: hidden;
-      background: #e3f2fd !important; /* MISMO COLOR QUE EL BODY */
+      background: #e3f2fd;
     }
 
     /* === PANTALLA DEL SOBRE === */
@@ -18,7 +18,7 @@
       position: fixed;
       top: 0; left: 0;
       width: 100%; height: 100vh;
-      background: #e3f2fd !important; /* MISMO COLOR QUE EL BODY */
+      background: #e3f2fd;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -41,12 +41,11 @@
       position: absolute;
       top: 100%; /* Justo debajo del sobre */
       left: 0;
-      width: 100%;
+      width: 100vw; /* Mismo ancho que la pantalla */
       height: 100vh; /* Ocupa toda la altura de la pantalla */
-      background: #e3f2fd !important; /* MISMO COLOR QUE EL BODY */
-      z-index: 1000 !important;
+      background: #e3f2fd;
+      z-index: 1000;
       pointer-events: none;
-      /* Quitamos el borde y opacidad temporal */
     }
 
     /* Interior del sobre */
@@ -54,7 +53,7 @@
       position: absolute;
       width: 100%;
       height: 100%;
-      background: url('media/papel-textura-interior.jpg') center/cover no-repeat;
+      background: #f8f3e9;
       box-shadow: inset 0 0 20px rgba(0,0,0,0.15);
       z-index: 1;
     }
@@ -62,8 +61,8 @@
     /* Solapas exteriores - DELANTE de la invitación */
     .flap {
       position: absolute;
-      background: url('media/papel-textura-exterior.jpg') center/cover no-repeat;
-      z-index: 2; /* Por encima de la invitación */
+      background: #f5f0e6;
+      z-index: 2;
     }
 
     .flap-bottom {
@@ -73,7 +72,7 @@
       height: 55%;
       clip-path: polygon(0 100%, 50% 0, 100% 100%);
       box-shadow: 0 -6px 12px rgba(0,0,0,0.25);
-      z-index: 5; /* Por encima de la invitación */
+      z-index: 5;
     }
 
     .flap-left {
@@ -83,7 +82,7 @@
       height: 100%;
       clip-path: polygon(0 0, 0 100%, 100% 50%);
       box-shadow: 4px 0 10px rgba(0,0,0,0.15);
-      z-index: 5; /* Por encima de la invitación */
+      z-index: 5;
     }
 
     .flap-right {
@@ -93,7 +92,7 @@
       height: 100%;
       clip-path: polygon(0 50%, 100% 0, 100% 100%);
       box-shadow: -4px 0 10px rgba(0,0,0,0.15);
-      z-index: 5; /* Por encima de la invitación */
+      z-index: 5;
     }
 
     /* Solapa superior - DETRÁS de la invitación cuando se abre */
@@ -107,7 +106,7 @@
       transform-origin: top;
       transition: all 3s cubic-bezier(0.4, 0, 0.2, 1);
       transform: rotateX(0deg);
-      z-index: 10; /* Detrás de la invitación cuando se abre */
+      z-index: 10;
     }
 
     .flap-top-face {
@@ -121,12 +120,12 @@
     }
 
     .flap-top-front {
-      background: url('media/papel-textura-exterior.jpg') center/cover no-repeat;
+      background: #f5f0e6;
       box-shadow: inset 0 -10px 25px rgba(0,0,0,0.25);
     }
 
     .flap-top-back {
-      background: url('media/papel-textura-interior.jpg') center/cover no-repeat;
+      background: #f8f3e9;
       transform: rotateX(180deg) rotate(180deg);
     }
 
@@ -147,7 +146,25 @@
       width: 100%;
       height: 55%;
       background: url("data:image/svg+xml,%3Csvg width='520' height='198' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0,198 L260,0 L520,198' fill='none' stroke='rgba(0,0,0,0.3)' stroke-width='2'/%3E%3C/svg%3E") center/contain no-repeat;
-      z-index: 7; /* Por encima de las solapas */
+      z-index: 7;
+    }
+
+    .border-left {
+      top: 0;
+      left: 0;
+      width: 50%;
+      height: 100%;
+      background: url("data:image/svg+xml,%3Csvg width='260' height='360' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0,0 L0,360 L260,180' fill='none' stroke='rgba(0,0,0,0.3)' stroke-width='2'/%3E%3C/svg%3E") center/contain no-repeat;
+      z-index: 7;
+    }
+
+    .border-right {
+      top: 0;
+      right: 0;
+      width: 50%;
+      height: 100%;
+      background: url("data:image/svg+xml,%3Csvg width='260' height='360' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0,180 L260,0 L260,360' fill='none' stroke='rgba(0,0,0,0.3)' stroke-width='2'/%3E%3C/svg%3E") center/contain no-repeat;
+      z-index: 7;
     }
 
     .border-top {
@@ -164,7 +181,7 @@
 
     .envelope.open .border-top {
       transform: rotateX(-180deg);
-      z-index: 2
+      z-index: 2;
     }
 
     /* Sello */
@@ -175,11 +192,19 @@
       transform: translate(-50%, -50%);
       width: 120px;
       height: 120px;
-      background: url('media/sello.png') center/contain no-repeat;
+      background: #d4af37;
       border-radius: 50%;
       cursor: pointer;
       z-index: 20;
       transition: transform 1s ease, opacity 1.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #8b4513;
+      font-weight: bold;
+      font-size: 14px;
+      text-align: center;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.3);
     }
 
     .seal.broken {
@@ -187,22 +212,26 @@
       opacity: 0;
     }
 
-    /* Imagen de invitación - dentro del contenedor con overflow hidden */
+    /* Imagen de invitación */
     .invitation-image {
       position: absolute;
-      top: 100%; /* Comienza completamente dentro del sobre */
+      top: 100%;
       left: 50%;
       transform: translateX(-50%);
       width: 70%;
       max-width: 350px;
-      z-index: 3; /* Por delante de la solapa superior (6) */
+      z-index: 3;
       transition: top 2.5s cubic-bezier(0.2, 0.7, 0.3, 1) 1.5s;
       border-radius: 4px;
       box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+      background: white;
+      padding: 20px;
+      text-align: center;
     }
 
     .envelope.open .invitation-image {
-      top: -25%; /* Sale hasta la mitad del sobre */
+      top: -25%;
+      z-index: 9999;
     }
 
     .open-text {
@@ -318,13 +347,14 @@
       font-size: 0.9rem;
     }
 
+    /* === MEDIA QUERIES === */
     @media (max-width: 768px) {
       header h1 { font-size: 2.1rem; }
       header .fecha { font-size: 1.1rem; }
       .envelope { width: 260px; height: 180px; }
       .envelope-mask {
-        width: 260px;
-        height: 100px;
+        width: 100vw;
+        height: 100vh;
       }
       .border-bottom {
         background: url("data:image/svg+xml,%3Csvg width='260' height='99' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0,99 L130,0 L260,99' fill='none' stroke='rgba(0,0,0,0.3)' stroke-width='1.5'/%3E%3C/svg%3E") center/contain no-repeat;
@@ -342,9 +372,21 @@
       .invitation-image {
         width: 80%;
         max-width: 200px;
+        padding: 15px;
       }
       .envelope.open .invitation-image {
-        top: -20%; /* Ajuste para móvil */
+        top: -20%;
+        z-index: 9999 !important;
+      }
+
+      .envelope.open .flap-bottom,
+      .envelope.open .flap-left,
+      .envelope.open .flap-right {
+        z-index: 10000 !important;
+      }
+
+      .envelope.open .flap-top {
+        z-index: 1 !important;
       }
     }
   </style>
@@ -356,7 +398,12 @@
     <div class="envelope" id="envelope">
       <div class="envelope-inner"></div>
   
-      <img src="media/invitacion.jpg" alt="Invitación" class="invitation-image" id="invitationImage">
+      <!-- Invitación simulada -->
+      <div class="invitation-image" id="invitationImage">
+        <h3>Andrés & María del Carmen</h3>
+        <p>05 de Diciembre 2026</p>
+        <p>¡Te invitamos a celebrar nuestro amor!</p>
+      </div>
 
       <div class="flap flap-bottom"></div>
       <div class="flap flap-left"></div>
@@ -374,13 +421,10 @@
       <div class="border border-bottom"></div>
       <div class="border border-top"></div>
       
-      <!-- LÍNEA HORIZONTAL FIJA - AÑADIDA AL HTML -->
-      <div class="border-top2"></div>
-      
       <!-- MÁSCARA DENTRO del sobre para posicionamiento relativo -->
       <div class="envelope-mask"></div>
       
-      <div class="seal" id="seal"></div>
+      <div class="seal" id="seal">Haz clic</div>
     </div>
     
     <div class="open-text">Toca el sello para abrir tu invitación 💌</div>
@@ -390,9 +434,8 @@
   <div class="main-content" id="mainContent">
     <header>
       <div class="video-background">
-        <video id="videoFondo" autoplay muted loop playsinline>
-          <source src="media/video.mp4" type="video/mp4" />
-        </video>
+        <!-- Video de fondo simulado -->
+        <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(45deg, #004c91, #0088cc);"></div>
         <div class="overlay"></div>
       </div>
 
@@ -413,9 +456,9 @@
     <section id="ubicacion">
       <h2>Ubicación</h2>
       <p>Iglesia de San José de Abanilla</p>
-      <iframe src="https://www.google.com/maps?q=Iglesia+de+Abanilla&output=embed"></iframe>
+      <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3145.336325026987!2d-1.041466724048562!3d37.97938077193767!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xd638201d1000001%3A0x5c0ef6c6d6b5a5a5!2sAbanilla%2C%20Murcia!5e0!3m2!1ses!2ses!4v1234567890123!5m2!1ses!2ses" width="100%" height="300" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
       <p>El Casón de la Vega</p>
-      <iframe src="https://www.google.com/maps?q=El+Cason+de+la+Vega&output=embed"></iframe>
+      <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3145.336325026987!2d-1.041466724048562!3d37.97938077193767!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xd638201d1000001%3A0x5c0ef6c6d6b5a5a5!2sAbanilla%2C%20Murcia!5e0!3m2!1ses!2ses!4v1234567890123!5m2!1ses!2ses" width="100%" height="300" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
     </section>
 
     <footer>
@@ -428,7 +471,6 @@
     const envelope = document.getElementById('envelope');
     const envelopeScreen = document.getElementById('envelopeScreen');
     const mainContent = document.getElementById('mainContent');
-    const video = document.getElementById('videoFondo');
     const invitationImage = document.getElementById('invitationImage');
 
     seal.addEventListener('click', () => {
@@ -441,6 +483,19 @@
       setTimeout(() => {
         console.log("Abriendo solapa...");
         envelope.classList.add('open');
+
+        // Forzar z-index en móvil también
+        setTimeout(() => {
+          const flaps = document.querySelectorAll('.flap-bottom, .flap-left, .flap-right');
+          const flapTop = document.querySelector('.flap-top');
+          
+          invitationImage.style.zIndex = '9999';
+          flaps.forEach(flap => {
+            flap.style.zIndex = '10000';
+          });
+          flapTop.style.zIndex = '1';
+        }, 100);
+
       }, 800);
 
       // 3. Transición a la invitación principal
@@ -450,8 +505,6 @@
         setTimeout(() => {
           envelopeScreen.style.display = 'none';
           mainContent.classList.add('visible');
-          video.muted = false;
-          video.play();
           document.body.style.overflow = 'auto';
         }, 1000);
       }, 4000);
