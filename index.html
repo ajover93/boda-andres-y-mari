@@ -41,8 +41,8 @@
       position: absolute;
       top: 100%; /* Justo debajo del sobre */
       left: 0;
-      width: 100vw; /* Mismo ancho que la pantalla */
-      height: 100vh; /* Ocupa toda la altura de la pantalla */
+      width: 100vw;
+      height: 100vh;
       background: #e3f2fd;
       z-index: 1000;
       pointer-events: none;
@@ -58,11 +58,10 @@
       z-index: 1;
     }
 
-    /* Solapas exteriores - DELANTE de la invitación */
+    /* Solapas exteriores */
     .flap {
       position: absolute;
       background: #f5f0e6;
-      z-index: 2;
     }
 
     .flap-bottom {
@@ -95,7 +94,7 @@
       z-index: 5;
     }
 
-    /* Solapa superior - DETRÁS de la invitación cuando se abre */
+    /* Solapa superior */
     .flap-top {
       position: absolute;
       top: 0;
@@ -131,10 +130,10 @@
 
     .envelope.open .flap-top {
       transform: rotateX(-180deg);
-      z-index: 1;
+      z-index: 1 !important;
     }
 
-    /* Bordes como elementos separados */
+    /* Bordes */
     .border {
       position: absolute;
       pointer-events: none;
@@ -229,9 +228,16 @@
       text-align: center;
     }
 
+    /* ESTILOS CRÍTICOS PARA MÓVIL Y DESKTOP */
     .envelope.open .invitation-image {
       top: -25%;
-      z-index: 9999;
+      z-index: 9999 !important;
+    }
+
+    .envelope.open .flap-bottom,
+    .envelope.open .flap-left,
+    .envelope.open .flap-right {
+      z-index: 10000 !important;
     }
 
     .open-text {
@@ -374,6 +380,8 @@
         max-width: 200px;
         padding: 15px;
       }
+      
+      /* FORZAR z-index EN MÓVIL */
       .envelope.open .invitation-image {
         top: -20%;
         z-index: 9999 !important;
@@ -387,6 +395,10 @@
 
       .envelope.open .flap-top {
         z-index: 1 !important;
+      }
+
+      .envelope.open .border-top {
+        z-index: 2 !important;
       }
     }
   </style>
@@ -415,13 +427,13 @@
         <div class="flap-top-face flap-top-back"></div>
       </div>
       
-      <!-- Bordes en ORDEN CORRECTO -->
+      <!-- Bordes -->
       <div class="border border-left"></div>
       <div class="border border-right"></div>
       <div class="border border-bottom"></div>
       <div class="border border-top"></div>
       
-      <!-- MÁSCARA DENTRO del sobre para posicionamiento relativo -->
+      <!-- MÁSCARA -->
       <div class="envelope-mask"></div>
       
       <div class="seal" id="seal">Haz clic</div>
@@ -434,7 +446,6 @@
   <div class="main-content" id="mainContent">
     <header>
       <div class="video-background">
-        <!-- Video de fondo simulado -->
         <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(45deg, #004c91, #0088cc);"></div>
         <div class="overlay"></div>
       </div>
@@ -484,16 +495,26 @@
         console.log("Abriendo solapa...");
         envelope.classList.add('open');
 
-        // Forzar z-index en móvil también
+        // FORZAR z-index CON JAVASCRIPT PARA MÓVIL Y DESKTOP
         setTimeout(() => {
+          const invitationImage = document.getElementById('invitationImage');
           const flaps = document.querySelectorAll('.flap-bottom, .flap-left, .flap-right');
           const flapTop = document.querySelector('.flap-top');
           
+          // Aplicar estilos directamente
           invitationImage.style.zIndex = '9999';
           flaps.forEach(flap => {
             flap.style.zIndex = '10000';
           });
-          flapTop.style.zIndex = '1';
+          if (flapTop) {
+            flapTop.style.zIndex = '1';
+          }
+          
+          console.log("Z-index aplicados:", {
+            invitation: invitationImage.style.zIndex,
+            flaps: Array.from(flaps).map(f => f.style.zIndex),
+            flapTop: flapTop?.style.zIndex
+          });
         }, 100);
 
       }, 800);
@@ -508,6 +529,13 @@
           document.body.style.overflow = 'auto';
         }, 1000);
       }, 4000);
+    });
+
+    // Debug: mostrar información del dispositivo
+    console.log("Dispositivo:", {
+      mobile: window.innerWidth <= 768,
+      width: window.innerWidth,
+      height: window.innerHeight
     });
   </script>
 </body>
