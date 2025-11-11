@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Boda de Andrés & María del Carmen</title>
   <style>
-    /* TODO EL CÓDIGO CSS ORIGINAL SE MANTIENE IGUAL */
     body {
       font-family: "Poppins", sans-serif;
       margin: 0;
@@ -14,6 +13,7 @@
       background: #e3f2fd !important;
     }
 
+    /* === PANTALLA DEL SOBRE === */
     .envelope-screen {
       position: fixed;
       top: 0; left: 0;
@@ -28,6 +28,7 @@
       overflow: hidden;
     }
 
+    /* === SOBRE REALISTA === */
     .envelope {
       position: relative;
       width: 520px;
@@ -35,17 +36,20 @@
       cursor: pointer;
     }
 
+    /* MÁSCARA para ocultar la parte inferior de la invitación */
     .envelope-mask {
       position: absolute;
-      top: 100%;
+      top: 100%; /* Justo debajo del sobre */
       left: 0;
       width: 100%;
-      height: 100vh;
-      background: #e3f2fd !important;
+      height: 100vh; /* Ocupa toda la altura de la pantalla */
+      background: #e3f2fd !important; /* MISMO COLOR QUE EL BODY */
       z-index: 1000 !important;
       pointer-events: none;
+      /* Quitamos el borde y opacidad temporal */
     }
 
+    /* Interior del sobre */
     .envelope-inner {
       position: absolute;
       width: 100%;
@@ -55,10 +59,11 @@
       z-index: 1;
     }
 
+    /* Solapas exteriores - DELANTE de la invitación */
     .flap {
       position: absolute;
       background: url('media/papel-textura-exterior.jpg') center/cover no-repeat;
-      z-index: 2;
+      z-index: 2; /* Por encima de la invitación */
     }
 
     .flap-bottom {
@@ -68,7 +73,7 @@
       height: 55%;
       clip-path: polygon(0 100%, 50% 0, 100% 100%);
       box-shadow: 0 -6px 12px rgba(0,0,0,0.25);
-      z-index: 5;
+      z-index: 5; /* Por encima de la invitación */
     }
 
     .flap-left {
@@ -78,7 +83,7 @@
       height: 100%;
       clip-path: polygon(0 0, 0 100%, 100% 50%);
       box-shadow: 4px 0 10px rgba(0,0,0,0.15);
-      z-index: 5;
+      z-index: 5; /* Por encima de la invitación */
     }
 
     .flap-right {
@@ -88,9 +93,10 @@
       height: 100%;
       clip-path: polygon(0 50%, 100% 0, 100% 100%);
       box-shadow: -4px 0 10px rgba(0,0,0,0.15);
-      z-index: 5;
+      z-index: 5; /* Por encima de la invitación */
     }
 
+    /* Solapa superior - DETRÁS de la invitación cuando se abre */
     .flap-top {
       position: absolute;
       top: 0;
@@ -101,7 +107,7 @@
       transform-origin: top;
       transition: all 3s cubic-bezier(0.4, 0, 0.2, 1);
       transform: rotateX(0deg);
-      z-index: 10;
+      z-index: 10; /* Detrás de la invitación cuando se abre */
     }
 
     .flap-top-face {
@@ -129,6 +135,7 @@
       z-index: 1;
     }
 
+    /* Bordes como elementos separados */
     .border {
       position: absolute;
       pointer-events: none;
@@ -140,7 +147,7 @@
       width: 100%;
       height: 55%;
       background: url("data:image/svg+xml,%3Csvg width='520' height='198' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0,198 L260,0 L520,198' fill='none' stroke='rgba(0,0,0,0.3)' stroke-width='2'/%3E%3C/svg%3E") center/contain no-repeat;
-      z-index: 7;
+      z-index: 7; /* Por encima de las solapas */
     }
 
     .border-top {
@@ -157,9 +164,10 @@
 
     .envelope.open .border-top {
       transform: rotateX(-180deg);
-      z-index: 2;
+      z-index: 2
     }
 
+    /* Sello */
     .seal {
       position: absolute;
       top: 50%;
@@ -179,30 +187,43 @@
       opacity: 0;
     }
 
+    /* Imagen de invitación - dentro del contenedor con overflow hidden */
     .invitation-image {
       position: absolute;
-      top: 100%;
+      top: 100%; /* Comienza completamente dentro del sobre */
       left: 50%;
       transform: translateX(-50%);
       width: 70%;
       max-width: 350px;
-      z-index: 3;
+      z-index: 3; /* Por delante de la solapa superior (6) */
       transition: top 2.5s cubic-bezier(0.2, 0.7, 0.3, 1) 1.5s;
       border-radius: 4px;
       box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
     }
 
     .envelope.open .invitation-image {
-      top: -25%;
+      top: -25%; /* Sale hasta la mitad del sobre */
     }
 
+    /* TEXTO FUERA del envelope-screen */
     .open-text {
-      margin-top: 2rem;
+      position: fixed;
+      top: 80%;
+      left: 50%;
+      transform: translateX(-50%);
       color: #004c91;
       font-weight: 600;
       animation: pulse 2s infinite;
-      position: relative; /* Añadir esto */
-      z-index: 2000 !important; /* Mayor que la máscara */
+      z-index: 1001;
+      text-align: center;
+      width: 100%;
+      padding: 0 1rem;
+      pointer-events: none;
+    }
+
+    /* Asegurar que desaparezca con el sobre */
+    .envelope-screen[style*="display: none"] ~ .open-text {
+      display: none;
     }
 
     @keyframes pulse {
@@ -210,6 +231,7 @@
       50% { opacity: 0.6; }
     }
 
+    /* === INVITACIÓN PRINCIPAL === */
     .main-content {
       opacity: 0;
       pointer-events: none;
@@ -221,6 +243,7 @@
       pointer-events: auto;
     }
 
+    /* === HERO VIDEO === */
     header {
       position: relative;
       height: 100vh;
@@ -309,17 +332,14 @@
       font-size: 0.9rem;
     }
 
-    /* SOLO CAMBIO REAL: Ajustar la posición en móviles */
     @media (max-width: 768px) {
       header h1 { font-size: 2.1rem; }
       header .fecha { font-size: 1.1rem; }
       .envelope { width: 260px; height: 180px; }
-      
-      /* ÚNICO CAMBIO NECESARIO: La invitación sale más arriba en móviles */
-      .envelope.open .invitation-image {
-        top: -40%; /* En lugar de -20% o -25% */
+      .envelope-mask {
+        width: 260px;
+        height: 100px;
       }
-      
       .border-bottom {
         background: url("data:image/svg+xml,%3Csvg width='260' height='99' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0,99 L130,0 L260,99' fill='none' stroke='rgba(0,0,0,0.3)' stroke-width='1.5'/%3E%3C/svg%3E") center/contain no-repeat;
       }
@@ -329,6 +349,13 @@
       .invitation-image {
         width: 80%;
         max-width: 200px;
+      }
+      .envelope.open .invitation-image {
+        top: -20%; /* Ajuste para móvil */
+      }
+      .open-text {
+        top: 75%;
+        font-size: 0.9rem;
       }
     }
   </style>
@@ -366,9 +393,10 @@
       
       <div class="seal" id="seal"></div>
     </div>
-    
-    <div class="open-text">Toca el sello para abrir tu invitación 💌</div>
   </div>
+
+  <!-- TEXTO FUERA del envelope-screen -->
+  <div class="open-text" id="openText">Toca el sello para abrir tu invitación 💌</div>
 
   <!-- 💍 CONTENIDO PRINCIPAL -->
   <div class="main-content" id="mainContent">
@@ -414,6 +442,7 @@
     const mainContent = document.getElementById('mainContent');
     const video = document.getElementById('videoFondo');
     const invitationImage = document.getElementById('invitationImage');
+    const openText = document.getElementById('openText');
 
     seal.addEventListener('click', () => {
       console.log("Sello clickeado - iniciando animación");
@@ -433,6 +462,7 @@
         envelopeScreen.style.opacity = '0';
         setTimeout(() => {
           envelopeScreen.style.display = 'none';
+          openText.style.display = 'none'; // Ocultar texto también
           mainContent.classList.add('visible');
           video.muted = false;
           video.play();
