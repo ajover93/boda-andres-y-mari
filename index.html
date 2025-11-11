@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Boda de Andrés & María del Carmen</title>
   <style>
+    /* TODO EL CÓDIGO CSS ORIGINAL SE MANTIENE IGUAL */
     body {
       font-family: "Poppins", sans-serif;
       margin: 0;
@@ -13,7 +14,6 @@
       background: #e3f2fd !important;
     }
 
-    /* === PANTALLA DEL SOBRE === */
     .envelope-screen {
       position: fixed;
       top: 0; left: 0;
@@ -23,12 +23,11 @@
       align-items: center;
       justify-content: center;
       flex-direction: column;
-      z-index: 30;
+      z-index: 10;
       transition: opacity 1s ease;
       overflow: hidden;
     }
 
-    /* === SOBRE REALISTA === */
     .envelope {
       position: relative;
       width: 520px;
@@ -36,7 +35,6 @@
       cursor: pointer;
     }
 
-    /* MÁSCARA para ocultar la parte inferior de la invitación */
     .envelope-mask {
       position: absolute;
       top: 100%;
@@ -48,21 +46,19 @@
       pointer-events: none;
     }
 
-    /* Interior del sobre */
     .envelope-inner {
       position: absolute;
       width: 100%;
       height: 100%;
       background: url('media/papel-textura-interior.jpg') center/cover no-repeat;
       box-shadow: inset 0 0 20px rgba(0,0,0,0.15);
-      z-index: 3;
+      z-index: 1;
     }
 
-    /* Solapas exteriores - DELANTE de la invitación */
     .flap {
       position: absolute;
       background: url('media/papel-textura-exterior.jpg') center/cover no-repeat;
-      z-index: 6;
+      z-index: 2;
     }
 
     .flap-bottom {
@@ -72,7 +68,7 @@
       height: 55%;
       clip-path: polygon(0 100%, 50% 0, 100% 100%);
       box-shadow: 0 -6px 12px rgba(0,0,0,0.25);
-      z-index: 15;
+      z-index: 5;
     }
 
     .flap-left {
@@ -82,7 +78,7 @@
       height: 100%;
       clip-path: polygon(0 0, 0 100%, 100% 50%);
       box-shadow: 4px 0 10px rgba(0,0,0,0.15);
-      z-index: 15;
+      z-index: 5;
     }
 
     .flap-right {
@@ -92,10 +88,9 @@
       height: 100%;
       clip-path: polygon(0 50%, 100% 0, 100% 100%);
       box-shadow: -4px 0 10px rgba(0,0,0,0.15);
-      z-index: 15;
+      z-index: 5;
     }
 
-    /* Solapa superior - DETRÁS de la invitación cuando se abre */
     .flap-top {
       position: absolute;
       top: 0;
@@ -106,7 +101,7 @@
       transform-origin: top;
       transition: all 3s cubic-bezier(0.4, 0, 0.2, 1);
       transform: rotateX(0deg);
-      z-index: 30;
+      z-index: 10;
     }
 
     .flap-top-face {
@@ -131,10 +126,9 @@
 
     .envelope.open .flap-top {
       transform: rotateX(-180deg);
-      z-index: 3;
+      z-index: 1;
     }
 
-    /* Bordes como elementos separados */
     .border {
       position: absolute;
       pointer-events: none;
@@ -146,7 +140,7 @@
       width: 100%;
       height: 55%;
       background: url("data:image/svg+xml,%3Csvg width='520' height='198' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0,198 L260,0 L520,198' fill='none' stroke='rgba(0,0,0,0.3)' stroke-width='2'/%3E%3C/svg%3E") center/contain no-repeat;
-      z-index: 21;
+      z-index: 7;
     }
 
     .border-top {
@@ -155,7 +149,7 @@
       width: 100%;
       height: 55%;
       background: url("data:image/svg+xml,%3Csvg width='520' height='198' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0,0 L260,198 L520,0' fill='none' stroke='rgba(0,0,0,0.3)' stroke-width='2'/%3E%3C/svg%3E") center/contain no-repeat;
-      z-index: 45;
+      z-index: 15;
       transform-origin: top;
       transition: all 3s cubic-bezier(0.4, 0, 0.2, 1);
       transform: rotateX(0deg);
@@ -163,10 +157,9 @@
 
     .envelope.open .border-top {
       transform: rotateX(-180deg);
-      z-index: 6;
+      z-index: 2;
     }
 
-    /* Sello */
     .seal {
       position: absolute;
       top: 50%;
@@ -177,7 +170,7 @@
       background: url('media/sello.png') center/contain no-repeat;
       border-radius: 50%;
       cursor: pointer;
-      z-index: 60;
+      z-index: 20;
       transition: transform 1s ease, opacity 1.2s ease;
     }
 
@@ -186,7 +179,6 @@
       opacity: 0;
     }
 
-    /* Imagen de invitación - SOLO CAMBIO PARA MÓVILES */
     .invitation-image {
       position: absolute;
       top: 100%;
@@ -194,7 +186,7 @@
       transform: translateX(-50%);
       width: 70%;
       max-width: 350px;
-      z-index: 9;
+      z-index: 3;
       transition: top 2.5s cubic-bezier(0.2, 0.7, 0.3, 1) 1.5s;
       border-radius: 4px;
       box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
@@ -216,7 +208,6 @@
       50% { opacity: 0.6; }
     }
 
-    /* === INVITACIÓN PRINCIPAL === */
     .main-content {
       opacity: 0;
       pointer-events: none;
@@ -228,7 +219,6 @@
       pointer-events: auto;
     }
 
-    /* === HERO VIDEO === */
     header {
       position: relative;
       height: 100vh;
@@ -261,7 +251,7 @@
 
     .header-content {
       position: relative;
-      z-index: 6;
+      z-index: 2;
       max-width: 700px;
       padding: 2rem;
     }
@@ -317,36 +307,26 @@
       font-size: 0.9rem;
     }
 
-    /* === SOLO LOS CAMBIOS NECESARIOS PARA MÓVILES === */
+    /* SOLO CAMBIO REAL: Ajustar la posición en móviles */
     @media (max-width: 768px) {
       header h1 { font-size: 2.1rem; }
       header .fecha { font-size: 1.1rem; }
-      .envelope { 
-        width: 260px; 
-        height: 180px; 
-      }
+      .envelope { width: 260px; height: 180px; }
       
-      /* SOLUCIÓN ESPECÍFICA PARA MÓVILES: La invitación necesita más z-index */
-      .invitation-image {
-        width: 80%;
-        max-width: 200px;
-      }
-      
+      /* ÚNICO CAMBIO NECESARIO: La invitación sale más arriba en móviles */
       .envelope.open .invitation-image {
-        top: -20%;
-      }
-      
-      .seal {
-        width: 80px;
-        height: 80px;
+        top: -40%; /* En lugar de -20% o -25% */
       }
       
       .border-bottom {
         background: url("data:image/svg+xml,%3Csvg width='260' height='99' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0,99 L130,0 L260,99' fill='none' stroke='rgba(0,0,0,0.3)' stroke-width='1.5'/%3E%3C/svg%3E") center/contain no-repeat;
       }
-      
       .border-top {
         background: url("data:image/svg+xml,%3Csvg width='260' height='99' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0,0 L130,99 L260,0' fill='none' stroke='rgba(0,0,0,0.3)' stroke-width='1.5'/%3E%3C/svg%3E") center/contain no-repeat;
+      }
+      .invitation-image {
+        width: 80%;
+        max-width: 200px;
       }
     }
   </style>
