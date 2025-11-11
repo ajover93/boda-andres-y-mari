@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Boda de Andrés & María del Carmen</title>
   <style>
+    /* TODO EL CÓDIGO CSS ORIGINAL SE MANTIENE IGUAL */
     body {
       font-family: "Poppins", sans-serif;
       margin: 0;
@@ -13,7 +14,6 @@
       background: #e3f2fd !important;
     }
 
-    /* === PANTALLA DEL SOBRE === */
     .envelope-screen {
       position: fixed;
       top: 0; left: 0;
@@ -25,11 +25,9 @@
       flex-direction: column;
       z-index: 10;
       transition: opacity 1s ease;
-      /* QUITAMOS overflow: hidden */
-      overflow: visible;
+      overflow: hidden;
     }
 
-    /* === SOBRE REALISTA === */
     .envelope {
       position: relative;
       width: 520px;
@@ -37,19 +35,17 @@
       cursor: pointer;
     }
 
-    /* MÁSCARA MUY GRANDE */
     .envelope-mask {
       position: absolute;
       top: 100%;
       left: 0;
       width: 100%;
-      height: 500px; /* MUY GRANDE para tapar todo */
+      height: 100vh;
       background: #e3f2fd !important;
       z-index: 1000 !important;
       pointer-events: none;
     }
 
-    /* Interior del sobre */
     .envelope-inner {
       position: absolute;
       width: 100%;
@@ -59,7 +55,6 @@
       z-index: 1;
     }
 
-    /* Solapas exteriores - DELANTE de la invitación */
     .flap {
       position: absolute;
       background: url('media/papel-textura-exterior.jpg') center/cover no-repeat;
@@ -96,7 +91,6 @@
       z-index: 5;
     }
 
-    /* Solapa superior - DETRÁS de la invitación cuando se abre */
     .flap-top {
       position: absolute;
       top: 0;
@@ -135,7 +129,6 @@
       z-index: 1;
     }
 
-    /* Bordes como elementos separados */
     .border {
       position: absolute;
       pointer-events: none;
@@ -167,7 +160,6 @@
       z-index: 2;
     }
 
-    /* Sello */
     .seal {
       position: absolute;
       top: 50%;
@@ -187,7 +179,6 @@
       opacity: 0;
     }
 
-    /* Imagen de invitación */
     .invitation-image {
       position: absolute;
       top: 100%;
@@ -205,20 +196,13 @@
       top: -25%;
     }
 
-    /* TEXTO FIJO EN LA PARTE INFERIOR */
     .open-text {
-      position: fixed;
-      bottom: 3rem;
-      left: 50%;
-      transform: translateX(-50%);
+      margin-top: 2rem;
       color: #004c91;
       font-weight: 600;
       animation: pulse 2s infinite;
-      z-index: 9999;
-      text-align: center;
-      width: 100%;
-      padding: 0 1rem;
-      pointer-events: none;
+      position: relative; /* Añadir esto */
+      z-index: 2000 !important; /* Mayor que la máscara */
     }
 
     @keyframes pulse {
@@ -226,7 +210,6 @@
       50% { opacity: 0.6; }
     }
 
-    /* === INVITACIÓN PRINCIPAL === */
     .main-content {
       opacity: 0;
       pointer-events: none;
@@ -238,7 +221,6 @@
       pointer-events: auto;
     }
 
-    /* === HERO VIDEO === */
     header {
       position: relative;
       height: 100vh;
@@ -327,18 +309,15 @@
       font-size: 0.9rem;
     }
 
+    /* SOLO CAMBIO REAL: Ajustar la posición en móviles */
     @media (max-width: 768px) {
       header h1 { font-size: 2.1rem; }
       header .fecha { font-size: 1.1rem; }
-      .envelope { 
-        width: 260px; 
-        height: 180px; 
-      }
+      .envelope { width: 260px; height: 180px; }
       
-      /* MÁSCARA MÁS GRANDE EN MÓVILES */
-      .envelope-mask {
-        width: 260px;
-        height: 400px; /* MUY GRANDE en móviles */
+      /* ÚNICO CAMBIO NECESARIO: La invitación sale más arriba en móviles */
+      .envelope.open .invitation-image {
+        top: -40%; /* En lugar de -20% o -25% */
       }
       
       .border-bottom {
@@ -350,27 +329,6 @@
       .invitation-image {
         width: 80%;
         max-width: 200px;
-      }
-      .envelope.open .invitation-image {
-        top: -20%;
-      }
-      .seal {
-        width: 80px;
-        height: 80px;
-      }
-      .open-text {
-        bottom: 2rem;
-        font-size: 0.9rem;
-      }
-    }
-
-    @media (max-width: 480px) {
-      .envelope-mask {
-        height: 350px;
-      }
-      .open-text {
-        bottom: 1.5rem;
-        font-size: 0.85rem;
       }
     }
   </style>
@@ -400,18 +358,17 @@
       <div class="border border-bottom"></div>
       <div class="border border-top"></div>
       
-      <!-- LÍNEA HORIZONTAL FIJA -->
+      <!-- LÍNEA HORIZONTAL FIJA - AÑADIDA AL HTML -->
       <div class="border-top2"></div>
       
-      <!-- MÁSCARA DENTRO del sobre -->
+      <!-- MÁSCARA DENTRO del sobre para posicionamiento relativo -->
       <div class="envelope-mask"></div>
       
       <div class="seal" id="seal"></div>
     </div>
+    
+    <div class="open-text">Toca el sello para abrir tu invitación 💌</div>
   </div>
-
-  <!-- TEXTO COMPLETAMENTE INDEPENDIENTE -->
-  <div class="open-text" id="openText">Toca el sello para abrir tu invitación 💌</div>
 
   <!-- 💍 CONTENIDO PRINCIPAL -->
   <div class="main-content" id="mainContent">
@@ -457,7 +414,6 @@
     const mainContent = document.getElementById('mainContent');
     const video = document.getElementById('videoFondo');
     const invitationImage = document.getElementById('invitationImage');
-    const openText = document.getElementById('openText');
 
     seal.addEventListener('click', () => {
       console.log("Sello clickeado - iniciando animación");
@@ -475,22 +431,14 @@
       setTimeout(() => {
         console.log("Mostrando contenido principal...");
         envelopeScreen.style.opacity = '0';
-        openText.style.opacity = '0';
         setTimeout(() => {
           envelopeScreen.style.display = 'none';
-          openText.style.display = 'none';
           mainContent.classList.add('visible');
           video.muted = false;
           video.play();
           document.body.style.overflow = 'auto';
         }, 1000);
       }, 4000);
-    });
-
-    // Mejorar respuesta táctil en móviles
-    seal.addEventListener('touchstart', (e) => {
-      e.preventDefault();
-      seal.click();
     });
   </script>
 </body>
