@@ -214,6 +214,8 @@
       opacity: 0;
       pointer-events: none;
       transition: opacity 2s ease;
+      height: 100vh;
+      overflow: hidden;
     }
 
     .main-content.visible {
@@ -256,6 +258,15 @@
       z-index: 2;
       max-width: 700px;
       padding: 2rem;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .text-content {
+      margin-top: 10vh;
     }
 
     header h1 {
@@ -274,39 +285,129 @@
     header p {
       color: #f4faff;
       font-size: 1.1rem;
+      margin-bottom: 2rem;
     }
 
-    section {
-      padding: 3rem 1rem;
-      text-align: center;
-      max-width: 800px;
-      margin: auto;
-    }
-
-    h2 {
-      color: #004c91;
-      margin-bottom: 1rem;
-    }
-
-    p {
-      font-size: 1.1rem;
-      line-height: 1.6;
-    }
-
-    iframe {
+    /* NUEVOS ESTILOS PARA LOS BOTONES CON MARGEN ADECUADO */
+    .buttons-container {
+      position: absolute;
+      bottom: 80px; /* Aumentado de 40px a 80px */
+      left: 50%;
+      transform: translateX(-50%);
       width: 100%;
-      height: 300px;
-      border: none;
-      border-radius: 12px;
-      margin-top: 1rem;
+      max-width: 320px;
+      opacity: 0;
+      transition: opacity 1s ease;
+      z-index: 5;
     }
 
-    footer {
-      background-color: #e6f3ff;
+    .buttons-container.visible {
+      opacity: 1;
+    }
+
+    .buttons-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: 1fr 1fr;
+      gap: 15px;
+      aspect-ratio: 1 / 1;
+    }
+
+    .menu-button {
+      background: rgba(255, 255, 255, 0.85);
+      border: none;
+      border-radius: 15px;
+      padding: 15px 10px;
+      font-size: 1rem;
+      font-weight: 600;
       color: #004c91;
-      padding: 1rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+      backdrop-filter: blur(10px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
       text-align: center;
-      font-size: 0.9rem;
+      min-height: 80px;
+    }
+
+    .menu-button:hover {
+      background: rgba(255, 255, 255, 1);
+      transform: translateY(-3px);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+    }
+
+    /* ESTILOS PARA LOS MENÚS SUPERPUESTOS */
+    .menu-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.7);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.4s ease;
+    }
+
+    .menu-overlay.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .menu-content {
+      background: white;
+      border-radius: 20px;
+      padding: 30px;
+      max-width: 500px;
+      width: 90%;
+      max-height: 80vh;
+      overflow-y: auto;
+      position: relative;
+      transform: translateY(20px);
+      transition: transform 0.4s ease;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    }
+
+    .menu-overlay.active .menu-content {
+      transform: translateY(0);
+    }
+
+    .close-button {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      cursor: pointer;
+      color: #004c91;
+    }
+
+    .menu-content h2 {
+      color: #004c91;
+      margin-top: 0;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    .menu-content p {
+      line-height: 1.6;
+      margin-bottom: 15px;
+      color: #333;
+    }
+
+    .menu-content iframe {
+      width: 100%;
+      height: 200px;
+      border: none;
+      border-radius: 10px;
+      margin: 10px 0;
     }
 
     /* SOLO CAMBIO REAL: Ajustar la posición en móviles */
@@ -329,6 +430,48 @@
       .invitation-image {
         width: 80%;
         max-width: 200px;
+      }
+      
+      /* Ajustes para botones en móviles */
+      .buttons-container {
+        max-width: 280px;
+        bottom: 60px; /* Aumentado de 30px a 60px */
+      }
+      
+      .buttons-grid {
+        gap: 12px;
+      }
+      
+      .menu-button {
+        min-height: 70px;
+        font-size: 0.95rem;
+        padding: 12px 8px;
+      }
+
+      .text-content {
+        margin-top: 8vh;
+      }
+    }
+
+    /* Para móviles muy pequeños */
+    @media (max-width: 360px) {
+      .buttons-container {
+        max-width: 250px;
+        bottom: 50px; /* Aumentado de 20px a 50px */
+      }
+      
+      .buttons-grid {
+        gap: 10px;
+      }
+      
+      .menu-button {
+        min-height: 65px;
+        font-size: 0.9rem;
+        padding: 10px 6px;
+      }
+
+      .text-content {
+        margin-top: 6vh;
       }
     }
   </style>
@@ -381,30 +524,80 @@
       </div>
 
       <div class="header-content">
-        <h1>Boda de Andrés & María del Carmen</h1>
-        <p class="fecha">05 de diciembre de 2026</p>
-        <p>¡Nos casamos y queremos compartir este día tan especial contigo!</p>
+        <div class="text-content">
+          <h1>Boda de Andrés & María del Carmen</h1>
+          <p class="fecha">05 de diciembre de 2026</p>
+          <p>¡Nos casamos y queremos compartir este día tan especial contigo!</p>
+        </div>
+        
+        <!-- BOTONES CON MARGEN ADECUADO -->
+        <div class="buttons-container" id="buttonsContainer">
+          <div class="buttons-grid">
+            <button class="menu-button" id="dondeBtn">Dónde</button>
+            <button class="menu-button" id="cronogramaBtn">Cronograma</button>
+            <button class="menu-button" id="asistenciaBtn">Asistencia</button>
+            <button class="menu-button" id="detallesBtn">Detalles</button>
+          </div>
+        </div>
       </div>
     </header>
 
-    <section id="detalles">
-      <h2>Detalles del evento</h2>
-      <p><strong>Ceremonia:</strong> Iglesia de Abanilla – 12:00 h</p>
-      <p><strong>Banquete:</strong> El Casón de la Vega – 13:30 h</p>
-      <p><strong>Código de vestimenta:</strong> Formal</p>
-    </section>
+    <!-- MENÚS SUPERPUESTOS -->
+    <!-- Menú Dónde -->
+    <div class="menu-overlay" id="dondeMenu">
+      <div class="menu-content">
+        <button class="close-button" id="closeDonde">×</button>
+        <h2>Ubicación</h2>
+        <p><strong>Ceremonia:</strong> Iglesia de San José de Abanilla</p>
+        <iframe src="https://www.google.com/maps?q=Iglesia+de+Abanilla&output=embed"></iframe>
+        <p><strong>Banquete:</strong> El Casón de la Vega</p>
+        <iframe src="https://www.google.com/maps?q=El+Cason+de+la+Vega&output=embed"></iframe>
+        <p><strong>Direcciones:</strong> La ceremonia comenzará puntualmente a las 12:00 h. Después nos trasladaremos al lugar del banquete.</p>
+      </div>
+    </div>
 
-    <section id="ubicacion">
-      <h2>Ubicación</h2>
-      <p>Iglesia de San José de Abanilla</p>
-      <iframe src="https://www.google.com/maps?q=Iglesia+de+Abanilla&output=embed"></iframe>
-      <p>El Casón de la Vega</p>
-      <iframe src="https://www.google.com/maps?q=El+Cason+de+la+Vega&output=embed"></iframe>
-    </section>
+    <!-- Menú Cronograma -->
+    <div class="menu-overlay" id="cronogramaMenu">
+      <div class="menu-content">
+        <button class="close-button" id="closeCronograma">×</button>
+        <h2>Cronograma</h2>
+        <p><strong>11:30 h:</strong> Recepción de invitados en la iglesia</p>
+        <p><strong>12:00 h:</strong> Ceremonia religiosa</p>
+        <p><strong>13:00 h:</strong> Sesión de fotos</p>
+        <p><strong>13:30 h:</strong> Recepción en El Casón de la Vega</p>
+        <p><strong>14:00 h:</strong> Aperitivo y cóctel</p>
+        <p><strong>15:00 h:</strong> Banquete</p>
+        <p><strong>18:00 h:</strong> Tarta y brindis</p>
+        <p><strong>19:00 h:</strong> Fiesta y baile</p>
+      </div>
+    </div>
 
-    <footer>
-      <p>Hecho con 💙 por Andrés & María del Carmen — 2026</p>
-    </footer>
+    <!-- Menú Asistencia -->
+    <div class="menu-overlay" id="asistenciaMenu">
+      <div class="menu-content">
+        <button class="close-button" id="closeAsistencia">×</button>
+        <h2>Confirmar Asistencia</h2>
+        <p>Por favor, confirma tu asistencia antes del 15 de noviembre de 2026.</p>
+        <p>Puedes hacerlo mediante:</p>
+        <p><strong>Teléfono:</strong> +34 600 123 456</p>
+        <p><strong>Email:</strong> bodadeandresymaria2026@gmail.com</p>
+        <p><strong>WhatsApp:</strong> +34 600 123 456</p>
+        <p>Indica si tienes alguna alergia alimentaria o restricción dietética.</p>
+      </div>
+    </div>
+
+    <!-- Menú Detalles -->
+    <div class="menu-overlay" id="detallesMenu">
+      <div class="menu-content">
+        <button class="close-button" id="closeDetalles">×</button>
+        <h2>Detalles del Evento</h2>
+        <p><strong>Código de vestimenta:</strong> Formal/Elegante</p>
+        <p><strong>Regalos:</strong> Preferimos tu presencia antes que cualquier regalo, pero si deseas hacernos un detalle, agradecemos contribuciones a nuestro viaje de luna de miel.</p>
+        <p><strong>Niños:</strong> Aunque amamos a los más pequeños, este será un evento exclusivo para adultos.</p>
+        <p><strong>Transporte:</strong> Habrá servicio de autobús desde el centro de Abanilla hacia la iglesia y luego al banquete.</p>
+        <p><strong>Alojamiento:</strong> Hemos bloqueado habitaciones con tarifa especial en el Hotel Abanilla. Contacta con nosotros para más información.</p>
+      </div>
+    </div>
   </div>
 
   <script>
@@ -414,6 +607,23 @@
     const mainContent = document.getElementById('mainContent');
     const video = document.getElementById('videoFondo');
     const invitationImage = document.getElementById('invitationImage');
+    const buttonsContainer = document.getElementById('buttonsContainer');
+
+    // Referencias a los botones y menús
+    const dondeBtn = document.getElementById('dondeBtn');
+    const cronogramaBtn = document.getElementById('cronogramaBtn');
+    const asistenciaBtn = document.getElementById('asistenciaBtn');
+    const detallesBtn = document.getElementById('detallesBtn');
+    
+    const dondeMenu = document.getElementById('dondeMenu');
+    const cronogramaMenu = document.getElementById('cronogramaMenu');
+    const asistenciaMenu = document.getElementById('asistenciaMenu');
+    const detallesMenu = document.getElementById('detallesMenu');
+    
+    const closeDonde = document.getElementById('closeDonde');
+    const closeCronograma = document.getElementById('closeCronograma');
+    const closeAsistencia = document.getElementById('closeAsistencia');
+    const closeDetalles = document.getElementById('closeDetalles');
 
     seal.addEventListener('click', () => {
       console.log("Sello clickeado - iniciando animación");
@@ -436,9 +646,82 @@
           mainContent.classList.add('visible');
           video.muted = false;
           video.play();
-          document.body.style.overflow = 'auto';
+          document.body.style.overflow = 'hidden'; // Eliminar scroll
+          
+          // Mostrar los botones después de que el video esté cargado
+          video.addEventListener('loadeddata', () => {
+            setTimeout(() => {
+              buttonsContainer.classList.add('visible');
+            }, 500);
+          });
+          
+          // Si el video ya está cargado, mostrar los botones inmediatamente
+          if (video.readyState >= 3) {
+            setTimeout(() => {
+              buttonsContainer.classList.add('visible');
+            }, 500);
+          }
         }, 1000);
       }, 4000);
+    });
+
+    // Funciones para abrir menús
+    dondeBtn.addEventListener('click', () => {
+      dondeMenu.classList.add('active');
+    });
+    
+    cronogramaBtn.addEventListener('click', () => {
+      cronogramaMenu.classList.add('active');
+    });
+    
+    asistenciaBtn.addEventListener('click', () => {
+      asistenciaMenu.classList.add('active');
+    });
+    
+    detallesBtn.addEventListener('click', () => {
+      detallesMenu.classList.add('active');
+    });
+
+    // Funciones para cerrar menús
+    closeDonde.addEventListener('click', () => {
+      dondeMenu.classList.remove('active');
+    });
+    
+    closeCronograma.addEventListener('click', () => {
+      cronogramaMenu.classList.remove('active');
+    });
+    
+    closeAsistencia.addEventListener('click', () => {
+      asistenciaMenu.classList.remove('active');
+    });
+    
+    closeDetalles.addEventListener('click', () => {
+      detallesMenu.classList.remove('active');
+    });
+
+    // Cerrar menús al hacer clic fuera del contenido
+    dondeMenu.addEventListener('click', (e) => {
+      if (e.target === dondeMenu) {
+        dondeMenu.classList.remove('active');
+      }
+    });
+    
+    cronogramaMenu.addEventListener('click', (e) => {
+      if (e.target === cronogramaMenu) {
+        cronogramaMenu.classList.remove('active');
+      }
+    });
+    
+    asistenciaMenu.addEventListener('click', (e) => {
+      if (e.target === asistenciaMenu) {
+        asistenciaMenu.classList.remove('active');
+      }
+    });
+    
+    detallesMenu.addEventListener('click', (e) => {
+      if (e.target === detallesMenu) {
+        detallesMenu.classList.remove('active');
+      }
     });
   </script>
 </body>
