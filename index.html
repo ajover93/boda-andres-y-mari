@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>Boda de Andrés & María del Carmen</title>
   <style>
     body {
@@ -16,7 +16,9 @@
     .envelope-screen {
       position: fixed;
       top: 0; left: 0;
-      width: 100%; height: 100vh;
+      width: 100%; 
+      height: 100vh;
+      height: 100dvh;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -42,9 +44,9 @@
       left: 0;
       width: 100%;
       height: 100vh;
+      height: 100dvh;
       z-index: 1000 !important;
       pointer-events: none;
-      /* El clip-path se ajustará dinámicamente con JavaScript */
       background-position: center !important;
       background-size: cover !important;
       background-repeat: no-repeat !important;
@@ -220,6 +222,7 @@
       pointer-events: none;
       transition: opacity 2s ease;
       height: 100vh;
+      height: 100dvh;
       overflow: hidden;
     }
 
@@ -231,6 +234,7 @@
     header {
       position: relative;
       height: 100vh;
+      height: 100dvh;
       color: #fff;
       display: flex;
       align-items: center;
@@ -597,12 +601,23 @@
   </div>
 
   <script>
-    // Función para determinar la imagen de fondo según la orientación
+    // Función mejorada para determinar la imagen de fondo
     function setBackgroundImage() {
-      const isLandscape = window.innerWidth > window.innerHeight;
-      const backgroundImage = isLandscape ? 'media/mesa.jpg' : 'media/mesa2.jpg';
+      // Usamos screen.availWidth/Height que son más estables en móviles
+      const isLandscape = screen.availWidth > screen.availHeight;
       
-      // Aplicar la imagen de fondo al sobre y a la máscara con las propiedades correctas
+      // Fallback a window.innerWidth/Height si screen no está disponible
+      const finalIsLandscape = (screen.availWidth && screen.availHeight) 
+        ? isLandscape 
+        : window.innerWidth > window.innerHeight;
+      
+      const backgroundImage = finalIsLandscape ? 'media/mesa.jpg' : 'media/mesa2.jpg';
+      
+      console.log('Orientación:', finalIsLandscape ? 'Horizontal' : 'Vertical', 
+                  'Screen:', screen.availWidth, 'x', screen.availHeight,
+                  'Window:', window.innerWidth, 'x', window.innerHeight);
+      
+      // Aplicar la imagen de fondo
       document.querySelector('.envelope-screen').style.backgroundImage = `url('${backgroundImage}')`;
       document.querySelector('.envelope-mask').style.backgroundImage = `url('${backgroundImage}')`;
     }
@@ -610,32 +625,45 @@
     // Función para ajustar el clip-path de la máscara
     function adjustMaskClipPath() {
       const envelope = document.querySelector('.envelope');
+      if (!envelope) return;
+      
       const envelopeRect = envelope.getBoundingClientRect();
       const envelopeBottom = envelopeRect.bottom;
       const windowHeight = window.innerHeight;
       
       // La máscara debe empezar justo en el borde inferior del sobre
-      const maskStart = (envelopeBottom / windowHeight) * 100;
+      const maskStart = Math.max(0, (envelopeBottom / windowHeight) * 100);
       
       const mask = document.querySelector('.envelope-mask');
-      mask.style.clipPath = `polygon(
-        0% 100%, 
-        100% 100%, 
-        100% ${maskStart}%, 
-        0% ${maskStart}%
-      )`;
+      if (mask) {
+        mask.style.clipPath = `polygon(
+          0% 100%, 
+          100% 100%, 
+          100% ${maskStart}%, 
+          0% ${maskStart}%
+        )`;
+      }
     }
 
     // Ejecutar al cargar la página
     window.addEventListener('load', () => {
       setBackgroundImage();
-      adjustMaskClipPath();
+      // Pequeño delay para asegurar que todo está renderizado
+      setTimeout(adjustMaskClipPath, 100);
     });
     
-    // Ejecutar al cambiar el tamaño de la ventana
+    // Ejecutar al cambiar el tamaño/orientación
     window.addEventListener('resize', () => {
       setBackgroundImage();
-      setTimeout(adjustMaskClipPath, 100); // Pequeño delay para asegurar que el DOM se ha actualizado
+      setTimeout(adjustMaskClipPath, 100);
+    });
+
+    // También escuchar cambios de orientación específicos
+    window.addEventListener('orientationchange', () => {
+      setTimeout(() => {
+        setBackgroundImage();
+        adjustMaskClipPath();
+      }, 300);
     });
 
     const seal = document.getElementById('seal');
