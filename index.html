@@ -17,7 +17,7 @@
       position: fixed;
       top: 0; left: 0;
       width: 100%; height: 100vh;
-      background: url('media/mesa.jpg') center/cover no-repeat !important;
+      /* Se elimina la imagen fija, se establecerá dinámicamente */
       display: flex;
       align-items: center;
       justify-content: center;
@@ -25,6 +25,10 @@
       z-index: 10;
       transition: opacity 1s ease;
       overflow: hidden;
+      /* Mantenemos las propiedades de background aquí */
+      background-position: center !important;
+      background-size: cover !important;
+      background-repeat: no-repeat !important;
     }
 
     .envelope {
@@ -41,7 +45,7 @@
       width: 100%;
       height: 100vh;
       /* MÁSCARA CON EL MISMO FONDO QUE LA PANTALLA */
-      background: url('media/mesa.jpg') center/cover no-repeat !important;
+      /* Se elimina la imagen fija, se establecerá dinámicamente */
       z-index: 1000 !important;
       pointer-events: none;
       /* MÁSCARA que cubre desde el fondo hasta POR ENCIMA del sobre */
@@ -51,6 +55,10 @@
         100% calc(50% + 120px),
         0% calc(50% + 120px)
       );
+      /* Mantenemos las propiedades de background aquí */
+      background-position: center !important;
+      background-size: cover !important;
+      background-repeat: no-repeat !important;
     }
 
     .envelope.open .envelope-mask {
@@ -628,6 +636,22 @@
   </div>
 
   <script>
+    // Función para determinar la imagen de fondo según la orientación
+    function setBackgroundImage() {
+      const isLandscape = window.innerWidth > window.innerHeight;
+      const backgroundImage = isLandscape ? 'media/mesa.jpg' : 'media/mesa2.jpg';
+      
+      // Aplicar la imagen de fondo al sobre y a la máscara con las propiedades correctas
+      document.querySelector('.envelope-screen').style.backgroundImage = `url('${backgroundImage}')`;
+      document.querySelector('.envelope-mask').style.backgroundImage = `url('${backgroundImage}')`;
+    }
+
+    // Ejecutar al cargar la página
+    window.addEventListener('load', setBackgroundImage);
+    
+    // Ejecutar al cambiar el tamaño de la ventana
+    window.addEventListener('resize', setBackgroundImage);
+
     const seal = document.getElementById('seal');
     const envelope = document.getElementById('envelope');
     const envelopeScreen = document.getElementById('envelopeScreen');
