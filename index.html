@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Boda de Andrés & María del Carmen</title>
   <style>
-    /* TODO EL CÓDIGO CSS ORIGINAL SE MANTIENE IGUAL */
     body {
       font-family: "Poppins", sans-serif;
       margin: 0;
@@ -18,7 +17,7 @@
       position: fixed;
       top: 0; left: 0;
       width: 100%; height: 100vh;
-      background: #e3f2fd !important;
+      background: url('media/mesa.jpg') center/cover no-repeat !important;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -36,14 +35,31 @@
     }
 
     .envelope-mask {
-      position: absolute;
-      top: 100%;
+      position: fixed;
+      bottom: 0;
       left: 0;
       width: 100%;
       height: 100vh;
-      background: #e3f2fd !important;
+      /* MÁSCARA CON EL MISMO FONDO QUE LA PANTALLA */
+      background: url('media/mesa.jpg') center/cover no-repeat !important;
       z-index: 1000 !important;
       pointer-events: none;
+      /* MÁSCARA que cubre desde el fondo hasta POR ENCIMA del sobre */
+      clip-path: polygon(
+        0% 100%, 
+        100% 100%, 
+        100% calc(50% + 120px),
+        0% calc(50% + 120px)
+      );
+    }
+
+    .envelope.open .envelope-mask {
+      clip-path: polygon(
+        0% 100%, 
+        100% 100%, 
+        100% calc(50% + 120px), 
+        0% calc(50% + 120px)
+      );
     }
 
     .envelope-inner {
@@ -198,11 +214,12 @@
 
     .open-text {
       margin-top: 2rem;
-      color: #004c91;
+      color: #fff;
       font-weight: 600;
       animation: pulse 2s infinite;
-      position: relative; /* Añadir esto */
-      z-index: 2000 !important; /* Mayor que la máscara */
+      position: relative;
+      z-index: 2000 !important;
+      text-shadow: 0 1px 3px rgba(0,0,0,0.7);
     }
 
     @keyframes pulse {
@@ -288,10 +305,9 @@
       margin-bottom: 2rem;
     }
 
-    /* NUEVOS ESTILOS PARA LOS BOTONES CON MARGEN ADECUADO */
     .buttons-container {
       position: absolute;
-      bottom: 80px; /* Aumentado de 40px a 80px */
+      bottom: 80px;
       left: 50%;
       transform: translateX(-50%);
       width: 100%;
@@ -338,7 +354,6 @@
       box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
     }
 
-    /* ESTILOS PARA LOS MENÚS SUPERPUESTOS */
     .menu-overlay {
       position: fixed;
       top: 0;
@@ -410,15 +425,32 @@
       margin: 10px 0;
     }
 
-    /* SOLO CAMBIO REAL: Ajustar la posición en móviles */
     @media (max-width: 768px) {
       header h1 { font-size: 2.1rem; }
       header .fecha { font-size: 1.1rem; }
       .envelope { width: 260px; height: 180px; }
       
-      /* ÚNICO CAMBIO NECESARIO: La invitación sale más arriba en móviles */
+      /* Ajuste de la máscara para móviles */
+      .envelope-mask {
+        clip-path: polygon(
+          0% 100%, 
+          100% 100%, 
+          100% calc(50% + 60px),
+          0% calc(50% + 60px)
+        );
+      }
+      
+      .envelope.open .envelope-mask {
+        clip-path: polygon(
+          0% 100%, 
+          100% 100%, 
+          100% calc(50% + 60px), 
+          0% calc(50% + 60px)
+        );
+      }
+      
       .envelope.open .invitation-image {
-        top: -40%; /* En lugar de -20% o -25% */
+        top: -40%;
       }
       
       .border-bottom {
@@ -432,10 +464,9 @@
         max-width: 200px;
       }
       
-      /* Ajustes para botones en móviles */
       .buttons-container {
         max-width: 280px;
-        bottom: 60px; /* Aumentado de 30px a 60px */
+        bottom: 60px;
       }
       
       .buttons-grid {
@@ -453,11 +484,10 @@
       }
     }
 
-    /* Para móviles muy pequeños */
     @media (max-width: 360px) {
       .buttons-container {
         max-width: 250px;
-        bottom: 50px; /* Aumentado de 20px a 50px */
+        bottom: 50px;
       }
       
       .buttons-grid {
@@ -500,9 +530,6 @@
       <div class="border border-right"></div>
       <div class="border border-bottom"></div>
       <div class="border border-top"></div>
-      
-      <!-- LÍNEA HORIZONTAL FIJA - AÑADIDA AL HTML -->
-      <div class="border-top2"></div>
       
       <!-- MÁSCARA DENTRO del sobre para posicionamiento relativo -->
       <div class="envelope-mask"></div>
