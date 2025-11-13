@@ -17,7 +17,6 @@
       position: fixed;
       top: 0; left: 0;
       width: 100%; height: 100vh;
-      /* Se elimina la imagen fija, se establecerá dinámicamente */
       display: flex;
       align-items: center;
       justify-content: center;
@@ -25,7 +24,6 @@
       z-index: 10;
       transition: opacity 1s ease;
       overflow: hidden;
-      /* Mantenemos las propiedades de background aquí */
       background-position: center !important;
       background-size: cover !important;
       background-repeat: no-repeat !important;
@@ -44,30 +42,12 @@
       left: 0;
       width: 100%;
       height: 100vh;
-      /* MÁSCARA CON EL MISMO FONDO QUE LA PANTALLA */
-      /* Se elimina la imagen fija, se establecerá dinámicamente */
       z-index: 1000 !important;
       pointer-events: none;
-      /* MÁSCARA que cubre desde el fondo hasta POR ENCIMA del sobre */
-      clip-path: polygon(
-        0% 100%, 
-        100% 100%, 
-        100% calc(50% + 120px),
-        0% calc(50% + 120px)
-      );
-      /* Mantenemos las propiedades de background aquí */
+      /* El clip-path se ajustará dinámicamente con JavaScript */
       background-position: center !important;
       background-size: cover !important;
       background-repeat: no-repeat !important;
-    }
-
-    .envelope.open .envelope-mask {
-      clip-path: polygon(
-        0% 100%, 
-        100% 100%, 
-        100% calc(50% + 120px), 
-        0% calc(50% + 120px)
-      );
     }
 
     .envelope-inner {
@@ -438,25 +418,6 @@
       header .fecha { font-size: 1.1rem; }
       .envelope { width: 260px; height: 180px; }
       
-      /* Ajuste de la máscara para móviles */
-      .envelope-mask {
-        clip-path: polygon(
-          0% 100%, 
-          100% 100%, 
-          100% calc(50% + 60px),
-          0% calc(50% + 60px)
-        );
-      }
-      
-      .envelope.open .envelope-mask {
-        clip-path: polygon(
-          0% 100%, 
-          100% 100%, 
-          100% calc(50% + 60px), 
-          0% calc(50% + 60px)
-        );
-      }
-      
       .envelope.open .invitation-image {
         top: -40%;
       }
@@ -646,11 +607,36 @@
       document.querySelector('.envelope-mask').style.backgroundImage = `url('${backgroundImage}')`;
     }
 
+    // Función para ajustar el clip-path de la máscara
+    function adjustMaskClipPath() {
+      const envelope = document.querySelector('.envelope');
+      const envelopeRect = envelope.getBoundingClientRect();
+      const envelopeBottom = envelopeRect.bottom;
+      const windowHeight = window.innerHeight;
+      
+      // La máscara debe empezar justo en el borde inferior del sobre
+      const maskStart = (envelopeBottom / windowHeight) * 100;
+      
+      const mask = document.querySelector('.envelope-mask');
+      mask.style.clipPath = `polygon(
+        0% 100%, 
+        100% 100%, 
+        100% ${maskStart}%, 
+        0% ${maskStart}%
+      )`;
+    }
+
     // Ejecutar al cargar la página
-    window.addEventListener('load', setBackgroundImage);
+    window.addEventListener('load', () => {
+      setBackgroundImage();
+      adjustMaskClipPath();
+    });
     
     // Ejecutar al cambiar el tamaño de la ventana
-    window.addEventListener('resize', setBackgroundImage);
+    window.addEventListener('resize', () => {
+      setBackgroundImage();
+      setTimeout(adjustMaskClipPath, 100); // Pequeño delay para asegurar que el DOM se ha actualizado
+    });
 
     const seal = document.getElementById('seal');
     const envelope = document.getElementById('envelope');
