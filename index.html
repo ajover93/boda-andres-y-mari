@@ -600,11 +600,152 @@
         font-size: 1.6rem;
       }
     }
+
+    .asistencia-form {
+      margin-bottom: 20px;
+    }
+
+    .form-group {
+      margin-bottom: 15px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: 600;
+      color: #004c91;
+    }
+
+    .form-group input[type="text"] {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      font-family: "Poppins", sans-serif;
+      box-sizing: border-box;
+    }
+
+    .checkbox-group {
+      display: flex;
+      align-items: center;
+      margin-bottom: 15px;
+    }
+
+    .checkbox-group input {
+      margin-right: 10px;
+    }
+
+    .add-button {
+      background: #004c91;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      padding: 10px 15px;
+      cursor: pointer;
+      font-family: "Poppins", sans-serif;
+      font-weight: 600;
+      transition: background 0.3s ease;
+      width: 100%;
+    }
+
+    .add-button:hover {
+      background: #003366;
+    }
+
+    .comensales-list {
+      margin-top: 20px;
+      max-height: 300px;
+      overflow-y: auto;
+    }
+
+    .comensal-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px;
+      border-bottom: 1px solid #eee;
+      background: #f9f9f9;
+      border-radius: 5px;
+      margin-bottom: 8px;
+    }
+
+    .comensal-info {
+      flex-grow: 1;
+    }
+
+    .comensal-name {
+      font-weight: 600;
+      margin-bottom: 3px;
+    }
+
+    .comensal-details {
+      font-size: 0.85rem;
+      color: #666;
+    }
+
+    .delete-button {
+      background: #e74c3c;
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 30px;
+      height: 30px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      margin-left: 10px;
+    }
+
+    .delete-button:hover {
+      background: #c0392b;
+    }
+
+    .empty-list {
+      text-align: center;
+      color: #999;
+      font-style: italic;
+      padding: 20px;
+    }
+
+    .submit-button {
+      background: #27ae60;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      padding: 12px 20px;
+      cursor: pointer;
+      font-family: "Poppins", sans-serif;
+      font-weight: 600;
+      transition: background 0.3s ease;
+      width: 100%;
+      margin-top: 20px;
+    }
+
+    .submit-button:hover {
+      background: #219653;
+    }
+
+    .submit-button:disabled {
+      background: #95a5a6;
+      cursor: not-allowed;
+    }
+
+    .confirmation-message {
+      background: #d4edda;
+      color: #155724;
+      padding: 15px;
+      border-radius: 5px;
+      margin-top: 20px;
+      text-align: center;
+      display: none;
+    }
   </style>
 </head>
 <body>
 
-  <!-- Pantalla de carga -->
+    <!-- Pantalla de carga -->
   <div class="loading-screen" id="loadingScreen">
     <div class="spinner"></div>
     <div class="loading-text">Cargando invitación...</div>
@@ -709,12 +850,41 @@
       <div class="menu-content">
         <button class="close-button" id="closeAsistencia">×</button>
         <h2>Confirmar Asistencia</h2>
-        <p>Por favor, confirma tu asistencia antes del 15 de noviembre de 2026.</p>
-        <p>Puedes hacerlo mediante:</p>
-        <p><strong>Teléfono:</strong> +34 600 123 456</p>
-        <p><strong>Email:</strong> bodadeandresymaria2026@gmail.com</p>
-        <p><strong>WhatsApp:</strong> +34 600 123 456</p>
-        <p>Indica si tienes alguna alergia alimentaria o restricción dietética.</p>
+        <p>Por favor, confirma tu asistencia antes del <strong>15 de noviembre de 2026</strong>.</p>
+        
+        <div class="asistencia-form">
+          <div class="form-group">
+            <label for="nombreComensal">Nombre y apellidos del comensal:</label>
+            <input type="text" id="nombreComensal" placeholder="Ej: Juan Pérez García">
+          </div>
+          
+          <div class="form-group">
+            <label for="intolerancias">Intolerancias/Alergias alimentarias:</label>
+            <input type="text" id="intolerancias" placeholder="Ej: Sin gluten, alergia a los frutos secos">
+          </div>
+          
+          <div class="checkbox-group">
+            <input type="checkbox" id="menuInfantil">
+            <label for="menuInfantil">Este comensal tomará menú infantil</label>
+          </div>
+          
+          <div class="form-group">
+            <label for="cancion">Canción que no puede faltar (opcional):</label>
+            <input type="text" id="cancion" placeholder="Ej: 'Bohemian Rhapsody' - Queen">
+          </div>
+          
+          <button class="add-button" id="agregarComensal">Añadir comensal</button>
+        </div>
+        
+        <div class="comensales-list" id="listaComensales">
+          <div class="empty-list">Aún no has añadido ningún comensal</div>
+        </div>
+        
+        <button class="submit-button" id="enviarAsistencia" disabled>Confirmar asistencia</button>
+        
+        <div class="confirmation-message" id="mensajeConfirmacion">
+          ¡Gracias! Tu asistencia ha sido confirmada correctamente.
+        </div>
       </div>
     </div>
 
@@ -977,6 +1147,143 @@
     detallesMenu.addEventListener('click', (e) => {
       if (e.target === detallesMenu) {
         detallesMenu.classList.remove('active');
+      }
+    });
+
+    // Lógica para el formulario de asistencia
+    const agregarComensalBtn = document.getElementById('agregarComensal');
+    const enviarAsistenciaBtn = document.getElementById('enviarAsistencia');
+    const listaComensales = document.getElementById('listaComensales');
+    const mensajeConfirmacion = document.getElementById('mensajeConfirmacion');
+    
+    let comensales = [];
+
+    // Función para agregar un comensal
+    function agregarComensal() {
+      const nombre = document.getElementById('nombreComensal').value.trim();
+      const intolerancias = document.getElementById('intolerancias').value.trim();
+      const menuInfantil = document.getElementById('menuInfantil').checked;
+      const cancion = document.getElementById('cancion').value.trim();
+      
+      if (!nombre) {
+        alert('Por favor, introduce al menos el nombre del comensal.');
+        return;
+      }
+      
+      const comensal = {
+        id: Date.now(), // ID único basado en timestamp
+        nombre,
+        intolerancias,
+        menuInfantil,
+        cancion
+      };
+      
+      comensales.push(comensal);
+      actualizarListaComensales();
+      limpiarFormulario();
+      actualizarBotonEnviar();
+    }
+
+    // Función para eliminar un comensal
+    function eliminarComensal(id) {
+      comensales = comensales.filter(comensal => comensal.id !== id);
+      actualizarListaComensales();
+      actualizarBotonEnviar();
+    }
+
+    // Función para actualizar la lista de comensales en la interfaz
+    function actualizarListaComensales() {
+      listaComensales.innerHTML = '';
+      
+      if (comensales.length === 0) {
+        listaComensales.innerHTML = '<div class="empty-list">Aún no has añadido ningún comensal</div>';
+        return;
+      }
+      
+      comensales.forEach(comensal => {
+        const comensalItem = document.createElement('div');
+        comensalItem.className = 'comensal-item';
+        
+        const comensalInfo = document.createElement('div');
+        comensalInfo.className = 'comensal-info';
+        
+        const nombreElement = document.createElement('div');
+        nombreElement.className = 'comensal-name';
+        nombreElement.textContent = comensal.nombre;
+        
+        const detallesElement = document.createElement('div');
+        detallesElement.className = 'comensal-details';
+        
+        let detalles = [];
+        if (comensal.intolerancias) {
+          detalles.push(`Intolerancias: ${comensal.intolerancias}`);
+        }
+        if (comensal.menuInfantil) {
+          detalles.push('Menú infantil');
+        }
+        if (comensal.cancion) {
+          detalles.push(`Canción: ${comensal.cancion}`);
+        }
+        
+        detallesElement.textContent = detalles.join(' | ');
+        
+        comensalInfo.appendChild(nombreElement);
+        comensalInfo.appendChild(detallesElement);
+        
+        const deleteButton = document.createElement('button');
+        deleteButton.className = 'delete-button';
+        deleteButton.textContent = '×';
+        deleteButton.addEventListener('click', () => eliminarComensal(comensal.id));
+        
+        comensalItem.appendChild(comensalInfo);
+        comensalItem.appendChild(deleteButton);
+        
+        listaComensales.appendChild(comensalItem);
+      });
+    }
+
+    // Función para limpiar el formulario después de agregar un comensal
+    function limpiarFormulario() {
+      document.getElementById('nombreComensal').value = '';
+      document.getElementById('intolerancias').value = '';
+      document.getElementById('menuInfantil').checked = false;
+      document.getElementById('cancion').value = '';
+    }
+
+    // Función para actualizar el estado del botón de enviar
+    function actualizarBotonEnviar() {
+      enviarAsistenciaBtn.disabled = comensales.length === 0;
+    }
+
+    // Función para enviar la confirmación de asistencia
+    function enviarAsistencia() {
+      // Aquí normalmente enviarías los datos a un servidor
+      // Por ahora, solo mostramos un mensaje de confirmación
+      
+      console.log('Comensales confirmados:', comensales);
+      
+      mensajeConfirmacion.style.display = 'block';
+      
+      // Limpiar el formulario después de enviar
+      comensales = [];
+      actualizarListaComensales();
+      actualizarBotonEnviar();
+      
+      // Ocultar el mensaje después de unos segundos
+      setTimeout(() => {
+        mensajeConfirmacion.style.display = 'none';
+        asistenciaMenu.classList.remove('active');
+      }, 3000);
+    }
+
+    // Event listeners para el formulario de asistencia
+    agregarComensalBtn.addEventListener('click', agregarComensal);
+    enviarAsistenciaBtn.addEventListener('click', enviarAsistencia);
+
+    // Permitir agregar comensal con la tecla Enter en el campo de nombre
+    document.getElementById('nombreComensal').addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') {
+        agregarComensal();
       }
     });
   </script>
