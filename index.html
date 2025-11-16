@@ -27,14 +27,16 @@
       transition: opacity 1s ease;
       overflow: hidden;
       background-position: center !important;
+      /* Zoom out controlado - cubre toda el área sin recortes excesivos */
       background-size: cover !important;
       background-repeat: no-repeat !important;
-      opacity: 0; /* Inicialmente oculto */
+      /* Efecto de zoom out para ver más de la imagen */
+      opacity: 0;
       transition: opacity 0.5s ease;
     }
 
     .envelope-screen.loaded {
-      opacity: 1; /* Se muestra cuando todo está cargado */
+      opacity: 1;
     }
 
     .loading-screen {
@@ -85,7 +87,7 @@
       height: 360px;
       cursor: pointer;
       opacity: 0;
-      transition: opacity 0.5s ease 0.3s; /* Aparece después del fondo */
+      transition: opacity 0.5s ease 0.3s;
     }
 
     .envelope-screen.loaded .envelope {
@@ -102,6 +104,7 @@
       z-index: 1000 !important;
       pointer-events: none;
       background-position: center !important;
+      /* Misma configuración que el fondo principal */
       background-size: cover !important;
       background-repeat: no-repeat !important;
     }
@@ -250,11 +253,11 @@
       transition: top 2.5s cubic-bezier(0.2, 0.7, 0.3, 1) 1.5s;
       border-radius: 4px;
       box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-      opacity: 0; /* Inicialmente oculta */
+      opacity: 0;
     }
 
     .envelope-screen.loaded .invitation-image {
-      opacity: 1; /* Se muestra cuando todo está cargado */
+      opacity: 1;
     }
 
     .envelope.open .invitation-image {
@@ -270,7 +273,7 @@
       z-index: 2000 !important;
       text-shadow: 0 1px 3px rgba(0,0,0,0.7);
       opacity: 0;
-      transition: opacity 0.5s ease 0.6s; /* Aparece después */
+      transition: opacity 0.5s ease 0.6s;
     }
 
     .envelope-screen.loaded .open-text {
@@ -714,20 +717,16 @@
       });
     }
 
-    // Función para actualizar la barra de progreso (opcional)
     function updateLoadingProgress(loaded, total) {
       const progress = (loaded / total) * 100;
       console.log(`Cargando: ${progress.toFixed(0)}%`);
-      // Podrías añadir una barra de progreso visual aquí si quieres
     }
 
-    // Función para determinar la imagen de fondo según la orientación
     function setBackgroundImage(backgroundImage) {
       document.querySelector('.envelope-screen').style.backgroundImage = `url('${backgroundImage}')`;
       document.querySelector('.envelope-mask').style.backgroundImage = `url('${backgroundImage}')`;
     }
 
-    // Función para ajustar el clip-path de la máscara
     function adjustMaskClipPath() {
       const envelope = document.querySelector('.envelope');
       if (!envelope) return;
@@ -752,11 +751,9 @@
     // Inicializar la aplicación cuando todo esté cargado
     window.addEventListener('load', () => {
       preloadImages().then(backgroundImage => {
-        // Todas las imágenes están cargadas, mostrar la escena
         setBackgroundImage(backgroundImage);
         adjustMaskClipPath();
         
-        // Ocultar pantalla de carga y mostrar el sobre
         setTimeout(() => {
           document.getElementById('loadingScreen').classList.add('hidden');
           document.getElementById('envelopeScreen').classList.add('loaded');
@@ -764,7 +761,6 @@
       });
     });
     
-    // Ejecutar al cambiar el tamaño/orientación
     window.addEventListener('resize', () => {
       const isLandscape = screen.availWidth > screen.availHeight;
       const finalIsLandscape = (screen.availWidth && screen.availHeight) 
@@ -776,7 +772,6 @@
       setTimeout(adjustMaskClipPath, 100);
     });
 
-    // También escuchar cambios de orientación específicos
     window.addEventListener('orientationchange', () => {
       setTimeout(() => {
         const isLandscape = screen.availWidth > screen.availHeight;
@@ -817,16 +812,13 @@
     seal.addEventListener('click', () => {
       console.log("Sello clickeado - iniciando animación");
       
-      // 1. Romper el sello
       seal.classList.add('broken');
 
-      // 2. Abrir la solapa después de que el sello se rompa
       setTimeout(() => {
         console.log("Abriendo solapa...");
         envelope.classList.add('open');
       }, 800);
 
-      // 3. Transición a la invitación principal
       setTimeout(() => {
         console.log("Mostrando contenido principal...");
         envelopeScreen.style.opacity = '0';
@@ -835,16 +827,14 @@
           mainContent.classList.add('visible');
           video.muted = false;
           video.play();
-          document.body.style.overflow = 'hidden'; // Eliminar scroll
+          document.body.style.overflow = 'hidden';
           
-          // Mostrar los botones después de que el video esté cargado
           video.addEventListener('loadeddata', () => {
             setTimeout(() => {
               buttonsContainer.classList.add('visible');
             }, 500);
           });
           
-          // Si el video ya está cargado, mostrar los botones inmediatamente
           if (video.readyState >= 3) {
             setTimeout(() => {
               buttonsContainer.classList.add('visible');
