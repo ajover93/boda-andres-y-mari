@@ -741,11 +741,156 @@
       text-align: center;
       display: none;
     }
+    
+        .asistencia-form {
+      margin-bottom: 20px;
+    }
+
+    .form-group {
+      margin-bottom: 15px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: 600;
+      color: #004c91;
+    }
+
+    .form-group input[type="text"] {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      font-family: "Poppins", sans-serif;
+      box-sizing: border-box;
+    }
+
+    .checkbox-group {
+      display: flex;
+      align-items: center;
+      margin-bottom: 15px;
+    }
+
+    .checkbox-group input {
+      margin-right: 10px;
+    }
+
+    .add-button {
+      background: #004c91;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      padding: 10px 15px;
+      cursor: pointer;
+      font-family: "Poppins", sans-serif;
+      font-weight: 600;
+      transition: background 0.3s ease;
+      width: 100%;
+    }
+
+    .add-button:hover {
+      background: #003366;
+    }
+
+    .comensales-list {
+      margin-top: 20px;
+      max-height: 300px;
+      overflow-y: auto;
+    }
+
+    .comensal-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px;
+      border-bottom: 1px solid #eee;
+      background: #f9f9f9;
+      border-radius: 5px;
+      margin-bottom: 8px;
+    }
+
+    .comensal-info {
+      flex-grow: 1;
+    }
+
+    .comensal-name {
+      font-weight: 600;
+      margin-bottom: 3px;
+    }
+
+    .comensal-details {
+      font-size: 0.85rem;
+      color: #666;
+    }
+
+    .delete-button {
+      background: #e74c3c;
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 30px;
+      height: 30px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      margin-left: 10px;
+    }
+
+    .delete-button:hover {
+      background: #c0392b;
+    }
+
+    .empty-list {
+      text-align: center;
+      color: #999;
+      font-style: italic;
+      padding: 20px;
+    }
+
+    .submit-button {
+      background: #27ae60;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      padding: 12px 20px;
+      cursor: pointer;
+      font-family: "Poppins", sans-serif;
+      font-weight: 600;
+      transition: background 0.3s ease;
+      width: 100%;
+      margin-top: 20px;
+    }
+
+    .submit-button:hover {
+      background: #219653;
+    }
+
+    .submit-button:disabled {
+      background: #95a5a6;
+      cursor: not-allowed;
+    }
+
+    .confirmation-message {
+      background: #d4edda;
+      color: #155724;
+      padding: 15px;
+      border-radius: 5px;
+      margin-top: 20px;
+      text-align: center;
+      display: none;
+    }
+
+    .hidden-field {
+      display: none;
+    }
   </style>
 </head>
 <body>
 
-    <!-- Pantalla de carga -->
+  <!-- Pantalla de carga -->
   <div class="loading-screen" id="loadingScreen">
     <div class="spinner"></div>
     <div class="loading-text">Cargando invitación...</div>
@@ -852,6 +997,15 @@
         <h2>Confirmar Asistencia</h2>
         <p>Por favor, confirma tu asistencia antes del <strong>15 de noviembre de 2026</strong>.</p>
         
+        <!-- Formulario Netlify oculto para el envío -->
+        <form name="rsvp" method="POST" data-netlify="true" netlify-honeypot="bot-field" class="hidden-field" id="netlifyForm">
+          <input type="hidden" name="form-name" value="rsvp" />
+          <p class="hidden-field">
+            <label>No rellenes esto: <input name="bot-field" /></label>
+          </p>
+          <input type="hidden" name="comensales_data" id="comensalesData" />
+        </form>
+        
         <div class="asistencia-form">
           <div class="form-group">
             <label for="nombreComensal">Nombre y apellidos del comensal:</label>
@@ -873,14 +1027,14 @@
             <input type="text" id="cancion" placeholder="Ej: 'Bohemian Rhapsody' - Queen">
           </div>
           
-          <button class="add-button" id="agregarComensal">Añadir comensal</button>
+          <button type="button" class="add-button" id="agregarComensal">Añadir comensal</button>
         </div>
         
         <div class="comensales-list" id="listaComensales">
           <div class="empty-list">Aún no has añadido ningún comensal</div>
         </div>
         
-        <button class="submit-button" id="enviarAsistencia" disabled>Confirmar asistencia</button>
+        <button type="button" class="submit-button" id="enviarAsistencia" disabled>Confirmar asistencia</button>
         
         <div class="confirmation-message" id="mensajeConfirmacion">
           ¡Gracias! Tu asistencia ha sido confirmada correctamente.
@@ -1155,6 +1309,8 @@
     const enviarAsistenciaBtn = document.getElementById('enviarAsistencia');
     const listaComensales = document.getElementById('listaComensales');
     const mensajeConfirmacion = document.getElementById('mensajeConfirmacion');
+    const netlifyForm = document.getElementById('netlifyForm');
+    const comensalesDataField = document.getElementById('comensalesData');
     
     let comensales = [];
 
@@ -1255,14 +1411,47 @@
       enviarAsistenciaBtn.disabled = comensales.length === 0;
     }
 
+    // Función para enviar los datos a Netlify usando fetch
+    async function enviarAsistenciaNetlify() {
+      try {
+        // Preparar los datos para Netlify
+        comensalesDataField.value = JSON.stringify(comensales);
+        
+        // Crear FormData desde el formulario oculto
+        const formData = new FormData(netlifyForm);
+        
+        // Enviar los datos usando fetch
+        const response = await fetch('/', {
+          method: 'POST',
+          body: formData,
+        });
+        
+        if (response.ok) {
+          console.log('Datos enviados correctamente a Netlify');
+          return true;
+        } else {
+          console.error('Error al enviar datos a Netlify');
+          return false;
+        }
+      } catch (error) {
+        console.error('Error de red:', error);
+        return false;
+      }
+    }
+
     // Función para enviar la confirmación de asistencia
-    function enviarAsistencia() {
-      // Aquí normalmente enviarías los datos a un servidor
-      // Por ahora, solo mostramos un mensaje de confirmación
-      
-      console.log('Comensales confirmados:', comensales);
-      
+    async function enviarAsistencia() {
+      // Mostrar mensaje de confirmación
       mensajeConfirmacion.style.display = 'block';
+      
+      // Enviar datos a Netlify en segundo plano
+      const exito = await enviarAsistenciaNetlify();
+      
+      if (exito) {
+        console.log('Asistencia confirmada y enviada a Netlify');
+      } else {
+        console.log('Asistencia confirmada localmente (error en envío a Netlify)');
+      }
       
       // Limpiar el formulario después de enviar
       comensales = [];
