@@ -27,10 +27,8 @@
       transition: opacity 1s ease;
       overflow: hidden;
       background-position: center !important;
-      /* Zoom out controlado - cubre toda el área sin recortes excesivos */
       background-size: cover !important;
       background-repeat: no-repeat !important;
-      /* Efecto de zoom out para ver más de la imagen */
       opacity: 0;
       transition: opacity 0.5s ease;
     }
@@ -104,7 +102,6 @@
       z-index: 1000 !important;
       pointer-events: none;
       background-position: center !important;
-      /* Misma configuración que el fondo principal */
       background-size: cover !important;
       background-repeat: no-repeat !important;
     }
@@ -330,6 +327,48 @@
       background: rgba(0, 100, 200, 0.35);
     }
 
+    /* Botón de mute/desmute SIN FONDO BLANCO */
+    .mute-button {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      width: 50px;
+      height: 50px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      z-index: 50;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      color: rgba(255, 255, 255, 0.9);
+      text-shadow: 0 2px 8px rgba(0, 0, 0, 0.7);
+      transition: all 0.3s ease;
+      opacity: 0;
+      pointer-events: none;
+      filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5));
+    }
+
+    .mute-button.visible {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .mute-button:hover {
+      color: rgba(255, 255, 255, 1);
+      transform: scale(1.1);
+      filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.7));
+    }
+
+    .mute-button.muted::after {
+      content: "🔇";
+    }
+
+    .mute-button:not(.muted)::after {
+      content: "🔊";
+    }
+
     .header-content {
       position: relative;
       z-index: 2;
@@ -523,6 +562,14 @@
       .text-content {
         margin-top: 8vh;
       }
+
+      .mute-button {
+        top: 15px;
+        right: 15px;
+        width: 45px;
+        height: 45px;
+        font-size: 1.8rem;
+      }
     }
 
     @media (max-width: 360px) {
@@ -543,6 +590,14 @@
 
       .text-content {
         margin-top: 6vh;
+      }
+
+      .mute-button {
+        top: 10px;
+        right: 10px;
+        width: 40px;
+        height: 40px;
+        font-size: 1.6rem;
       }
     }
   </style>
@@ -589,6 +644,9 @@
 
   <!-- 💍 CONTENIDO PRINCIPAL -->
   <div class="main-content" id="mainContent">
+    <!-- Botón de mute/desmute -->
+    <button class="mute-button" id="muteButton"></button>
+
     <header>
       <div class="video-background">
         <video id="videoFondo" autoplay muted loop playsinline>
@@ -792,22 +850,21 @@
     const video = document.getElementById('videoFondo');
     const invitationImage = document.getElementById('invitationImage');
     const buttonsContainer = document.getElementById('buttonsContainer');
+    const muteButton = document.getElementById('muteButton');
 
-    // Referencias a los botones y menús
-    const dondeBtn = document.getElementById('dondeBtn');
-    const cronogramaBtn = document.getElementById('cronogramaBtn');
-    const asistenciaBtn = document.getElementById('asistenciaBtn');
-    const detallesBtn = document.getElementById('detallesBtn');
-    
-    const dondeMenu = document.getElementById('dondeMenu');
-    const cronogramaMenu = document.getElementById('cronogramaMenu');
-    const asistenciaMenu = document.getElementById('asistenciaMenu');
-    const detallesMenu = document.getElementById('detallesMenu');
-    
-    const closeDonde = document.getElementById('closeDonde');
-    const closeCronograma = document.getElementById('closeCronograma');
-    const closeAsistencia = document.getElementById('closeAsistencia');
-    const closeDetalles = document.getElementById('closeDetalles');
+    // Función para controlar el mute/desmute
+    function toggleMute() {
+      if (video.muted) {
+        video.muted = false;
+        muteButton.classList.remove('muted');
+      } else {
+        video.muted = true;
+        muteButton.classList.add('muted');
+      }
+    }
+
+    // Event listener para el botón de mute
+    muteButton.addEventListener('click', toggleMute);
 
     seal.addEventListener('click', () => {
       console.log("Sello clickeado - iniciando animación");
@@ -829,20 +886,40 @@
           video.play();
           document.body.style.overflow = 'hidden';
           
+          // Mostrar el botón de mute cuando el video esté listo
           video.addEventListener('loadeddata', () => {
             setTimeout(() => {
               buttonsContainer.classList.add('visible');
+              muteButton.classList.add('visible');
             }, 500);
           });
           
+          // Si el video ya está cargado, mostrar los botones inmediatamente
           if (video.readyState >= 3) {
             setTimeout(() => {
               buttonsContainer.classList.add('visible');
+              muteButton.classList.add('visible');
             }, 500);
           }
         }, 1000);
       }, 4000);
     });
+
+    // Referencias a los botones y menús
+    const dondeBtn = document.getElementById('dondeBtn');
+    const cronogramaBtn = document.getElementById('cronogramaBtn');
+    const asistenciaBtn = document.getElementById('asistenciaBtn');
+    const detallesBtn = document.getElementById('detallesBtn');
+    
+    const dondeMenu = document.getElementById('dondeMenu');
+    const cronogramaMenu = document.getElementById('cronogramaMenu');
+    const asistenciaMenu = document.getElementById('asistenciaMenu');
+    const detallesMenu = document.getElementById('detallesMenu');
+    
+    const closeDonde = document.getElementById('closeDonde');
+    const closeCronograma = document.getElementById('closeCronograma');
+    const closeAsistencia = document.getElementById('closeAsistencia');
+    const closeDetalles = document.getElementById('closeDetalles');
 
     // Funciones para abrir menús
     dondeBtn.addEventListener('click', () => {
