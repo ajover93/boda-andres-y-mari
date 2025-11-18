@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>Boda de Andrés & María del Carmen</title>
   <style>
+    /* Estilos existentes... */
     body {
       font-family: "Poppins", sans-serif;
       margin: 0;
@@ -385,17 +386,44 @@
       margin-top: 10vh;
     }
 
-    header h1 {
-      font-size: 2.8rem;
-      margin-bottom: 0.3rem;
-      color: #fff;
-      text-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+    /* ESTILOS NUEVOS PARA EL TÍTULO Y FECHA */
+    .title-image {
+      max-width: 80%;
+      height: auto;
+      margin-bottom: 1.5rem;
+      filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
     }
 
-    header .fecha {
+    .wedding-date {
+      font-family: 'Poppins', sans-serif;
+      font-size: 2rem;
+      font-weight: 300;
+      letter-spacing: 2px;
+      margin-bottom: 0.5rem;
+      color: #fff;
+      text-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+      animation: fadeInUp 1s ease 0.5s both;
+    }
+
+    .wedding-subtitle {
+      font-family: 'Poppins', sans-serif;
       font-size: 1.4rem;
+      font-weight: 300;
+      font-style: italic;
       color: #e6f3ff;
-      margin-bottom: 1rem;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+      animation: fadeInUp 1s ease 0.7s both;
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
 
     header p {
@@ -570,6 +598,19 @@
         height: 45px;
         font-size: 1.8rem;
       }
+
+      /* AJUSTES RESPONSIVE PARA EL NUEVO TÍTULO Y FECHA */
+      .wedding-date {
+        font-size: 1.6rem;
+      }
+
+      .wedding-subtitle {
+        font-size: 1.2rem;
+      }
+
+      .title-image {
+        max-width: 90%;
+      }
     }
 
     @media (max-width: 360px) {
@@ -598,6 +639,19 @@
         width: 40px;
         height: 40px;
         font-size: 1.6rem;
+      }
+
+      /* AJUSTES RESPONSIVE PARA EL NUEVO TÍTULO Y FECHA */
+      .wedding-date {
+        font-size: 1.4rem;
+      }
+
+      .wedding-subtitle {
+        font-size: 1.1rem;
+      }
+
+      .title-image {
+        max-width: 95%;
       }
     }
 
@@ -742,7 +796,7 @@
       display: none;
     }
     
-        .asistencia-form {
+    .asistencia-form {
       margin-bottom: 20px;
     }
 
@@ -943,9 +997,10 @@
 
       <div class="header-content">
         <div class="text-content">
-          <h1>Boda de Andrés & María del Carmen</h1>
-          <p class="fecha">05 de diciembre de 2026</p>
-          <p>¡Nos casamos y queremos compartir este día tan especial contigo!</p>
+          <!-- TÍTULO COMO IMAGEN Y FECHA ELEGANTE -->
+          <img src="media/title.png" alt="Boda de Andrés & María del Carmen" class="title-image">
+          <div class="wedding-date">5 de diciembre de 2026</div>
+          <div class="wedding-subtitle">Nos casamos</div>
         </div>
         
         <!-- BOTONES CON MARGEN ADECUADO -->
@@ -1072,7 +1127,8 @@
           'media/invitacion.jpg',
           'media/papel-textura-interior.jpg',
           'media/papel-textura-exterior.jpg',
-          'media/sello.png'
+          'media/sello.png',
+          'media/title.png' // Añadimos la imagen del título a la precarga
         ];
         
         let loadedCount = 0;
