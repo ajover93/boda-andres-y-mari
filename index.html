@@ -4,6 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>Boda de Andrés & María del Carmen</title>
+  <!-- Añadir Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
     /* Estilos existentes... */
     body {
@@ -338,7 +340,7 @@
       opacity: 0;
     }
 
-    /* Botón de mute/desmute SIN FONDO BLANCO */
+    /* Botón de mute/desmute CON ICONOS FONT AWESOME */
     .mute-button {
       position: fixed;
       top: 20px;
@@ -352,7 +354,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 2rem;
+      font-size: 1.5rem;
       color: rgba(255, 255, 255, 0.9);
       text-shadow: 0 2px 8px rgba(0, 0, 0, 0.7);
       transition: all 0.3s ease;
@@ -372,15 +374,7 @@
       filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.7));
     }
 
-    .mute-button.muted::after {
-      content: "🔇";
-    }
-
-    .mute-button:not(.muted)::after {
-      content: "🔊";
-    }
-
-    /* NUEVO: Botón de ojo para mostrar/ocultar elementos */
+    /* NUEVO: Botón de ojo para mostrar/ocultar elementos CON ICONOS FONT AWESOME */
     .eye-button {
       position: fixed;
       top: 20px;
@@ -394,7 +388,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 2rem;
+      font-size: 1.5rem;
       color: rgba(255, 255, 255, 0.9);
       text-shadow: 0 2px 8px rgba(0, 0, 0, 0.7);
       transition: all 0.3s ease;
@@ -412,14 +406,6 @@
       color: rgba(255, 255, 255, 1);
       transform: scale(1.1);
       filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.7));
-    }
-
-    .eye-button.open::after {
-      content: "👁️";
-    }
-
-    .eye-button.closed::after {
-      content: "🙈";
     }
 
     .header-content {
@@ -679,7 +665,7 @@
         right: 15px;
         width: 45px;
         height: 45px;
-        font-size: 1.8rem;
+        font-size: 1.3rem;
       }
 
       .eye-button {
@@ -687,7 +673,7 @@
         left: 15px;
         width: 45px;
         height: 45px;
-        font-size: 1.8rem;
+        font-size: 1.3rem;
       }
 
       /* AJUSTES RESPONSIVE PARA EL NUEVO TÍTULO Y FECHA */
@@ -729,7 +715,7 @@
         right: 10px;
         width: 40px;
         height: 40px;
-        font-size: 1.6rem;
+        font-size: 1.2rem;
       }
 
       .eye-button {
@@ -737,7 +723,7 @@
         left: 10px;
         width: 40px;
         height: 40px;
-        font-size: 1.6rem;
+        font-size: 1.2rem;
       }
 
       /* AJUSTES RESPONSIVE PARA EL NUEVO TÍTULO Y FECHA */
@@ -1084,10 +1070,14 @@
   <!-- 💍 CONTENIDO PRINCIPAL -->
   <div class="main-content" id="mainContent">
     <!-- Botón de mute/desmute -->
-    <button class="mute-button" id="muteButton"></button>
+    <button class="mute-button" id="muteButton">
+      <i class="fas fa-volume-up"></i>
+    </button>
     
     <!-- NUEVO: Botón de ojo para mostrar/ocultar elementos -->
-    <button class="eye-button open" id="eyeButton"></button>
+    <button class="eye-button" id="eyeButton">
+      <i class="fas fa-eye"></i>
+    </button>
 
     <header>
       <div class="video-background" id="videoBackground">
@@ -1341,6 +1331,10 @@
     const titleImage = document.getElementById('titleImage');
     const weddingDate = document.getElementById('weddingDate');
     const weddingSubtitle = document.getElementById('weddingSubtitle');
+    
+    // Referencias a los iconos
+    const muteIcon = muteButton.querySelector('i');
+    const eyeIcon = eyeButton.querySelector('i');
 
     // Estado inicial: elementos visibles
     let elementsVisible = true;
@@ -1357,8 +1351,8 @@
         buttonsContainer.classList.add('hidden');
         overlay.classList.add('hidden');
         videoBackground.classList.add('video-clear');
-        eyeButton.classList.remove('open');
-        eyeButton.classList.add('closed');
+        // Cambiar icono a ojo cerrado
+        eyeIcon.className = 'fas fa-eye-slash';
       } else {
         // Mostrar elementos
         headerContent.classList.remove('hidden');
@@ -1369,8 +1363,8 @@
         buttonsContainer.classList.remove('hidden');
         overlay.classList.remove('hidden');
         videoBackground.classList.remove('video-clear');
-        eyeButton.classList.remove('closed');
-        eyeButton.classList.add('open');
+        // Cambiar icono a ojo abierto
+        eyeIcon.className = 'fas fa-eye';
       }
       
       elementsVisible = !elementsVisible;
@@ -1383,10 +1377,10 @@
     function toggleMute() {
       if (video.muted) {
         video.muted = false;
-        muteButton.classList.remove('muted');
+        muteIcon.className = 'fas fa-volume-up';
       } else {
         video.muted = true;
-        muteButton.classList.add('muted');
+        muteIcon.className = 'fas fa-volume-mute';
       }
     }
 
