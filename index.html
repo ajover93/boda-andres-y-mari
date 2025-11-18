@@ -317,6 +317,11 @@
       height: 100%;
       object-fit: cover;
       filter: blur(4px);
+      transition: filter 0.5s ease;
+    }
+
+    .video-background.video-clear video {
+      filter: blur(0px);
     }
 
     .overlay {
@@ -326,6 +331,11 @@
       width: 100%;
       height: 100%;
       background: rgba(0, 100, 200, 0.35);
+      transition: opacity 0.5s ease;
+    }
+
+    .overlay.hidden {
+      opacity: 0;
     }
 
     /* Botón de mute/desmute SIN FONDO BLANCO */
@@ -370,6 +380,48 @@
       content: "🔊";
     }
 
+    /* NUEVO: Botón de ojo para mostrar/ocultar elementos */
+    .eye-button {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      width: 50px;
+      height: 50px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      z-index: 50;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      color: rgba(255, 255, 255, 0.9);
+      text-shadow: 0 2px 8px rgba(0, 0, 0, 0.7);
+      transition: all 0.3s ease;
+      opacity: 0;
+      pointer-events: none;
+      filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5));
+    }
+
+    .eye-button.visible {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .eye-button:hover {
+      color: rgba(255, 255, 255, 1);
+      transform: scale(1.1);
+      filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.7));
+    }
+
+    .eye-button.open::after {
+      content: "👁️";
+    }
+
+    .eye-button.closed::after {
+      content: "🙈";
+    }
+
     .header-content {
       position: relative;
       z-index: 2;
@@ -380,10 +432,21 @@
       flex-direction: column;
       justify-content: space-between;
       align-items: center;
+      transition: opacity 0.5s ease;
+    }
+
+    .header-content.hidden {
+      opacity: 0;
+      pointer-events: none;
     }
 
     .text-content {
       margin-top: 10vh;
+      transition: opacity 0.5s ease;
+    }
+
+    .text-content.hidden {
+      opacity: 0;
     }
 
     /* ESTILOS NUEVOS PARA EL TÍTULO Y FECHA */
@@ -392,6 +455,11 @@
       height: auto;
       margin-bottom: 1.5rem;
       filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
+      transition: opacity 0.5s ease;
+    }
+
+    .title-image.hidden {
+      opacity: 0;
     }
 
     .wedding-date {
@@ -403,6 +471,11 @@
       color: #fff;
       text-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
       animation: fadeInUp 1s ease 0.5s both;
+      transition: opacity 0.5s ease;
+    }
+
+    .wedding-date.hidden {
+      opacity: 0;
     }
 
     .wedding-subtitle {
@@ -413,6 +486,11 @@
       color: #e6f3ff;
       text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
       animation: fadeInUp 1s ease 0.7s both;
+      transition: opacity 0.5s ease;
+    }
+
+    .wedding-subtitle.hidden {
+      opacity: 0;
     }
 
     @keyframes fadeInUp {
@@ -446,6 +524,11 @@
 
     .buttons-container.visible {
       opacity: 1;
+    }
+
+    .buttons-container.hidden {
+      opacity: 0;
+      pointer-events: none;
     }
 
     .buttons-grid {
@@ -599,6 +682,14 @@
         font-size: 1.8rem;
       }
 
+      .eye-button {
+        top: 15px;
+        left: 15px;
+        width: 45px;
+        height: 45px;
+        font-size: 1.8rem;
+      }
+
       /* AJUSTES RESPONSIVE PARA EL NUEVO TÍTULO Y FECHA */
       .wedding-date {
         font-size: 1.6rem;
@@ -636,6 +727,14 @@
       .mute-button {
         top: 10px;
         right: 10px;
+        width: 40px;
+        height: 40px;
+        font-size: 1.6rem;
+      }
+
+      .eye-button {
+        top: 10px;
+        left: 10px;
         width: 40px;
         height: 40px;
         font-size: 1.6rem;
@@ -986,21 +1085,24 @@
   <div class="main-content" id="mainContent">
     <!-- Botón de mute/desmute -->
     <button class="mute-button" id="muteButton"></button>
+    
+    <!-- NUEVO: Botón de ojo para mostrar/ocultar elementos -->
+    <button class="eye-button open" id="eyeButton"></button>
 
     <header>
-      <div class="video-background">
+      <div class="video-background" id="videoBackground">
         <video id="videoFondo" autoplay muted loop playsinline>
           <source src="media/video.mp4" type="video/mp4" />
         </video>
-        <div class="overlay"></div>
+        <div class="overlay" id="overlay"></div>
       </div>
 
-      <div class="header-content">
-        <div class="text-content">
+      <div class="header-content" id="headerContent">
+        <div class="text-content" id="textContent">
           <!-- TÍTULO COMO IMAGEN Y FECHA ELEGANTE -->
-          <img src="media/title.png" alt="Boda de Andrés & María del Carmen" class="title-image">
-          <div class="wedding-date">5 de diciembre de 2026</div>
-          <div class="wedding-subtitle">Nos casamos</div>
+          <img src="media/title.png" alt="Boda de Andrés & María del Carmen" class="title-image" id="titleImage">
+          <div class="wedding-date" id="weddingDate">5 de diciembre de 2026</div>
+          <div class="wedding-subtitle" id="weddingSubtitle">Nos casamos</div>
         </div>
         
         <!-- BOTONES CON MARGEN ADECUADO -->
@@ -1231,6 +1333,51 @@
     const invitationImage = document.getElementById('invitationImage');
     const buttonsContainer = document.getElementById('buttonsContainer');
     const muteButton = document.getElementById('muteButton');
+    const eyeButton = document.getElementById('eyeButton');
+    const videoBackground = document.getElementById('videoBackground');
+    const overlay = document.getElementById('overlay');
+    const headerContent = document.getElementById('headerContent');
+    const textContent = document.getElementById('textContent');
+    const titleImage = document.getElementById('titleImage');
+    const weddingDate = document.getElementById('weddingDate');
+    const weddingSubtitle = document.getElementById('weddingSubtitle');
+
+    // Estado inicial: elementos visibles
+    let elementsVisible = true;
+
+    // Función para alternar la visibilidad de los elementos
+    function toggleElementsVisibility() {
+      if (elementsVisible) {
+        // Ocultar elementos
+        headerContent.classList.add('hidden');
+        textContent.classList.add('hidden');
+        titleImage.classList.add('hidden');
+        weddingDate.classList.add('hidden');
+        weddingSubtitle.classList.add('hidden');
+        buttonsContainer.classList.add('hidden');
+        overlay.classList.add('hidden');
+        videoBackground.classList.add('video-clear');
+        eyeButton.classList.remove('open');
+        eyeButton.classList.add('closed');
+      } else {
+        // Mostrar elementos
+        headerContent.classList.remove('hidden');
+        textContent.classList.remove('hidden');
+        titleImage.classList.remove('hidden');
+        weddingDate.classList.remove('hidden');
+        weddingSubtitle.classList.remove('hidden');
+        buttonsContainer.classList.remove('hidden');
+        overlay.classList.remove('hidden');
+        videoBackground.classList.remove('video-clear');
+        eyeButton.classList.remove('closed');
+        eyeButton.classList.add('open');
+      }
+      
+      elementsVisible = !elementsVisible;
+    }
+
+    // Event listener para el botón de ojo
+    eyeButton.addEventListener('click', toggleElementsVisibility);
 
     // Función para controlar el mute/desmute
     function toggleMute() {
@@ -1266,11 +1413,12 @@
           video.play();
           document.body.style.overflow = 'hidden';
           
-          // Mostrar el botón de mute cuando el video esté listo
+          // Mostrar los botones cuando el video esté listo
           video.addEventListener('loadeddata', () => {
             setTimeout(() => {
               buttonsContainer.classList.add('visible');
               muteButton.classList.add('visible');
+              eyeButton.classList.add('visible');
             }, 500);
           });
           
@@ -1279,6 +1427,7 @@
             setTimeout(() => {
               buttonsContainer.classList.add('visible');
               muteButton.classList.add('visible');
+              eyeButton.classList.add('visible');
             }, 500);
           }
         }, 1000);
