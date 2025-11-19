@@ -429,7 +429,7 @@
     }
 
     .text-content {
-      margin-top: 3vh;
+      margin-top: 5vh;
       transition: opacity 0.5s ease;
     }
 
@@ -625,6 +625,64 @@
       margin: 10px 0;
     }
 
+    /* NUEVOS ESTILOS PARA EL MENÚ DE UBICACIÓN */
+    .location-section {
+      margin-bottom: 30px;
+      text-align: center;
+    }
+
+    .location-title {
+      font-size: 3rem;
+      font-weight: 700;
+      color: #004c91;
+      margin-bottom: 10px;
+      font-family: 'Dancing Script', cursive;
+    }
+
+    .location-name {
+      font-size: 1.3rem;
+      font-weight: 400;
+      color: #333;
+      margin-bottom: 5px;
+      text-transform: uppercase;
+    }
+
+    .location-address {
+      font-size: 1rem;
+      color: #666;
+      margin-bottom: 15px;
+      line-height: 1.4;
+    }
+
+    .maps-button {
+      background: #004c91;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 10px 20px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 15px;
+    }
+
+    .maps-button:hover {
+      background: #003366;
+      transform: translateY(-2px);
+    }
+
+    .location-image {
+      width: 100%;
+      max-width: 300px;
+      height: auto;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+
     @media (max-width: 768px) {
       header h1 { font-size: 2.1rem; }
       header .fecha { font-size: 1.1rem; }
@@ -661,7 +719,7 @@
       }
 
       .text-content {
-        margin-top: 2vh;
+        margin-top: 4vh;
       }
 
       .mute-button {
@@ -681,18 +739,29 @@
       }
 
       /* AJUSTES RESPONSIVE PARA EL NUEVO TÍTULO Y FECHA */
-      /* FECHA MÁS PEQUEÑA EN MÓVIL (reducida de 2.4rem a 2rem) */
       .wedding-date {
         font-size: 2rem; /* Reducido de 2.4rem */
       }
 
-      /* "¡NOS CASAMOS!" MÁS GRANDE EN MÓVIL (aumentado de 1.8rem a 2.2rem) */
       .wedding-subtitle {
         font-size: 2.2rem; /* Aumentado de 1.8rem */
       }
 
       .title-image {
         max-width: 90%;
+      }
+
+      /* AJUSTES RESPONSIVE PARA EL MENÚ DE UBICACIÓN */
+      .location-title {
+        font-size: 2.5rem;
+      }
+
+      .location-name {
+        font-size: 1.2rem;
+      }
+
+      .location-address {
+        font-size: 0.9rem;
       }
     }
 
@@ -713,7 +782,7 @@
       }
 
       .text-content {
-        margin-top: 0vh;
+        margin-top: 3vh;
       }
 
       .mute-button {
@@ -733,18 +802,29 @@
       }
 
       /* AJUSTES RESPONSIVE PARA EL NUEVO TÍTULO Y FECHA */
-      /* FECHA MÁS PEQUEÑA EN MÓVIL PEQUEÑO (reducida de 2rem a 1.7rem) */
       .wedding-date {
         font-size: 1.7rem; /* Reducido de 2rem */
       }
 
-      /* "¡NOS CASAMOS!" MÁS GRANDE EN MÓVIL PEQUEÑO (aumentado de 1.5rem a 1.8rem) */
       .wedding-subtitle {
         font-size: 1.8rem; /* Aumentado de 1.5rem */
       }
 
       .title-image {
         max-width: 95%;
+      }
+
+      /* AJUSTES RESPONSIVE PARA EL MENÚ DE UBICACIÓN */
+      .location-title {
+        font-size: 2rem;
+      }
+
+      .location-name {
+        font-size: 1.1rem;
+      }
+
+      .location-address {
+        font-size: 0.8rem;
       }
     }
 
@@ -1116,16 +1196,40 @@
     </header>
 
     <!-- MENÚS SUPERPUESTOS -->
-    <!-- Menú Dónde -->
+    <!-- Menú Dónde - ACTUALIZADO -->
     <div class="menu-overlay" id="dondeMenu">
       <div class="menu-content">
         <button class="close-button" id="closeDonde">×</button>
-        <h2>Ubicación</h2>
-        <p><strong>Ceremonia:</strong> Iglesia de San José de Abanilla</p>
-        <iframe src="https://www.google.com/maps?q=Iglesia+de+Abanilla&output=embed"></iframe>
-        <p><strong>Banquete:</strong> El Casón de la Vega</p>
-        <iframe src="https://www.google.com/maps?q=El+Cason+de+la+Vega&output=embed"></iframe>
-        <p><strong>Direcciones:</strong> La ceremonia comenzará puntualmente a las 12:00 h. Después nos trasladaremos al lugar del banquete.</p>
+        
+        <!-- Ceremonia -->
+        <div class="location-section">
+          <div class="location-title">Ceremonia</div>
+          <div class="location-name">IGLESIA DE SAN JOSÉ</div>
+          <div class="location-address">
+            Plaza de la Purísima, 5<br>
+            30640 Abanilla
+          </div>
+          <button class="maps-button" onclick="window.open('https://maps.google.com/?q=Iglesia+de+San+José+Abanilla', '_blank')">
+            <i class="fas fa-map-marker-alt"></i>
+            Ver en Maps
+          </button>
+          <img src="media/iglesia.jpg" alt="Iglesia de San José" class="location-image">
+        </div>
+
+        <!-- Banquete -->
+        <div class="location-section">
+          <div class="location-title">Banquete</div>
+          <div class="location-name">EL CASÓN DE LA VEGA</div>
+          <div class="location-address">
+            RM-414, km. 2, 8<br>
+            30140 Santomera
+          </div>
+          <button class="maps-button" onclick="window.open('https://maps.google.com/?q=El+Cason+de+la+Vega+Santomera', '_blank')">
+            <i class="fas fa-map-marker-alt"></i>
+            Ver en Maps
+          </button>
+          <img src="media/cason.png" alt="El Casón de la Vega" class="location-image">
+        </div>
       </div>
     </div>
 
@@ -1228,7 +1332,9 @@
           'media/papel-textura-interior.jpg',
           'media/papel-textura-exterior.jpg',
           'media/sello.png',
-          'media/title.png' // Añadimos la imagen del título a la precarga
+          'media/title.png',
+          'media/iglesia.jpg', // Añadida imagen de la iglesia
+          'media/cason.png' // Añadida imagen del casón
         ];
         
         let loadedCount = 0;
