@@ -761,6 +761,80 @@
       font-size: 1rem;
     }
 
+    /* NUEVO: ESTILOS PARA EL MENÚ + INFO */
+    .info-timeline {
+      position: relative;
+      padding: 20px 0;
+      margin: 0 auto;
+      max-width: 400px;
+    }
+
+    .info-timeline::before {
+      content: '';
+      position: absolute;
+      left: 30px;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      background: linear-gradient(to bottom, #004c91, #e3f2fd);
+      z-index: 1;
+    }
+
+    .info-item {
+      position: relative;
+      margin-bottom: 30px;
+      display: flex;
+      align-items: center;
+      z-index: 2;
+    }
+
+    .info-item:last-child {
+      margin-bottom: 0;
+    }
+
+    .info-icon {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      z-index: 3;
+      margin-right: 20px;
+      flex-shrink: 0;
+    }
+
+    .info-icon img {
+      width: 40px;
+      height: 40px;
+      object-fit: contain;
+    }
+
+    .info-content {
+      flex: 1;
+      background: white;
+      padding: 15px;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      border-left: 4px solid #004c91;
+    }
+
+    .info-text {
+      font-weight: 500;
+      color: #333;
+      font-size: 1rem;
+      line-height: 1.4;
+      margin-bottom: 10px;
+    }
+
+    .info-button-container {
+      display: flex;
+      justify-content: flex-start;
+      margin-top: 10px;
+    }
+
     /* MEDIA QUERY ESPECÍFICA PARA PANTALLAS HORIZONTALES */
     @media (min-width: 768px) and (orientation: landscape) {
       .location-section {
@@ -889,6 +963,30 @@
       .timeline-content {
         padding: 12px;
       }
+
+      /* AJUSTES RESPONSIVE PARA + INFO */
+      .info-timeline {
+        max-width: 100%;
+      }
+      
+      .info-timeline::before {
+        left: 25px;
+      }
+      
+      .info-icon {
+        width: 50px;
+        height: 50px;
+        margin-right: 15px;
+      }
+      
+      .info-icon img {
+        width: 30px;
+        height: 30px;
+      }
+      
+      .info-content {
+        padding: 12px;
+      }
     }
 
     @media (max-width: 360px) {
@@ -966,6 +1064,22 @@
       }
       
       .timeline-content {
+        padding: 10px;
+      }
+
+      /* AJUSTES RESPONSIVE PARA + INFO */
+      .info-icon {
+        width: 45px;
+        height: 45px;
+        margin-right: 12px;
+      }
+      
+      .info-icon img {
+        width: 25px;
+        height: 25px;
+      }
+      
+      .info-content {
         padding: 10px;
       }
     }
@@ -1331,7 +1445,7 @@
             <button class="menu-button" id="dondeBtn">Dónde</button>
             <button class="menu-button" id="itinerarioBtn">Itinerario</button>
             <button class="menu-button" id="asistenciaBtn">Asistencia</button>
-            <button class="menu-button" id="detallesBtn">Detalles</button>
+            <button class="menu-button" id="infoBtn">+ Info</button>
           </div>
         </div>
       </div>
@@ -1481,16 +1595,43 @@
       </div>
     </div>
 
-    <!-- Menú Detalles -->
-    <div class="menu-overlay" id="detallesMenu">
+    <!-- Menú + Info (reemplaza Detalles) -->
+    <div class="menu-overlay" id="infoMenu">
       <div class="menu-content">
-        <button class="close-button" id="closeDetalles">×</button>
-        <h2>Detalles del Evento</h2>
-        <p><strong>Código de vestimenta:</strong> Formal/Elegante</p>
-        <p><strong>Regalos:</strong> Preferimos tu presencia antes que cualquier regalo, pero si deseas hacernos un detalle, agradecemos contribuciones a nuestro viaje de luna de miel.</p>
-        <p><strong>Niños:</strong> Aunque amamos a los más pequeños, este será un evento exclusivo para adultos.</p>
-        <p><strong>Transporte:</strong> Habrá servicio de autobús desde el centro de Abanilla hacia la iglesia y luego al banquete.</p>
-        <p><strong>Alojamiento:</strong> Hemos bloqueado habitaciones con tarifa especial en el Hotel Abanilla. Contacta con nosotros para más información.</p>
+        <button class="close-button" id="closeInfo">×</button>
+        <h2>Información Adicional</h2>
+        
+        <div class="info-timeline">
+          <!-- Punto 1: Código de vestimenta -->
+          <div class="info-item">
+            <div class="info-icon">
+              <img src="media/wdress.png" alt="Vestimenta">
+            </div>
+            <div class="info-content">
+              <div class="info-text">
+                Solo necesitamos que os pongáis guapos y vengáis con ganas de disfrutar al máximo.
+              </div>
+            </div>
+          </div>
+          
+          <!-- Punto 2: Alojamiento -->
+          <div class="info-item">
+            <div class="info-icon">
+              <img src="media/whotel.png" alt="Alojamiento">
+            </div>
+            <div class="info-content">
+              <div class="info-text">
+                Os recomendamos el Hotel Restaurante Santos
+              </div>
+              <div class="info-button-container">
+                <button class="maps-button" onclick="window.open('https://maps.google.com/?q=Hotel+Restaurante+Santos+Santomera', '_blank')">
+                  <i class="fas fa-map-marker-alt"></i>
+                  Ver en Maps
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -1518,7 +1659,9 @@
           'media/wring.png', // Añadida imagen del anillo para itinerario
           'media/wcocktail.png', // Añadida imagen del cóctel para itinerario
           'media/wdinner.png', // Añadida imagen de la cena para itinerario
-          'media/wparty.png' // Añadida imagen de la fiesta para itinerario
+          'media/wparty.png', // Añadida imagen de la fiesta para itinerario
+          'media/wdress.png', // Añadida imagen del vestido para + Info
+          'media/whotel.png' // Añadida imagen del hotel para + Info
         ];
         
         let loadedCount = 0;
@@ -1728,19 +1871,19 @@
 
     // Referencias a los botones y menús
     const dondeBtn = document.getElementById('dondeBtn');
-    const itinerarioBtn = document.getElementById('itinerarioBtn'); // Cambiado de cronogramaBtn
+    const itinerarioBtn = document.getElementById('itinerarioBtn');
     const asistenciaBtn = document.getElementById('asistenciaBtn');
-    const detallesBtn = document.getElementById('detallesBtn');
+    const infoBtn = document.getElementById('infoBtn'); // Cambiado de detallesBtn
     
     const dondeMenu = document.getElementById('dondeMenu');
-    const itinerarioMenu = document.getElementById('itinerarioMenu'); // Cambiado de cronogramaMenu
+    const itinerarioMenu = document.getElementById('itinerarioMenu');
     const asistenciaMenu = document.getElementById('asistenciaMenu');
-    const detallesMenu = document.getElementById('detallesMenu');
+    const infoMenu = document.getElementById('infoMenu'); // Cambiado de detallesMenu
     
     const closeDonde = document.getElementById('closeDonde');
-    const closeItinerario = document.getElementById('closeItinerario'); // Cambiado de closeCronograma
+    const closeItinerario = document.getElementById('closeItinerario');
     const closeAsistencia = document.getElementById('closeAsistencia');
-    const closeDetalles = document.getElementById('closeDetalles');
+    const closeInfo = document.getElementById('closeInfo'); // Cambiado de closeDetalles
 
     // Funciones para abrir menús
     dondeBtn.addEventListener('click', () => {
@@ -1755,8 +1898,8 @@
       asistenciaMenu.classList.add('active');
     });
     
-    detallesBtn.addEventListener('click', () => {
-      detallesMenu.classList.add('active');
+    infoBtn.addEventListener('click', () => {
+      infoMenu.classList.add('active');
     });
 
     // Funciones para cerrar menús
@@ -1772,8 +1915,8 @@
       asistenciaMenu.classList.remove('active');
     });
     
-    closeDetalles.addEventListener('click', () => {
-      detallesMenu.classList.remove('active');
+    closeInfo.addEventListener('click', () => {
+      infoMenu.classList.remove('active');
     });
 
     // Cerrar menús al hacer clic fuera del contenido
@@ -1795,9 +1938,9 @@
       }
     });
     
-    detallesMenu.addEventListener('click', (e) => {
-      if (e.target === detallesMenu) {
-        detallesMenu.classList.remove('active');
+    infoMenu.addEventListener('click', (e) => {
+      if (e.target === infoMenu) {
+        infoMenu.classList.remove('active');
       }
     });
 
