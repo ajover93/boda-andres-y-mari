@@ -625,10 +625,14 @@
       margin: 10px 0;
     }
 
-    /* NUEVOS ESTILOS PARA EL MENÚ DE UBICACIÓN */
+    /* NUEVOS ESTILOS PARA EL MENÚ DE UBICACIÓN - MEJORADO */
     .location-section {
-      margin-bottom: 30px;
+      margin-bottom: 40px;
       text-align: center;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
     }
 
     .location-title {
@@ -652,6 +656,7 @@
       color: #666;
       margin-bottom: 15px;
       line-height: 1.4;
+      max-width: 300px;
     }
 
     .maps-button {
@@ -681,6 +686,30 @@
       height: auto;
       border-radius: 10px;
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    /* MEDIA QUERY ESPECÍFICA PARA PANTALLAS HORIZONTALES */
+    @media (min-width: 768px) and (orientation: landscape) {
+      .location-section {
+        margin-bottom: 50px;
+      }
+      
+      .location-title {
+        font-size: 3.2rem;
+      }
+      
+      .location-name {
+        font-size: 1.4rem;
+      }
+      
+      .location-address {
+        font-size: 1.1rem;
+        max-width: 350px;
+      }
+      
+      .location-image {
+        max-width: 350px;
+      }
     }
 
     @media (max-width: 768px) {
@@ -755,11 +784,11 @@
       .location-title {
         font-size: 2.5rem;
       }
-
+      
       .location-name {
         font-size: 1.2rem;
       }
-
+      
       .location-address {
         font-size: 0.9rem;
       }
@@ -818,11 +847,11 @@
       .location-title {
         font-size: 2rem;
       }
-
+      
       .location-name {
         font-size: 1.1rem;
       }
-
+      
       .location-address {
         font-size: 0.8rem;
       }
