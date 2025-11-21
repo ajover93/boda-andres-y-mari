@@ -842,6 +842,68 @@
       margin-top: 10px;
     }
 
+    /* NUEVO: ESTILOS PARA LA OPCIÓN DE ASISTENCIA */
+    .asistencia-option {
+      margin-bottom: 20px;
+      padding: 15px;
+      background: #f8f9fa;
+      border-radius: 10px;
+      border: 1px solid #e9ecef;
+    }
+
+    .asistencia-question {
+      font-weight: 600;
+      color: #004c91;
+      margin-bottom: 10px;
+      font-size: 1.1rem;
+    }
+
+    .option-buttons {
+      display: flex;
+      gap: 10px;
+    }
+
+    .option-button {
+      flex: 1;
+      padding: 10px 15px;
+      border: 2px solid #004c91;
+      border-radius: 8px;
+      background: white;
+      color: #004c91;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .option-button.active {
+      background: #004c91;
+      color: white;
+    }
+
+    .option-button:hover:not(.active) {
+      background: #e3f2fd;
+    }
+
+    .no-asistencia-text {
+      margin-top: 10px;
+      padding: 10px;
+      background: #fff3cd;
+      border: 1px solid #ffeaa7;
+      border-radius: 5px;
+      color: #856404;
+      font-size: 0.9rem;
+      line-height: 1.4;
+      display: none;
+    }
+
+    .asistencia-fields {
+      transition: all 0.3s ease;
+    }
+
+    .asistencia-fields.hidden {
+      display: none;
+    }
+
     /* MEDIA QUERY ESPECÍFICA PARA PANTALLAS HORIZONTALES */
     @media (min-width: 768px) and (orientation: landscape) {
       .location-section {
@@ -992,6 +1054,15 @@
       }
       
       .info-content {
+        padding: 12px;
+      }
+
+      /* AJUSTES RESPONSIVE PARA ASISTENCIA */
+      .option-buttons {
+        flex-direction: column;
+      }
+      
+      .option-button {
         padding: 12px;
       }
     }
@@ -1550,7 +1621,7 @@
       </div>
     </div>
 
-    <!-- Menú Asistencia -->
+    <!-- Menú Asistencia - ACTUALIZADO -->
     <div class="menu-overlay" id="asistenciaMenu">
       <div class="menu-content">
         <button class="close-button" id="closeAsistencia">×</button>
@@ -1564,7 +1635,20 @@
             <label>No rellenes esto: <input name="bot-field" /></label>
           </p>
           <input type="hidden" name="comensales_data" id="comensalesData" />
+          <input type="hidden" name="asistencia_opcion" id="asistenciaOpcion" value="si" />
         </form>
+        
+        <!-- Opción de asistencia -->
+        <div class="asistencia-option">
+          <div class="asistencia-question">¿Asistirás?</div>
+          <div class="option-buttons">
+            <button type="button" class="option-button active" data-value="si">Sí</button>
+            <button type="button" class="option-button" data-value="no">No</button>
+          </div>
+          <div class="no-asistencia-text" id="noAsistenciaText">
+            Aunque no puedas asistir, nos ayuda mucho a organizarnos si al menos introduces el nombre de la persona que recibió el enlace.
+          </div>
+        </div>
         
         <div class="asistencia-form">
           <div class="form-group">
@@ -1572,29 +1656,31 @@
             <input type="text" id="nombreComensal" placeholder="Ej: Juan Pérez García">
           </div>
           
-          <div class="form-group">
-            <label for="intolerancias">Intolerancias/Alergias alimentarias:</label>
-            <input type="text" id="intolerancias" placeholder="Ej: Sin gluten, alergia a los frutos secos">
+          <div class="asistencia-fields" id="asistenciaFields">
+            <div class="form-group">
+              <label for="intolerancias">Intolerancias/Alergias alimentarias:</label>
+              <input type="text" id="intolerancias" placeholder="Ej: Sin gluten, alergia a los frutos secos">
+            </div>
+            
+            <div class="checkbox-group">
+              <input type="checkbox" id="menuInfantil">
+              <label for="menuInfantil">Este comensal tomará menú infantil</label>
+            </div>
+            
+            <div class="form-group">
+              <label for="cancion">Canción que no puede faltar (opcional):</label>
+              <input type="text" id="cancion" placeholder="Ej: 'Bohemian Rhapsody' - Queen">
+            </div>
+            
+            <button type="button" class="add-button" id="agregarComensal">Añadir comensal</button>
+            
+            <div class="comensales-list" id="listaComensales">
+              <div class="empty-list">Aún no has añadido ningún comensal</div>
+            </div>
           </div>
-          
-          <div class="checkbox-group">
-            <input type="checkbox" id="menuInfantil">
-            <label for="menuInfantil">Este comensal tomará menú infantil</label>
-          </div>
-          
-          <div class="form-group">
-            <label for="cancion">Canción que no puede faltar (opcional):</label>
-            <input type="text" id="cancion" placeholder="Ej: 'Bohemian Rhapsody' - Queen">
-          </div>
-          
-          <button type="button" class="add-button" id="agregarComensal">Añadir comensal</button>
         </div>
         
-        <div class="comensales-list" id="listaComensales">
-          <div class="empty-list">Aún no has añadido ningún comensal</div>
-        </div>
-        
-        <button type="button" class="submit-button" id="enviarAsistencia" disabled>Confirmar asistencia</button>
+        <button type="button" class="submit-button" id="enviarAsistencia">Confirmar asistencia</button>
         
         <div class="confirmation-message" id="mensajeConfirmacion">
           ¡Gracias! Tu asistencia ha sido confirmada correctamente.
@@ -1953,15 +2039,55 @@
       }
     });
 
-    // Lógica para el formulario de asistencia
+    // Lógica para el formulario de asistencia - ACTUALIZADA
     const agregarComensalBtn = document.getElementById('agregarComensal');
     const enviarAsistenciaBtn = document.getElementById('enviarAsistencia');
     const listaComensales = document.getElementById('listaComensales');
     const mensajeConfirmacion = document.getElementById('mensajeConfirmacion');
     const netlifyForm = document.getElementById('netlifyForm');
     const comensalesDataField = document.getElementById('comensalesData');
+    const asistenciaOpcionField = document.getElementById('asistenciaOpcion');
+    const noAsistenciaText = document.getElementById('noAsistenciaText');
+    const asistenciaFields = document.getElementById('asistenciaFields');
+    const optionButtons = document.querySelectorAll('.option-button');
     
     let comensales = [];
+    let asistira = true; // Por defecto marcado como "Sí"
+
+    // Función para manejar la opción de asistencia
+    function manejarOpcionAsistencia(opcion) {
+      asistira = opcion === 'si';
+      asistenciaOpcionField.value = opcion;
+      
+      // Actualizar botones
+      optionButtons.forEach(btn => {
+        if (btn.dataset.value === opcion) {
+          btn.classList.add('active');
+        } else {
+          btn.classList.remove('active');
+        }
+      });
+      
+      // Mostrar/ocultar campos según la opción
+      if (asistira) {
+        asistenciaFields.classList.remove('hidden');
+        noAsistenciaText.style.display = 'none';
+        enviarAsistenciaBtn.textContent = 'Confirmar asistencia';
+        actualizarBotonEnviar();
+      } else {
+        asistenciaFields.classList.add('hidden');
+        noAsistenciaText.style.display = 'block';
+        enviarAsistenciaBtn.textContent = 'Enviar';
+        enviarAsistenciaBtn.disabled = false;
+      }
+    }
+
+    // Event listeners para los botones de opción
+    optionButtons.forEach(button => {
+      button.addEventListener('click', () => {
+        manejarOpcionAsistencia(button.dataset.value);
+      });
+    });
 
     // Función para agregar un comensal
     function agregarComensal() {
@@ -2057,7 +2183,13 @@
 
     // Función para actualizar el estado del botón de enviar
     function actualizarBotonEnviar() {
-      enviarAsistenciaBtn.disabled = comensales.length === 0;
+      if (asistira) {
+        enviarAsistenciaBtn.disabled = comensales.length === 0;
+      } else {
+        // Para "No", solo se requiere el nombre
+        const nombre = document.getElementById('nombreComensal').value.trim();
+        enviarAsistenciaBtn.disabled = !nombre;
+      }
     }
 
     // Función para enviar los datos a Netlify usando fetch
@@ -2090,6 +2222,13 @@
 
     // Función para enviar la confirmación de asistencia
     async function enviarAsistencia() {
+      // Validar que al menos hay un nombre
+      const nombre = document.getElementById('nombreComensal').value.trim();
+      if (!nombre) {
+        alert('Por favor, introduce al menos el nombre del comensal.');
+        return;
+      }
+      
       // Mostrar mensaje de confirmación
       mensajeConfirmacion.style.display = 'block';
       
@@ -2097,14 +2236,15 @@
       const exito = await enviarAsistenciaNetlify();
       
       if (exito) {
-        console.log('Asistencia confirmada y enviada a Netlify');
+        console.log('Respuesta enviada correctamente a Netlify');
       } else {
-        console.log('Asistencia confirmada localmente (error en envío a Netlify)');
+        console.log('Respuesta enviada localmente (error en envío a Netlify)');
       }
       
       // Limpiar el formulario después de enviar
       comensales = [];
       actualizarListaComensales();
+      limpiarFormulario();
       actualizarBotonEnviar();
       
       // Ocultar el mensaje después de unos segundos
@@ -2121,9 +2261,16 @@
     // Permitir agregar comensal con la tecla Enter en el campo de nombre
     document.getElementById('nombreComensal').addEventListener('keypress', function(e) {
       if (e.key === 'Enter') {
-        agregarComensal();
+        if (asistira) {
+          agregarComensal();
+        } else {
+          enviarAsistencia();
+        }
       }
     });
+
+    // Actualizar estado del botón cuando cambie el campo de nombre
+    document.getElementById('nombreComensal').addEventListener('input', actualizarBotonEnviar);
   </script>
 </body>
 </html>
