@@ -1621,7 +1621,7 @@
       </div>
     </div>
 
-    <!-- Menú Asistencia - ACTUALIZADO -->
+    <!-- Menú Asistencia - CORREGIDO -->
     <div class="menu-overlay" id="asistenciaMenu">
       <div class="menu-content">
         <button class="close-button" id="closeAsistencia">×</button>
@@ -1636,6 +1636,7 @@
           </p>
           <input type="hidden" name="comensales_data" id="comensalesData" />
           <input type="hidden" name="asistencia_opcion" id="asistenciaOpcion" value="si" />
+          <input type="hidden" name="nombre_no_asistente" id="nombreNoAsistente" />
         </form>
         
         <!-- Opción de asistencia -->
@@ -1651,7 +1652,7 @@
         </div>
         
         <div class="asistencia-form">
-          <div class="form-group">
+          <div class="form-group" id="nombreGrupo">
             <label for="nombreComensal">Nombre y apellidos del comensal:</label>
             <input type="text" id="nombreComensal" placeholder="Ej: Juan Pérez García">
           </div>
@@ -1683,7 +1684,7 @@
         <button type="button" class="submit-button" id="enviarAsistencia">Confirmar asistencia</button>
         
         <div class="confirmation-message" id="mensajeConfirmacion">
-          ¡Gracias! Tu asistencia ha sido confirmada correctamente.
+          ¡Gracias! Tu respuesta ha sido enviada correctamente.
         </div>
       </div>
     </div>
@@ -1749,14 +1750,14 @@
           'media/papel-textura-exterior.jpg',
           'media/sello.png',
           'media/title.png',
-          'media/iglesia.jpg', // Añadida imagen de la iglesia
-          'media/cason.png', // Añadida imagen del casón
-          'media/wring.png', // Añadida imagen del anillo para itinerario
-          'media/wcocktail.png', // Añadida imagen del cóctel para itinerario
-          'media/wdinner.png', // Añadida imagen de la cena para itinerario
-          'media/wparty.png', // Añadida imagen de la fiesta para itinerario
-          'media/wdress.png', // Añadida imagen del vestido para + Info
-          'media/whotel.png' // Añadida imagen del hotel para + Info
+          'media/iglesia.jpg',
+          'media/cason.png',
+          'media/wring.png',
+          'media/wcocktail.png',
+          'media/wdinner.png',
+          'media/wparty.png',
+          'media/wdress.png',
+          'media/whotel.png'
         ];
         
         let loadedCount = 0;
@@ -1968,17 +1969,17 @@
     const dondeBtn = document.getElementById('dondeBtn');
     const itinerarioBtn = document.getElementById('itinerarioBtn');
     const asistenciaBtn = document.getElementById('asistenciaBtn');
-    const infoBtn = document.getElementById('infoBtn'); // Cambiado de detallesBtn
+    const infoBtn = document.getElementById('infoBtn');
     
     const dondeMenu = document.getElementById('dondeMenu');
     const itinerarioMenu = document.getElementById('itinerarioMenu');
     const asistenciaMenu = document.getElementById('asistenciaMenu');
-    const infoMenu = document.getElementById('infoMenu'); // Cambiado de detallesMenu
+    const infoMenu = document.getElementById('infoMenu');
     
     const closeDonde = document.getElementById('closeDonde');
     const closeItinerario = document.getElementById('closeItinerario');
     const closeAsistencia = document.getElementById('closeAsistencia');
-    const closeInfo = document.getElementById('closeInfo'); // Cambiado de closeDetalles
+    const closeInfo = document.getElementById('closeInfo');
 
     // Funciones para abrir menús
     dondeBtn.addEventListener('click', () => {
@@ -2039,7 +2040,7 @@
       }
     });
 
-    // Lógica para el formulario de asistencia - ACTUALIZADA
+    // Lógica para el formulario de asistencia - CORREGIDA
     const agregarComensalBtn = document.getElementById('agregarComensal');
     const enviarAsistenciaBtn = document.getElementById('enviarAsistencia');
     const listaComensales = document.getElementById('listaComensales');
@@ -2047,9 +2048,12 @@
     const netlifyForm = document.getElementById('netlifyForm');
     const comensalesDataField = document.getElementById('comensalesData');
     const asistenciaOpcionField = document.getElementById('asistenciaOpcion');
+    const nombreNoAsistenteField = document.getElementById('nombreNoAsistente');
     const noAsistenciaText = document.getElementById('noAsistenciaText');
     const asistenciaFields = document.getElementById('asistenciaFields');
+    const nombreGrupo = document.getElementById('nombreGrupo');
     const optionButtons = document.querySelectorAll('.option-button');
+    const nombreComensalInput = document.getElementById('nombreComensal');
     
     let comensales = [];
     let asistira = true; // Por defecto marcado como "Sí"
@@ -2072,13 +2076,15 @@
       if (asistira) {
         asistenciaFields.classList.remove('hidden');
         noAsistenciaText.style.display = 'none';
+        nombreGrupo.style.display = 'block';
         enviarAsistenciaBtn.textContent = 'Confirmar asistencia';
         actualizarBotonEnviar();
       } else {
         asistenciaFields.classList.add('hidden');
         noAsistenciaText.style.display = 'block';
+        nombreGrupo.style.display = 'block';
         enviarAsistenciaBtn.textContent = 'Enviar';
-        enviarAsistenciaBtn.disabled = false;
+        actualizarBotonEnviar();
       }
     }
 
@@ -2091,7 +2097,7 @@
 
     // Función para agregar un comensal
     function agregarComensal() {
-      const nombre = document.getElementById('nombreComensal').value.trim();
+      const nombre = nombreComensalInput.value.trim();
       const intolerancias = document.getElementById('intolerancias').value.trim();
       const menuInfantil = document.getElementById('menuInfantil').checked;
       const cancion = document.getElementById('cancion').value.trim();
@@ -2175,28 +2181,37 @@
 
     // Función para limpiar el formulario después de agregar un comensal
     function limpiarFormulario() {
-      document.getElementById('nombreComensal').value = '';
+      nombreComensalInput.value = '';
       document.getElementById('intolerancias').value = '';
       document.getElementById('menuInfantil').checked = false;
       document.getElementById('cancion').value = '';
     }
 
-    // Función para actualizar el estado del botón de enviar
+    // Función para actualizar el estado del botón de enviar - CORREGIDA
     function actualizarBotonEnviar() {
       if (asistira) {
+        // Para "Sí": solo necesita que haya al menos un comensal en la lista
         enviarAsistenciaBtn.disabled = comensales.length === 0;
       } else {
-        // Para "No", solo se requiere el nombre
-        const nombre = document.getElementById('nombreComensal').value.trim();
+        // Para "No": necesita que el campo de nombre esté completo
+        const nombre = nombreComensalInput.value.trim();
         enviarAsistenciaBtn.disabled = !nombre;
       }
     }
 
-    // Función para enviar los datos a Netlify usando fetch
+    // Función para enviar los datos a Netlify usando fetch - CORREGIDA
     async function enviarAsistenciaNetlify() {
       try {
-        // Preparar los datos para Netlify
-        comensalesDataField.value = JSON.stringify(comensales);
+        // Preparar los datos según la opción seleccionada
+        if (asistira) {
+          // Para "Sí": enviar la lista de comensales
+          comensalesDataField.value = JSON.stringify(comensales);
+          nombreNoAsistenteField.value = ''; // Limpiar campo de nombre para "No"
+        } else {
+          // Para "No": enviar solo el nombre
+          comensalesDataField.value = ''; // Limpiar campo de comensales
+          nombreNoAsistenteField.value = nombreComensalInput.value.trim();
+        }
         
         // Crear FormData desde el formulario oculto
         const formData = new FormData(netlifyForm);
@@ -2220,12 +2235,16 @@
       }
     }
 
-    // Función para enviar la confirmación de asistencia
+    // Función para enviar la confirmación de asistencia - CORREGIDA
     async function enviarAsistencia() {
-      // Validar que al menos hay un nombre
-      const nombre = document.getElementById('nombreComensal').value.trim();
-      if (!nombre) {
-        alert('Por favor, introduce al menos el nombre del comensal.');
+      // Validaciones según la opción seleccionada
+      if (asistira && comensales.length === 0) {
+        alert('Por favor, añade al menos un comensal antes de confirmar la asistencia.');
+        return;
+      }
+      
+      if (!asistira && !nombreComensalInput.value.trim()) {
+        alert('Por favor, introduce tu nombre antes de enviar.');
         return;
       }
       
@@ -2259,7 +2278,7 @@
     enviarAsistenciaBtn.addEventListener('click', enviarAsistencia);
 
     // Permitir agregar comensal con la tecla Enter en el campo de nombre
-    document.getElementById('nombreComensal').addEventListener('keypress', function(e) {
+    nombreComensalInput.addEventListener('keypress', function(e) {
       if (e.key === 'Enter') {
         if (asistira) {
           agregarComensal();
@@ -2269,8 +2288,25 @@
       }
     });
 
+    // Actualizar estado del botón cuando cambie la lista de comensales
+    document.addEventListener('DOMContentLoaded', function() {
+      // Observar cambios en la lista de comensales
+      const observer = new MutationObserver(function(mutations) {
+        mutations.forEach(function(mutation) {
+          if (mutation.type === 'childList') {
+            actualizarBotonEnviar();
+          }
+        });
+      });
+      
+      observer.observe(listaComensales, { childList: true, subtree: true });
+    });
+
     // Actualizar estado del botón cuando cambie el campo de nombre
-    document.getElementById('nombreComensal').addEventListener('input', actualizarBotonEnviar);
+    nombreComensalInput.addEventListener('input', actualizarBotonEnviar);
+
+    // Inicializar el estado del botón
+    actualizarBotonEnviar();
   </script>
 </body>
 </html>
