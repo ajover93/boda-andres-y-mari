@@ -431,6 +431,9 @@
     .text-content {
       margin-top: 5vh;
       transition: opacity 0.5s ease;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
     }
 
     .text-content.hidden {
@@ -1511,7 +1514,7 @@
       </div>
 
       <div class="header-content" id="headerContent">
-        <!-- MODIFICACIÓN: El título se mueve fuera del text-content para que no se oculte -->
+        <!-- MODIFICACIÓN: El título está fuera del text-content pero dentro del header-content -->
         <img src="media/title.png" alt="Boda de Andrés & María del Carmen" class="title-image" id="titleImage">
         
         <div class="text-content" id="textContent">
@@ -1883,7 +1886,6 @@
     function toggleElementsVisibility() {
       if (elementsVisible) {
         // Ocultar elementos (excepto el título)
-        headerContent.classList.add('hidden');
         textContent.classList.add('hidden');
         weddingDate.classList.add('hidden');
         weddingSubtitle.classList.add('hidden');
@@ -1894,7 +1896,6 @@
         eyeIcon.className = 'fas fa-eye-slash';
       } else {
         // Mostrar elementos
-        headerContent.classList.remove('hidden');
         textContent.classList.remove('hidden');
         weddingDate.classList.remove('hidden');
         weddingSubtitle.classList.remove('hidden');
