@@ -446,9 +446,10 @@
       transition: opacity 0.5s ease;
     }
 
-    .title-image.hidden {
+    /* MODIFICACIÓN: El título ya no se oculta */
+    /* .title-image.hidden {
       opacity: 0;
-    }
+    } */
 
     /* FECHA MÁS PEQUEÑA (reducida de 3rem a 2.5rem) */
     .wedding-date {
@@ -1510,9 +1511,11 @@
       </div>
 
       <div class="header-content" id="headerContent">
+        <!-- MODIFICACIÓN: El título se mueve fuera del text-content para que no se oculte -->
+        <img src="media/title.png" alt="Boda de Andrés & María del Carmen" class="title-image" id="titleImage">
+        
         <div class="text-content" id="textContent">
-          <!-- TÍTULO COMO IMAGEN Y FECHA ELEGANTE -->
-          <img src="media/title.png" alt="Boda de Andrés & María del Carmen" class="title-image" id="titleImage">
+          <!-- FECHA ELEGANTE -->
           <div class="wedding-date" id="weddingDate">5 de diciembre de 2026</div>
           <div class="wedding-subtitle" id="weddingSubtitle">¡Nos casamos!</div>
         </div>
@@ -1876,13 +1879,12 @@
     // Estado inicial: elementos visibles
     let elementsVisible = true;
 
-    // Función para alternar la visibilidad de los elementos
+    // MODIFICACIÓN: Función para alternar la visibilidad de los elementos (sin ocultar el título)
     function toggleElementsVisibility() {
       if (elementsVisible) {
-        // Ocultar elementos
+        // Ocultar elementos (excepto el título)
         headerContent.classList.add('hidden');
         textContent.classList.add('hidden');
-        titleImage.classList.add('hidden');
         weddingDate.classList.add('hidden');
         weddingSubtitle.classList.add('hidden');
         buttonsContainer.classList.add('hidden');
@@ -1894,7 +1896,6 @@
         // Mostrar elementos
         headerContent.classList.remove('hidden');
         textContent.classList.remove('hidden');
-        titleImage.classList.remove('hidden');
         weddingDate.classList.remove('hidden');
         weddingSubtitle.classList.remove('hidden');
         buttonsContainer.classList.remove('hidden');
