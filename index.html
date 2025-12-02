@@ -437,17 +437,24 @@
       transition: opacity 0.5s ease;
     }
 
-    /* CONTENEDOR PARA FECHA Y SUBTÍTULO (justo debajo del título) */
+    /* CONTENEDOR PARA FECHA Y SUBTÍTULO (justo debajo del título) - MODIFICADO */
     .date-subtitle-container {
       display: flex;
       flex-direction: column;
       align-items: center;
       margin-bottom: 3rem; /* Espacio antes de los botones */
-      transition: opacity 0.5s ease;
+      transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1); /* Transición más suave */
+      position: absolute;
+      top: 34%; /* Posición original */
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 100%;
     }
 
-    .date-subtitle-container.hidden {
-      opacity: 0;
+    /* NUEVO: Estado cuando la interfaz está oculta */
+    .date-subtitle-container.hidden-interface {
+      top: 70% !important; /* Se mueve al 80% de la pantalla */
+      transform: translate(-50%, -50%);
     }
 
     /* FECHA MÁS PEQUEÑA (reducida de 3rem a 2.5rem) */
@@ -457,14 +464,10 @@
       font-weight: 600;
       letter-spacing: 1px;
       margin-bottom: 0.3rem;
-      color: #fff;
+      color: #4A2B15;
       text-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
       animation: fadeInUp 1s ease 0.5s both;
-      transition: opacity 0.5s ease;
-    }
-
-    .wedding-date.hidden {
-      opacity: 0;
+      transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
     /* "¡NOS CASAMOS!" MÁS GRANDE (aumentado de 2.2rem a 2.8rem) */
@@ -473,14 +476,10 @@
       font-size: 2.8rem; /* Aumentado de 2.2rem */
       font-weight: 500;
       font-style: normal;
-      color: #e6f3ff;
+      color: #4A2B15;
       text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
       animation: fadeInUp 1s ease 0.7s both;
-      transition: opacity 0.5s ease;
-    }
-
-    .wedding-subtitle.hidden {
-      opacity: 0;
+      transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
     @keyframes fadeInUp {
@@ -994,7 +993,12 @@
       }
 
       .date-subtitle-container {
-        margin-bottom: 2rem; /* Menos espacio en móviles */
+        top: 50%; /* Ajustado para móviles */
+        margin-bottom: 0;
+      }
+
+      .date-subtitle-container.hidden-interface {
+        top: 65% !important; /* Ajustado para móviles */
       }
 
       /* AJUSTES RESPONSIVE PARA EL MENÚ DE UBICACIÓN */
@@ -1115,7 +1119,11 @@
       }
 
       .date-subtitle-container {
-        margin-bottom: 1.5rem; /* Aún menos espacio en pantallas muy pequeñas */
+        top: 45%; /* Ajustado para pantallas pequeñas */
+      }
+
+      .date-subtitle-container.hidden-interface {
+        top: 60% !important; /* Ajustado para pantallas pequeñas */
       }
 
       /* AJUSTES RESPONSIVE PARA EL MENÚ DE UBICACIÓN */
@@ -1883,22 +1891,28 @@
     // Estado inicial: elementos visibles
     let elementsVisible = true;
 
-    // FUNCIÓN ACTUALIZADA: para alternar la visibilidad de los elementos (sin ocultar el título)
+    // FUNCIÓN ACTUALIZADA: para alternar la visibilidad de los elementos
     function toggleElementsVisibility() {
       if (elementsVisible) {
-        // Ocultar elementos (excepto el título)
-        dateSubtitleContainer.classList.add('hidden');
+        // Ocultar elementos (excepto el título y el texto)
         buttonsContainer.classList.add('hidden');
         overlay.classList.add('hidden');
         videoBackground.classList.add('video-clear');
+        
+        // Mover el texto a la parte baja (80%)
+        dateSubtitleContainer.classList.add('hidden-interface');
+        
         // Cambiar icono a ojo cerrado
         eyeIcon.className = 'fas fa-eye-slash';
       } else {
         // Mostrar elementos
-        dateSubtitleContainer.classList.remove('hidden');
         buttonsContainer.classList.remove('hidden');
         overlay.classList.remove('hidden');
         videoBackground.classList.remove('video-clear');
+        
+        // Mover el texto de vuelta a su posición original
+        dateSubtitleContainer.classList.remove('hidden-interface');
+        
         // Cambiar icono a ojo abierto
         eyeIcon.className = 'fas fa-eye';
       }
