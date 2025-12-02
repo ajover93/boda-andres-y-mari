@@ -418,7 +418,7 @@
       height: 100%;
       display: flex;
       flex-direction: column;
-      justify-content: space-between;
+      justify-content: flex-start; /* CAMBIADO de 'center' a 'flex-start' */
       align-items: center;
       transition: opacity 0.5s ease;
     }
@@ -428,32 +428,27 @@
       pointer-events: none;
     }
 
-    .text-content {
-      margin-top: 5vh;
-      transition: opacity 0.5s ease;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-
-    .text-content.hidden {
-      opacity: 0;
-    }
-
     /* ESTILOS NUEVOS PARA EL TÍTULO Y FECHA CON DANCING SCRIPT */
     .title-image {
       max-width: 80%;
       height: auto;
-      margin-top: 25%;  /* PORCENTAJE */
-      margin-bottom: 1.5rem;
+      margin-top: 20%; /* AGREGADO: ajusta este valor para moverlo más arriba o abajo */
       filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
       transition: opacity 0.5s ease;
     }
 
-    /* MODIFICACIÓN: El título ya no se oculta */
-    /* .title-image.hidden {
+    /* CONTENEDOR PARA FECHA Y SUBTÍTULO (justo debajo del título) */
+    .date-subtitle-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-bottom: 3rem; /* Espacio antes de los botones */
+      transition: opacity 0.5s ease;
+    }
+
+    .date-subtitle-container.hidden {
       opacity: 0;
-    } */
+    }
 
     /* FECHA MÁS PEQUEÑA (reducida de 3rem a 2.5rem) */
     .wedding-date {
@@ -461,7 +456,7 @@
       font-size: 2.5rem; /* Reducido de 3rem */
       font-weight: 600;
       letter-spacing: 1px;
-      margin-bottom: 0.5rem;
+      margin-bottom: 0.3rem;
       color: #fff;
       text-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
       animation: fadeInUp 1s ease 0.5s both;
@@ -507,7 +502,7 @@
 
     .buttons-container {
       position: absolute;
-      bottom: 80px;
+      bottom: 80px; /* Restaurado a su valor original */
       left: 50%;
       transform: translateX(-50%);
       width: 100%;
@@ -968,10 +963,6 @@
         padding: 12px 8px;
       }
 
-      .text-content {
-        margin-top: 4vh;
-      }
-
       .mute-button {
         top: 15px;
         right: 15px;
@@ -990,16 +981,20 @@
 
       /* AJUSTES RESPONSIVE PARA EL NUEVO TÍTULO Y FECHA */
       .wedding-date {
-        font-size: 2rem; /* Reducido de 2.4rem */
+        font-size: 2rem; /* Reducido de 2.5rem */
       }
 
       .wedding-subtitle {
-        font-size: 2.2rem; /* Aumentado de 1.8rem */
+        font-size: 2.2rem; /* Reducido de 2.8rem */
       }
 
       .title-image {
         max-width: 90%;
-        margin-top: 25%;  /* PORCENTAJE */
+        margin-top: 20%; /* Ajustado para móviles */
+      }
+
+      .date-subtitle-container {
+        margin-bottom: 2rem; /* Menos espacio en móviles */
       }
 
       /* AJUSTES RESPONSIVE PARA EL MENÚ DE UBICACIÓN */
@@ -1089,10 +1084,6 @@
         padding: 10px 6px;
       }
 
-      .text-content {
-        margin-top: 3vh;
-      }
-
       .mute-button {
         top: 10px;
         right: 10px;
@@ -1111,16 +1102,20 @@
 
       /* AJUSTES RESPONSIVE PARA EL NUEVO TÍTULO Y FECHA */
       .wedding-date {
-        font-size: 1.7rem; /* Reducido de 2rem */
+        font-size: 1.8rem; /* Reducido de 2rem */
       }
 
       .wedding-subtitle {
-        font-size: 1.8rem; /* Aumentado de 1.5rem */
+        font-size: 1.8rem; /* Mantenido */
       }
 
       .title-image {
         max-width: 95%;
-        margin-top: 25%;  /* PORCENTAJE */
+        margin-top: 20%; /* Ajustado para móviles */
+      }
+
+      .date-subtitle-container {
+        margin-bottom: 1.5rem; /* Aún menos espacio en pantallas muy pequeñas */
       }
 
       /* AJUSTES RESPONSIVE PARA EL MENÚ DE UBICACIÓN */
@@ -1517,16 +1512,17 @@
       </div>
 
       <div class="header-content" id="headerContent">
-        <!-- MODIFICACIÓN: El título está fuera del text-content pero dentro del header-content -->
+        <!-- Título principal -->
         <img src="media/title.png" alt="Boda de Andrés & María del Carmen" class="title-image" id="titleImage">
         
-        <div class="text-content" id="textContent">
+        <!-- NUEVO: Contenedor para fecha y subtítulo (justo debajo del título) -->
+        <div class="date-subtitle-container" id="dateSubtitleContainer">
           <!-- FECHA ELEGANTE -->
           <div class="wedding-date" id="weddingDate">5 de diciembre de 2026</div>
           <div class="wedding-subtitle" id="weddingSubtitle">¡Nos casamos!</div>
         </div>
         
-        <!-- BOTONES CON MARGEN ADECUADO -->
+        <!-- BOTONES -->
         <div class="buttons-container" id="buttonsContainer">
           <div class="buttons-grid">
             <button class="menu-button" id="dondeBtn">Dónde</button>
@@ -1873,8 +1869,10 @@
     const videoBackground = document.getElementById('videoBackground');
     const overlay = document.getElementById('overlay');
     const headerContent = document.getElementById('headerContent');
-    const textContent = document.getElementById('textContent');
     const titleImage = document.getElementById('titleImage');
+    
+    // NUEVAS REFERENCIAS PARA EL TEXTO DEBAJO DEL TÍTULO
+    const dateSubtitleContainer = document.getElementById('dateSubtitleContainer');
     const weddingDate = document.getElementById('weddingDate');
     const weddingSubtitle = document.getElementById('weddingSubtitle');
     
@@ -1885,13 +1883,11 @@
     // Estado inicial: elementos visibles
     let elementsVisible = true;
 
-    // MODIFICACIÓN: Función para alternar la visibilidad de los elementos (sin ocultar el título)
+    // FUNCIÓN ACTUALIZADA: para alternar la visibilidad de los elementos (sin ocultar el título)
     function toggleElementsVisibility() {
       if (elementsVisible) {
         // Ocultar elementos (excepto el título)
-        textContent.classList.add('hidden');
-        weddingDate.classList.add('hidden');
-        weddingSubtitle.classList.add('hidden');
+        dateSubtitleContainer.classList.add('hidden');
         buttonsContainer.classList.add('hidden');
         overlay.classList.add('hidden');
         videoBackground.classList.add('video-clear');
@@ -1899,9 +1895,7 @@
         eyeIcon.className = 'fas fa-eye-slash';
       } else {
         // Mostrar elementos
-        textContent.classList.remove('hidden');
-        weddingDate.classList.remove('hidden');
-        weddingSubtitle.classList.remove('hidden');
+        dateSubtitleContainer.classList.remove('hidden');
         buttonsContainer.classList.remove('hidden');
         overlay.classList.remove('hidden');
         videoBackground.classList.remove('video-clear');
