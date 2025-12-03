@@ -428,24 +428,26 @@
       pointer-events: none;
     }
 
-    /* ESTILOS NUEVOS PARA EL TÍTULO Y FECHA CON DANCING SCRIPT */
+    /* ESTILOS MEJORADOS PARA EL TÍTULO Y FECHA */
     .title-image {
-      max-width: 80%;
+      max-width: min(80%, 500px);
       height: auto;
-      margin-top: 20%; /* AGREGADO: ajusta este valor para moverlo más arriba o abajo */
+      margin-top: 12vh; /* Reducido para pantallas pequeñas */
       filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
       transition: opacity 0.5s ease;
+      width: auto;
+      object-fit: contain; /* Añadido para mejor manejo de la imagen */
     }
 
-    /* CONTENEDOR PARA FECHA Y SUBTÍTULO (justo debajo del título) - MODIFICADO */
+    /* CONTENEDOR PARA FECHA Y SUBTÍTULO - MEJORADO */
     .date-subtitle-container {
       display: flex;
       flex-direction: column;
       align-items: center;
-      margin-bottom: 3rem; /* Espacio antes de los botones */
-      transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1); /* Transición más suave */
+      margin-bottom: 3rem;
+      transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
       position: absolute;
-      top: 34%; /* Posición original */
+      top: 34% !important; /* Ajustado para pantallas pequeñas */
       left: 50%;
       transform: translate(-50%, -50%);
       width: 100%;
@@ -453,33 +455,39 @@
 
     /* NUEVO: Estado cuando la interfaz está oculta */
     .date-subtitle-container.hidden-interface {
-      top: 70% !important; /* Se mueve al 80% de la pantalla */
+      top: 70% !important; /* Ajustado para pantallas pequeñas */
       transform: translate(-50%, -50%);
     }
 
-    /* FECHA MÁS PEQUEÑA (reducida de 3rem a 2.5rem) */
+    /* FECHA - ESCALADO MEJORADO */
     .wedding-date {
       font-family: 'Dancing Script', cursive;
-      font-size: 2.5rem; /* Reducido de 3rem */
+      font-size: clamp(2rem, 4.5vw, 3rem); /* Ajustado para pantallas pequeñas */
       font-weight: 600;
-      letter-spacing: 1px;
+      letter-spacing: 0.5px; /* Reducido para pantallas pequeñas */
       margin-bottom: 0.3rem;
       color: #4A2B15;
       text-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
       animation: fadeInUp 1s ease 0.5s both;
       transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+      line-height: 1.2; /* Añadido para mejor espaciado */
+      text-align: center;
+      padding: 0 10px; /* Añadido para márgenes internos */
     }
 
-    /* "¡NOS CASAMOS!" MÁS GRANDE (aumentado de 2.2rem a 2.8rem) */
+    /* "¡NOS CASAMOS!" - ESCALADO MEJORADO */
     .wedding-subtitle {
       font-family: 'Dancing Script', cursive;
-      font-size: 2.8rem; /* Aumentado de 2.2rem */
+      font-size: clamp(2rem, 5.5vw, 3rem); /* Ajustado para pantallas pequeñas */
       font-weight: 500;
       font-style: normal;
       color: #4A2B15;
       text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
       animation: fadeInUp 1s ease 0.7s both;
       transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+      line-height: 1.2; /* Añadido para mejor espaciado */
+      text-align: center;
+      padding: 0 10px; /* Añadido para márgenes internos */
     }
 
     @keyframes fadeInUp {
@@ -903,6 +911,117 @@
       display: none;
     }
 
+    /* NUEVO: MEDIA QUERY ESPECÍFICA PARA PANTALLAS CON POCA ALTURA */
+    @media (max-height: 750px) {
+      .title-image {
+        max-width: min(75%, 400px); /* Reducido tamaño máximo */
+        margin-top: 8vh; /* Menos margen superior */
+      }
+      
+      .date-subtitle-container {
+        top: 34% !important; /* Bajado un poco para pantallas cortas */
+      }
+      
+      .date-subtitle-container.hidden-interface {
+        top: 70% !important; /* Ajustado para pantallas cortas */
+      }
+      
+      .wedding-date {
+        font-size: clamp(2rem, 4vw, 2.8rem); /* Más pequeño en pantallas cortas */
+        letter-spacing: 0.3px;
+        margin-bottom: 0.2rem;
+      }
+      
+      .wedding-subtitle {
+        font-size: clamp(2rem, 4.5vw, 2.8rem); /* Más pequeño en pantallas cortas */
+      }
+      
+      /* Ajustar posición de los botones */
+      .buttons-container {
+        bottom: 50px !important; /* Más arriba en pantallas cortas */
+      }
+    }
+
+    /* NUEVO: MEDIA QUERY PARA PANTALLAS MUY CORTAS */
+    @media (max-height: 600px) {
+      .title-image {
+        max-width: min(70%, 350px);
+        margin-top: 5vh;
+      }
+      
+      .date-subtitle-container {
+        top: 34% !important; /* Más abajo para pantallas muy cortas */
+      }
+      
+      .date-subtitle-container.hidden-interface {
+        top: 70% !important; /* Más abajo para pantallas muy cortas */
+      }
+      
+      .wedding-date {
+        font-size: clamp(2rem, 3.5vw, 2.5rem);
+        letter-spacing: 0.2px;
+        margin-bottom: 0.1rem;
+      }
+      
+      .wedding-subtitle {
+        font-size: clamp(2rem, 4vw, 2.5rem);
+      }
+      
+      .buttons-container {
+        bottom: 40px !important;
+        max-width: 280px;
+      }
+      
+      .buttons-grid {
+        gap: 10px;
+      }
+      
+      .menu-button {
+        min-height: 65px;
+        font-size: 0.9rem;
+        padding: 10px 8px;
+      }
+    }
+
+    /* NUEVO: MEDIA QUERY PARA PANTALLAS EXTREMADAMENTE CORTAS */
+    @media (max-height: 450px) {
+      .title-image {
+        max-width: min(60%, 250px);
+        margin-top: 3vh;
+      }
+      
+      .date-subtitle-container {
+        top: 34% !important;
+      }
+      
+      .date-subtitle-container.hidden-interface {
+        top: 70% !important;
+      }
+      
+      .wedding-date {
+        font-size: clamp(2rem, 3vw, 2.2rem);
+      }
+      
+      .wedding-subtitle {
+        font-size: clamp(2rem, 3.5vw, 2.2rem);
+      }
+      
+      .buttons-container {
+        bottom: 30px !important;
+        max-width: 250px;
+      }
+      
+      .buttons-grid {
+        gap: 8px;
+      }
+      
+      .menu-button {
+        min-height: 55px;
+        font-size: 0.8rem;
+        padding: 8px 6px;
+      }
+    }
+
     /* MEDIA QUERY ESPECÍFICA PARA PANTALLAS HORIZONTALES */
     @media (min-width: 768px) and (orientation: landscape) {
       .location-section {
@@ -924,6 +1043,30 @@
       
       .location-image {
         max-width: 350px;
+      }
+    }
+
+    /* PARA DISPOSITIVOS EN MODO HORIZONTAL - ACTUALIZADO */
+    @media (orientation: landscape) {
+      .title-image {
+        max-width: min(60%, 350px);
+        margin-top: 5vh;
+      }
+      
+      .date-subtitle-container {
+        top: 35% !important;
+      }
+      
+      .date-subtitle-container.hidden-interface {
+        top: 75% !important;
+      }
+      
+      .wedding-date {
+        font-size: clamp(1.2rem, 2.5vw, 2rem);
+      }
+      
+      .wedding-subtitle {
+        font-size: clamp(1.4rem, 3vw, 2.2rem);
       }
     }
 
@@ -976,29 +1119,6 @@
         width: 45px;
         height: 45px;
         font-size: 1.3rem;
-      }
-
-      /* AJUSTES RESPONSIVE PARA EL NUEVO TÍTULO Y FECHA */
-      .wedding-date {
-        font-size: 2rem; /* Reducido de 2.5rem */
-      }
-
-      .wedding-subtitle {
-        font-size: 2.2rem; /* Reducido de 2.8rem */
-      }
-
-      .title-image {
-        max-width: 90%;
-        margin-top: 20%; /* Ajustado para móviles */
-      }
-
-      .date-subtitle-container {
-        top: 34%; /* Ajustado para móviles */
-        margin-bottom: 0;
-      }
-
-      .date-subtitle-container.hidden-interface {
-        top: 70% !important; /* Ajustado para móviles */
       }
 
       /* AJUSTES RESPONSIVE PARA EL MENÚ DE UBICACIÓN */
@@ -1102,28 +1222,6 @@
         width: 40px;
         height: 40px;
         font-size: 1.2rem;
-      }
-
-      /* AJUSTES RESPONSIVE PARA EL NUEVO TÍTULO Y FECHA */
-      .wedding-date {
-        font-size: 1.8rem; /* Reducido de 2rem */
-      }
-
-      .wedding-subtitle {
-        font-size: 1.8rem; /* Mantenido */
-      }
-
-      .title-image {
-        max-width: 95%;
-        margin-top: 20%; /* Ajustado para móviles */
-      }
-
-      .date-subtitle-container {
-        top: 34%; /* Ajustado para pantallas pequeñas */
-      }
-
-      .date-subtitle-container.hidden-interface {
-        top: 70% !important; /* Ajustado para pantallas pequeñas */
       }
 
       /* AJUSTES RESPONSIVE PARA EL MENÚ DE UBICACIÓN */
@@ -1899,7 +1997,7 @@
         overlay.classList.add('hidden');
         videoBackground.classList.add('video-clear');
         
-        // Mover el texto a la parte baja (80%)
+        // Mover el texto a la parte baja
         dateSubtitleContainer.classList.add('hidden-interface');
         
         // Cambiar icono a ojo cerrado
