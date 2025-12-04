@@ -377,3 +377,75 @@
     height: 230px !important;
   }
 }
+
+/* ========== TABLETS HORIZONTAL BÁSICO ========== */
+@media (max-width: 1400px) and (orientation: landscape) {
+  .envelope { 
+    width: 380px !important; 
+    height: 265px !important; 
+  }
+  
+  .title-image {
+    max-width: min(35%, 300px) !important;
+    margin-top: 10vh !important;
+  }
+  
+  .wedding-date {
+    font-size: clamp(1.4rem, 3vw, 1.8rem) !important;
+  }
+  
+  .wedding-subtitle {
+    font-size: clamp(1.4rem, 3.5vw, 1.8rem) !important;
+  }
+  
+  .buttons-container {
+    max-width: 250px !important;
+    bottom: 50px !important;
+  }
+  
+  .menu-button {
+    min-height: 95px !important;
+    font-size: 1.15rem !important;
+  }
+  
+  /* Menús más anchos */
+  .menu-content {
+    max-width: 700px !important;
+  }
+}
+
+/* ========== TABLETS HORIZONTAL BÁSICO ========== */
+@media (max-width: 1024px) and (orientation: landscape) {
+  .envelope { 
+    width: 380px !important; 
+    height: 265px !important; 
+  }
+  
+  .title-image {
+    max-width: min(30%, 240px) !important;
+    margin-top: 9vh !important;
+  }
+  
+  .wedding-date {
+    font-size: clamp(1rem, 3vw, 1.4rem) !important;
+  }
+  
+  .wedding-subtitle {
+    font-size: clamp(1rem, 3.5vw, 1.4rem) !important;
+  }
+  
+  .buttons-container {
+    max-width: 200px !important;
+    bottom: 50px !important;
+  }
+  
+  .menu-button {
+    min-height: 95px !important;
+    font-size: 1.15rem !important;
+  }
+  
+  /* Menús más anchos */
+  .menu-content {
+    max-width: 700px !important;
+  }
+}
