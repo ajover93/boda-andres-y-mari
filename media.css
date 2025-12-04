@@ -449,3 +449,81 @@
     max-width: 700px !important;
   }
 }
+
+/* ========== MEDIA QUERIES PARA BOTONES PRINCIPALES ========== */
+
+/* Para tablets en vertical */
+@media (max-width: 1024px) and (orientation: portrait) {
+  .buttons-container {
+    max-width: 350px;
+  }
+  
+  .main-menu-button {
+    min-height: 85px;
+  }
+}
+
+/* Para móviles estándar */
+@media (max-width: 768px) {
+  .buttons-container {
+    max-width: 280px;
+  }
+  
+  .main-menu-button {
+    min-height: 70px;
+  }
+  
+  .buttons-grid {
+    gap: 12px;
+  }
+}
+
+/* Para móviles pequeños */
+@media (max-width: 400px) {
+  .buttons-container {
+    max-width: 250px;
+  }
+  
+  .main-menu-button {
+    min-height: 65px;
+  }
+  
+  .buttons-grid {
+    gap: 10px;
+  }
+}
+
+/* Para pantallas con poca altura */
+@media (max-height: 700px) {
+  .main-menu-button {
+    min-height: 70px;
+  }
+}
+
+/* Para pantallas con mucha altura */
+@media (min-height: 1200px) and (max-width: 900px) {
+  .buttons-container {
+    max-width: 340px !important;
+  }
+  
+  .main-menu-button {
+    min-height: 90px !important;
+  }
+  
+  .buttons-grid {
+    gap: 18px !important;
+  }
+}
+
+/* Para tablets en horizontal */
+@media (max-width: 1400px) and (orientation: landscape) {
+  .main-menu-button {
+    min-height: 95px !important;
+  }
+}
+
+@media (max-width: 1024px) and (orientation: landscape) {
+  .main-menu-button {
+    min-height: 95px !important;
+  }
+}
