@@ -1,0 +1,380 @@
+/* 2. TABLETS Y MÓVILES EN HORIZONTAL */
+@media (max-width: 1024px) and (orientation: landscape) {
+  .title-image {
+    max-width: min(60%, 350px);
+    margin-top: 8vh;
+  }
+  
+  .wedding-date {
+    font-size: clamp(1.8rem, 2.5vw, 2.5rem);
+  }
+  
+  .wedding-subtitle {
+    font-size: clamp(2rem, 3vw, 2.8rem);
+  }
+  
+  .location-section {
+    margin-bottom: 40px;
+  }
+  
+  .location-title {
+    font-size: 2.8rem;
+  }
+  
+  .location-name {
+    font-size: 1.3rem;
+  }
+  
+  .location-address {
+    font-size: 1rem;
+  }
+}
+
+/* 3. TABLETS EN VERTICAL Y MÓVILES GRANDES */
+@media (max-width: 1024px) and (orientation: portrait) {
+  .title-image {
+    max-width: min(85%, 450px);
+    margin-top: 12vh;
+  }
+
+  .wedding-date {
+    font-size: clamp(2.2rem, 4vw, 3rem);
+  }
+  
+  .wedding-subtitle {
+    font-size: clamp(2.4rem, 4.5vw, 3.2rem);
+  }
+  
+  .buttons-container {
+    max-width: 350px;
+    bottom: 80px;
+  }
+  
+  .menu-button {
+    min-height: 85px;
+    font-size: 1.1rem;
+  }
+}
+
+/* 4. MÓVILES ESTÁNDAR (768px o menos) */
+@media (max-width: 768px) {
+  /* Estilos generales para móviles */
+  header h1 { font-size: 2.1rem; }
+  header .fecha { font-size: 1.1rem; }
+  
+  /* Sobre */
+  .envelope { 
+    width: 260px; 
+    height: 180px; 
+  }
+  
+  .envelope.open .invitation-image {
+    top: -40%;
+  }
+  
+  .border-bottom {
+    background: url("data:image/svg+xml,%3Csvg width='260' height='99' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0,99 L130,0 L260,99' fill='none' stroke='rgba(0,0,0,0.3)' stroke-width='1.5'/%3E%3C/svg%3E") center/contain no-repeat;
+  }
+  
+  .border-top {
+    background: url("data:image/svg+xml,%3Csvg width='260' height='99' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0,0 L130,99 L260,0' fill='none' stroke='rgba(0,0,0,0.3)' stroke-width='1.5'/%3E%3C/svg%3E") center/contain no-repeat;
+  }
+  
+  .invitation-image {
+    width: 80%;
+    max-width: 200px;
+  }
+  
+  /* Botones */
+  .buttons-container {
+    max-width: 280px;
+    bottom: 60px;
+  }
+  
+  .buttons-grid {
+    gap: 12px;
+  }
+  
+  .menu-button {
+    min-height: 70px;
+    font-size: 0.95rem;
+    padding: 12px 8px;
+  }
+
+  /* Botones de control */
+  .mute-button, .eye-button {
+    top: 15px;
+    width: 45px;
+    height: 45px;
+    font-size: 1.3rem;
+  }
+
+  .mute-button { right: 15px; }
+  .eye-button { left: 15px; }
+
+  /* Título y fecha */
+  .title-image {
+    max-width: min(85%, 380px);
+    margin-top: 10vh;
+  }
+
+  /* TEXTO MEJORADO PARA PANTALLAS ALTAS (768x1500) */
+  .wedding-date {
+    font-size: clamp(2rem, min(4.5vw, 3vh), 2.8rem);
+  }
+  
+  .wedding-subtitle {
+    font-size: clamp(2.2rem, min(5vw, 3.5vh), 3rem);
+  }
+
+  /* Menús */
+  .location-title {
+    font-size: 2.5rem;
+  }
+  
+  .location-name {
+    font-size: 1.2rem;
+  }
+  
+  .location-address {
+    font-size: 0.9rem;
+  }
+
+  /* Timeline */
+  .timeline, .info-timeline {
+    max-width: 100%;
+  }
+  
+  .timeline::before, .info-timeline::before {
+    left: 25px;
+  }
+  
+  .timeline-icon, .info-icon {
+    width: 50px;
+    height: 50px;
+    margin-right: 15px;
+  }
+  
+  .timeline-icon img, .info-icon img {
+    width: 30px;
+    height: 30px;
+  }
+  
+  .timeline-content, .info-content {
+    padding: 12px;
+  }
+
+  /* Asistencia */
+  .option-buttons {
+    flex-direction: column;
+  }
+  
+  .option-button {
+    padding: 12px;
+  }
+}
+
+/* 5. MÓVILES PEQUEÑOS (menos de 400px) */
+@media (max-width: 400px) {
+  .title-image {
+    max-width: min(90%, 320px);
+    margin-top: 8vh;
+  }
+
+  .wedding-date {
+    font-size: clamp(1.8rem, min(4.5vw, 3vh), 2.5rem);
+  }
+  
+  .wedding-subtitle {
+    font-size: clamp(2rem, min(5vw, 3.5vh), 2.8rem);
+  }
+  
+  .buttons-container {
+    max-width: 250px;
+    bottom: 50px;
+  }
+  
+  .buttons-grid {
+    gap: 10px;
+  }
+  
+  .menu-button {
+    min-height: 65px;
+    font-size: 0.9rem;
+    padding: 10px 6px;
+  }
+
+  .mute-button, .eye-button {
+    top: 10px;
+    width: 40px;
+    height: 40px;
+    font-size: 1.2rem;
+  }
+
+  .mute-button { right: 10px; }
+  .eye-button { left: 10px; }
+
+  .location-title {
+    font-size: 2.2rem;
+  }
+  
+  .location-name {
+    font-size: 1.1rem;
+  }
+  
+  .location-address {
+    font-size: 0.85rem;
+  }
+
+  .timeline-icon, .info-icon {
+    width: 45px;
+    height: 45px;
+    margin-right: 12px;
+  }
+  
+  .timeline-icon img, .info-icon img {
+    width: 25px;
+    height: 25px;
+  }
+  
+  .timeline-content, .info-content {
+    padding: 10px;
+  }
+}
+
+/* 6. PANTALLAS CON POCA ALTURA (independiente del ancho) */
+@media (max-height: 700px) {
+  .title-image {
+    max-width: min(75%, 350px);
+    margin-top: 8vh;
+  }
+
+  .buttons-container {
+    bottom: 50px !important;
+  }
+  
+  /* Para pantallas cortas, priorizamos el ancho */
+  .wedding-date {
+    font-size: clamp(1.8rem, 4vw, 2.5rem);
+  }
+  
+  .wedding-subtitle {
+    font-size: clamp(2rem, 4.5vw, 2.8rem);
+  }
+}
+
+/* 7. PANTALLAS CON MUCHA ALTURA (como 768x1500) - MODIFICADO */
+@media (min-height: 1200px) and (max-width: 900px) {
+  .title-image {
+    max-width: min(75%, 420px) !important; /* Cambiado de 75% */
+    margin-top: 10vh !important; /* Cambiado de 15vh - más arriba */
+  }
+
+  .date-subtitle-container {
+      top: 33% !important; /* Ajustado para pantallas pequeñas */
+  }
+
+  /* Para pantallas altas, usamos porcentaje de la altura */
+  .wedding-date {
+    font-size: clamp(2.8rem, 3.5vh, 3.5rem) !important; /* Más grande */
+  }
+  
+  .wedding-subtitle {
+    font-size: clamp(3rem, 4vh, 3.8rem) !important; /* Más grande */
+  }
+  
+  .buttons-container {
+    bottom: 110px !important; /* Más arriba */
+    max-width: 340px !important; /* Más ancho */
+  }
+  
+  .buttons-grid {
+    gap: 18px !important; /* Más espacio */
+  }
+  
+  .menu-button {
+    min-height: 90px !important; /* Más alto */
+    font-size: 1.1rem !important; /* Texto más grande */
+    padding: 16px 12px !important;
+  }
+  
+  /* AÑADE ESTO PARA EL SOBRE MÁS GRANDE */
+  .envelope { 
+    width: 320px !important; /* Más grande */
+    height: 220px !important; 
+  }
+  
+  .seal {
+    width: 130px !important; /* Sello más grande */
+    height: 130px !important;
+  }
+  
+  /* Imagen de invitación más grande */
+  .invitation-image {
+    max-width: 230px !important;
+  }
+  
+  .envelope.open .invitation-image {
+    top: -28% !important; /* Mejor posición */
+  }
+}
+
+/* 8. PANTALLAS MUY ALTAS Y ESTRECHAS - MODIFICADO */
+@media (min-height: 1400px) and (max-width: 800px) {
+  .title-image {
+    max-width: min(75%, 450px) !important; /* Cambiado de 70% */
+    margin-top: 10vh !important; /* Cambiado de 18vh - más arriba */
+  }
+
+  .date-subtitle-container {
+      top: 32% !important; /* Ajustado para pantallas pequeñas */
+  }
+  
+  .wedding-date {
+    font-size: 3.2rem !important; /* Cambiado de 2.8rem - más grande */
+  }
+  
+  .wedding-subtitle {
+    font-size: 3.5rem !important; /* Cambiado de 3rem - más grande */
+  }
+  
+  .buttons-container {
+    bottom: 130px !important; /* Cambiado de 120px - más arriba */
+  }
+  
+  /* AÑADE ESTO PARA EL SOBRE */
+  .envelope { 
+    width: 340px !important; /* Más grande */
+    height: 235px !important; 
+  }
+}
+
+/* AÑADE ESTA NUEVA SECCIÓN PARA PANTALLAS 768px DE ANCHO Y MUCHA ALTURA */
+@media (min-height: 1300px) and (max-width: 768px) {
+  .title-image {
+    max-width: min(75%, 420px) !important;
+    margin-top: 10vh !important;
+  }
+
+  .date-subtitle-container {
+      top: 33% !important; /* Ajustado para pantallas pequeñas */
+  }
+
+  .wedding-date {
+    font-size: clamp(2.9rem, 3.8vh, 3.6rem) !important;
+  }
+  
+  .wedding-subtitle {
+    font-size: clamp(3.1rem, 4.3vh, 3.9rem) !important;
+  }
+  
+  .buttons-container {
+    max-width: 330px !important;
+    bottom: 100px !important;
+  }
+  
+  .envelope { 
+    width: 330px !important;
+    height: 230px !important;
+  }
+}
