@@ -419,9 +419,9 @@ header {
 
 /* ESTILOS MEJORADOS PARA EL TÍTULO Y FECHA */
 .title-image {
-  max-width: min(80%, 500px);
+  max-width: min(70%, 450px);
   height: auto;
-  margin-top: 10vh; /* Reducido para pantallas pequeñas */
+  margin-top: 4vh; /* Reducido para pantallas pequeñas */
   filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
   transition: opacity 0.5s ease;
   width: auto;
@@ -451,7 +451,7 @@ header {
 /* FECHA - ESCALADO MEJORADO */
 .wedding-date {
   font-family: 'Dancing Script', cursive;
-  font-size: clamp(2rem, 4.5vw, 3rem); /* Ajustado para pantallas pequeñas */
+  font-size: clamp(2rem, 4.5vw, 2.8rem); /* Ajustado para pantallas pequeñas */
   font-weight: 600;
   letter-spacing: 0.5px; /* Reducido para pantallas pequeñas */
   margin-bottom: 0.3rem;
@@ -467,7 +467,7 @@ header {
 /* "¡NOS CASAMOS!" - ESCALADO MEJORADO */
 .wedding-subtitle {
   font-family: 'Dancing Script', cursive;
-  font-size: clamp(2rem, 5.5vw, 3rem); /* Ajustado para pantallas pequeñas */
+  font-size: clamp(2rem, 5.5vw, 2.8rem); /* Ajustado para pantallas pequeñas */
   font-weight: 500;
   font-style: normal;
   color: #4A2B15;
