@@ -293,8 +293,8 @@
 /* 5. MÓVILES PEQUEÑOS (menos de 400px) */
 @media (max-width: 400px) {
   .title-image {
-    max-width: min(80%, 320px);
-    margin-top: 10vh;
+    max-width: min(75%, 310px);
+    margin-top: 9vh;
   }
 
   .wedding-date {
