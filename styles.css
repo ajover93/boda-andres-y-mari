@@ -4,7 +4,7 @@ body {
   margin: 0;
   padding: 0;
   overflow: hidden;
-  background: #e3f2fd !important;
+  background: #f5efe5 !important;
 }
 
 .envelope-screen {
@@ -38,7 +38,7 @@ body {
   width: 100%;
   height: 100vh;
   height: 100dvh;
-  background: #e3f2fd;
+  background: #f5efe5;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -53,7 +53,7 @@ body {
 }
 
 .loading-text {
-  color: #004c91;
+  color: #6B4423;
   font-size: 1.2rem;
   margin-top: 1rem;
   animation: pulse 2s infinite;
@@ -62,8 +62,8 @@ body {
 .spinner {
   width: 50px;
   height: 50px;
-  border: 4px solid rgba(0, 76, 145, 0.3);
-  border-top: 4px solid #004c91;
+  border: 4px solid rgba(107, 68, 35, 0.3);
+  border-top: 4px solid #6B4423;
   border-radius: 50%;
   animation: spin 1s linear infinite;
 }
@@ -456,7 +456,7 @@ header {
   letter-spacing: 0.5px; /* Reducido para pantallas pequeñas */
   margin-bottom: 0.3rem;
   color: #4A2B15;
-  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+  text-shadow: 0 2px 6px rgba(107, 68, 35, 0.4);
   animation: fadeInUp 1s ease 0.5s both;
   transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
   line-height: 1.2; /* Añadido para mejor espaciado */
@@ -532,7 +532,7 @@ header p {
   padding: 15px 10px;
   font-size: 1rem;
   font-weight: 600;
-  color: #004c91;
+  color: #6B4423;
   cursor: pointer;
   transition: all 0.3s ease;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
@@ -597,11 +597,11 @@ header p {
   border: none;
   font-size: 1.5rem;
   cursor: pointer;
-  color: #004c91;
+  color: #6B4423;
 }
 
 .menu-content h2 {
-  color: #004c91;
+  color: #6B4423;
   margin-top: 0;
   margin-bottom: 20px;
   text-align: center;
@@ -634,7 +634,7 @@ header p {
 .location-title {
   font-size: 3rem;
   font-weight: 700;
-  color: #004c91;
+  color: #6B4423;
   margin-bottom: 10px;
   font-family: 'Dancing Script', cursive;
 }
@@ -656,7 +656,7 @@ header p {
 }
 
 .maps-button {
-  background: #004c91;
+  background: #6B4423;
   color: white;
   border: none;
   border-radius: 8px;
@@ -672,7 +672,7 @@ header p {
 }
 
 .maps-button:hover {
-  background: #003366;
+  background: #4A2B15;
   transform: translateY(-2px);
 }
 
@@ -699,7 +699,7 @@ header p {
   top: 0;
   bottom: 0;
   width: 2px;
-  background: linear-gradient(to bottom, #004c91, #e3f2fd);
+  background: linear-gradient(to bottom, #6B4423, #f5efe5);
   z-index: 1;
 }
 
@@ -741,12 +741,12 @@ header p {
   padding: 15px;
   border-radius: 10px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  border-left: 4px solid #004c91;
+  border-left: 4px solid #6B4423;
 }
 
 .timeline-time {
   font-weight: 700;
-  color: #004c91;
+  color: #6B4423;
   font-size: 1.1rem;
   margin-bottom: 5px;
 }
@@ -772,7 +772,7 @@ header p {
   top: 0;
   bottom: 0;
   width: 2px;
-  background: linear-gradient(to bottom, #004c91, #e3f2fd);
+  background: linear-gradient(to bottom, #6B4423, #f5efe5);
   z-index: 1;
 }
 
@@ -814,12 +814,12 @@ header p {
   padding: 15px;
   border-radius: 10px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  border-left: 4px solid #004c91;
+  border-left: 4px solid #6B4423;
 }
 
 .info-title {
   font-weight: 700;
-  color: #004c91;
+  color: #6B4423;
   font-size: 1.1rem;
   margin-bottom: 5px;
 }
@@ -849,7 +849,7 @@ header p {
 
 .asistencia-question {
   font-weight: 600;
-  color: #004c91;
+  color: #6B4423;
   margin-bottom: 10px;
   font-size: 1.1rem;
 }
@@ -862,17 +862,17 @@ header p {
 .option-button {
   flex: 1;
   padding: 10px 15px;
-  border: 2px solid #004c91;
+  border: 2px solid #6B4423;
   border-radius: 8px;
   background: white;
-  color: #004c91;
+  color: #6B4423;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
 }
 
 .option-button.active {
-  background: #004c91;
+  background: #6B4423;
   color: white;
 }
 
@@ -912,7 +912,7 @@ header p {
   display: block;
   margin-bottom: 5px;
   font-weight: 600;
-  color: #004c91;
+  color: #6B4423;
 }
 
 .form-group input[type="text"] {
@@ -935,7 +935,7 @@ header p {
 }
 
 .add-button {
-  background: #004c91;
+  background: #6B4423;
   color: white;
   border: none;
   border-radius: 5px;
@@ -948,7 +948,7 @@ header p {
 }
 
 .add-button:hover {
-  background: #003366;
+  background: #4A2B15;
 }
 
 .comensales-list {
@@ -1053,7 +1053,7 @@ header p {
   display: block;
   margin-bottom: 5px;
   font-weight: 600;
-  color: #004c91;
+  color: #6B4423;
 }
 
 .form-group input[type="text"] {
@@ -1076,7 +1076,7 @@ header p {
 }
 
 .add-button {
-  background: #004c91;
+  background: #6B4423;
   color: white;
   border: none;
   border-radius: 5px;
@@ -1089,7 +1089,7 @@ header p {
 }
 
 .add-button:hover {
-  background: #003366;
+  background: #4A2B15;
 }
 
 .comensales-list {
@@ -1196,7 +1196,7 @@ header p {
   padding: 15px 10px;
   font-size: 1rem;
   font-weight: 600;
-  color: #004c91;
+  color: #6B4423;
   cursor: pointer;
   transition: all 0.3s ease;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
