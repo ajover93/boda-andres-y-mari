@@ -1,58 +1,358 @@
-// Función para precargar imágenes
-function preloadImages() {
-  return new Promise((resolve, reject) => {
-    const isLandscape = screen.availWidth > screen.availHeight;
-    const finalIsLandscape = (screen.availWidth && screen.availHeight) 
-      ? isLandscape 
-      : window.innerWidth > window.innerHeight;
+// ============================
+// CONFIGURACIÓN Y DETECCIÓN
+// ============================
+
+// Detectar si es un dispositivo lento
+const isSlowDevice = (() => {
+  // Heurísticas para detectar dispositivos antiguos/lentos
+  const ua = navigator.userAgent;
+  const isOldAndroid = /Android [2-4]/.test(ua);
+  const isOldIOS = /iOS [7-9]/.test(ua);
+  const isOldBrowser = /MSIE|Trident/.test(ua);
+  const lowCores = navigator.hardwareConcurrency && navigator.hardwareConcurrency <= 2;
+  const lowMemory = navigator.deviceMemory && navigator.deviceMemory <= 2;
+  
+  return isOldAndroid || isOldIOS || isOldBrowser || lowCores || lowMemory;
+})();
+
+// Aplicar optimizaciones para dispositivos lentos
+if (isSlowDevice) {
+  console.log('Dispositivo lento detectado - aplicando optimizaciones');
+  document.documentElement.classList.add('slow-device');
+  
+  // Crear estilo para optimizaciones
+  const style = document.createElement('style');
+  style.textContent = `
+    .slow-device * {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+    .slow-device .video-background video {
+      opacity: 0.7;
+    }
+  `;
+  document.head.appendChild(style);
+}
+
+// ============================
+// SISTEMA DE MÚSICA DE FONDO
+// ============================
+
+// Variables globales para la música
+let backgroundMusic = null;
+let isMusicPlaying = false;
+let musicVolume = 0.5; // Volumen por defecto al 50%
+
+// Inicializar el reproductor de música
+function initializeMusic() {
+  if (backgroundMusic) return backgroundMusic;
+  
+  backgroundMusic = new Audio('media/song.mp3');
+  backgroundMusic.loop = true;
+  backgroundMusic.volume = musicVolume;
+  
+  // Optimizar para dispositivos lentos
+  if (isSlowDevice) {
+    backgroundMusic.preload = 'none'; // No precargar en dispositivos lentos
+  } else {
+    backgroundMusic.preload = 'metadata'; // Precargar solo metadatos
+  }
+  
+  // Manejar eventos de música
+  backgroundMusic.addEventListener('canplaythrough', () => {
+    console.log('🎵 Música cargada y lista para reproducir');
+  });
+  
+  backgroundMusic.addEventListener('error', (e) => {
+    console.error('❌ Error al cargar la música:', e);
+  });
+  
+  return backgroundMusic;
+}
+
+// Reproducir música de fondo
+async function playBackgroundMusic() {
+  try {
+    const music = initializeMusic();
     
-    const backgroundImage = finalIsLandscape ? 'media/mesa.jpg' : 'media/mesa2.jpg';
+    if (!isMusicPlaying) {
+      // En navegadores modernos, necesitamos interacción del usuario primero
+      music.volume = 0; // Empezar en silencio
+      await music.play();
+      
+      // Fade in suave del volumen
+      fadeVolumeIn(music, 0, musicVolume, 2000);
+      
+      isMusicPlaying = true;
+      console.log('🎵 Música de fondo iniciada');
+      
+      // Actualizar icono del botón de mute si existe
+      updateMusicButtonIcon(true);
+    }
+  } catch (error) {
+    console.log('⚠️ No se pudo reproducir la música automáticamente:', error.message);
     
-    const images = [
+    // Crear un botón de "activar música" si falla el autoplay
+    createMusicEnableButton();
+  }
+}
+
+// Función para fade in del volumen
+function fadeVolumeIn(audio, startVolume, endVolume, duration) {
+  const steps = 20;
+  const stepTime = duration / steps;
+  const volumeStep = (endVolume - startVolume) / steps;
+  let currentStep = 0;
+  
+  audio.volume = startVolume;
+  
+  const fadeInterval = setInterval(() => {
+    currentStep++;
+    audio.volume = startVolume + (volumeStep * currentStep);
+    
+    if (currentStep >= steps) {
+      clearInterval(fadeInterval);
+      audio.volume = endVolume;
+    }
+  }, stepTime);
+}
+
+// Función para fade out del volumen
+function fadeVolumeOut(audio, startVolume, endVolume, duration) {
+  const steps = 20;
+  const stepTime = duration / steps;
+  const volumeStep = (startVolume - endVolume) / steps;
+  let currentStep = 0;
+  
+  audio.volume = startVolume;
+  
+  const fadeInterval = setInterval(() => {
+    currentStep++;
+    audio.volume = startVolume - (volumeStep * currentStep);
+    
+    if (currentStep >= steps) {
+      clearInterval(fadeInterval);
+      audio.volume = endVolume;
+      audio.pause();
+      isMusicPlaying = false;
+      updateMusicButtonIcon(false);
+    }
+  }, stepTime);
+}
+
+// Pausar música de fondo
+function pauseBackgroundMusic() {
+  if (backgroundMusic && isMusicPlaying) {
+    fadeVolumeOut(backgroundMusic, musicVolume, 0, 1000);
+    console.log('⏸️ Música pausada');
+  }
+}
+
+// Reanudar música de fondo
+async function resumeBackgroundMusic() {
+  if (backgroundMusic && !isMusicPlaying) {
+    try {
+      backgroundMusic.volume = 0;
+      await backgroundMusic.play();
+      fadeVolumeIn(backgroundMusic, 0, musicVolume, 1000);
+      isMusicPlaying = true;
+      console.log('▶️ Música reanudada');
+      updateMusicButtonIcon(true);
+    } catch (error) {
+      console.log('Error al reanudar música:', error);
+    }
+  }
+}
+
+// Alternar música (play/pause)
+async function toggleBackgroundMusic() {
+  if (isMusicPlaying) {
+    pauseBackgroundMusic();
+  } else {
+    await resumeBackgroundMusic();
+  }
+}
+
+// Actualizar icono del botón de música
+function updateMusicButtonIcon(playing) {
+  const muteIcon = document.querySelector('.mute-button i');
+  if (muteIcon) {
+    muteIcon.className = playing ? 'fas fa-volume-up' : 'fas fa-volume-mute';
+  }
+}
+
+// Crear botón para activar música si falla el autoplay
+function createMusicEnableButton() {
+  // Verificar si ya existe
+  if (document.getElementById('enableMusicBtn')) return;
+  
+  const enableBtn = document.createElement('button');
+  enableBtn.id = 'enableMusicBtn';
+  enableBtn.className = 'enable-music-button';
+  enableBtn.innerHTML = '<i class="fas fa-music"></i> Activar música';
+  enableBtn.style.cssText = `
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: rgba(0, 0, 0, 0.7);
+    color: white;
+    border: 2px solid gold;
+    padding: 10px 15px;
+    border-radius: 30px;
+    cursor: pointer;
+    z-index: 1000;
+    font-family: inherit;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s ease;
+  `;
+  
+  enableBtn.addEventListener('click', async () => {
+    try {
+      await playBackgroundMusic();
+      enableBtn.style.display = 'none';
+    } catch (error) {
+      console.log('Usuario necesita interactuar más:', error);
+    }
+  });
+  
+  enableBtn.addEventListener('mouseenter', () => {
+    enableBtn.style.background = 'rgba(0, 0, 0, 0.9)';
+    enableBtn.style.transform = 'scale(1.05)';
+  });
+  
+  enableBtn.addEventListener('mouseleave', () => {
+    enableBtn.style.background = 'rgba(0, 0, 0, 0.7)';
+    enableBtn.style.transform = 'scale(1)';
+  });
+  
+  document.body.appendChild(enableBtn);
+  
+  // Auto-ocultar después de 10 segundos
+  setTimeout(() => {
+    if (enableBtn.parentNode) {
+      enableBtn.style.opacity = '0.5';
+    }
+  }, 10000);
+}
+
+// ============================
+// PRECARGA INTELIGENTE DE IMÁGENES
+// ============================
+
+// Precargar solo imágenes críticas para el inicio
+function preloadCriticalImages() {
+  return new Promise((resolve) => {
+    const isLandscape = window.innerWidth > window.innerHeight;
+    const backgroundImage = isLandscape ? 'media/mesa.jpg' : 'media/mesa2.jpg';
+    
+    // Imágenes críticas para mostrar la pantalla inicial
+    const criticalImages = [
       backgroundImage,
-      'media/invitacion.jpg',
-      'media/papel-textura-interior.jpg',
-      'media/papel-textura-exterior.jpg',
       'media/sello.png',
       'media/title.png',
-      'media/iglesia.jpg',
-      'media/cason.png',
-      'media/wring.png',
-      'media/wcocktail.png',
-      'media/wdinner.png',
-      'media/wparty.png',
-      'media/wdress.png',
-      'media/whotel.png'
+      'media/boton.png' // Para los botones del menú principal
     ];
     
-    let loadedCount = 0;
-    const totalImages = images.length;
+    let loaded = 0;
+    const total = criticalImages.length;
     
-    images.forEach(src => {
+    // Función para verificar si todas están cargadas
+    const checkAllLoaded = () => {
+      loaded++;
+      if (loaded === total) {
+        console.log('✅ Imágenes críticas cargadas');
+        resolve(backgroundImage);
+      }
+    };
+    
+    // Precargar cada imagen
+    criticalImages.forEach(src => {
       const img = new Image();
-      img.onload = () => {
-        loadedCount++;
-        updateLoadingProgress(loadedCount, totalImages);
-        if (loadedCount === totalImages) {
-          resolve(backgroundImage);
-        }
-      };
-      img.onerror = () => {
-        loadedCount++;
-        updateLoadingProgress(loadedCount, totalImages);
-        if (loadedCount === totalImages) {
-          resolve(backgroundImage);
-        }
-      };
+      img.onload = checkAllLoaded;
+      img.onerror = checkAllLoaded; // Continuar incluso si falla
       img.src = src;
+      
+      // Timeout de seguridad
+      setTimeout(checkAllLoaded, 3000);
     });
   });
 }
 
-function updateLoadingProgress(loaded, total) {
-  const progress = (loaded / total) * 100;
-  console.log(`Cargando: ${progress.toFixed(0)}%`);
+// Cargar imágenes secundarias después del inicio
+function lazyLoadSecondaryImages() {
+  const secondaryImages = [
+    'media/invitacion.jpg',
+    'media/papel-textura-interior.jpg',
+    'media/papel-textura-exterior.jpg',
+    'media/iglesia.jpg',
+    'media/cason.jpg',
+    'media/wring.png',
+    'media/wcocktail.png',
+    'media/wdinner.png',
+    'media/wparty.png',
+    'media/wdress.png',
+    'media/whotel.png'
+  ];
+  
+  // Usar requestIdleCallback si está disponible, sino setTimeout
+  const scheduleLoad = (callback) => {
+    if ('requestIdleCallback' in window) {
+      requestIdleCallback(callback, { timeout: 2000 });
+    } else {
+      setTimeout(callback, 1000);
+    }
+  };
+  
+  scheduleLoad(() => {
+    secondaryImages.forEach(src => {
+      const img = new Image();
+      img.src = src;
+    });
+    console.log('📦 Imágenes secundarias cargadas en segundo plano');
+  });
 }
+
+// ============================
+// INICIALIZACIÓN DE LA APLICACIÓN
+// ============================
+
+async function initializeApp() {
+  console.log('🚀 Inicializando aplicación...');
+  
+  // 1. Precargar imágenes críticas
+  const backgroundImage = await preloadCriticalImages();
+  
+  // 2. Configurar fondo inmediatamente
+  setBackgroundImage(backgroundImage);
+  
+  // 3. Ajustar máscara
+  adjustMaskClipPath();
+  
+  // 4. Mostrar contenido después de un mínimo de tiempo (mejor UX)
+  setTimeout(() => {
+    const loadingScreen = document.getElementById('loadingScreen');
+    const envelopeScreen = document.getElementById('envelopeScreen');
+    
+    if (loadingScreen) {
+      loadingScreen.classList.add('hidden');
+    }
+    if (envelopeScreen) {
+      envelopeScreen.classList.add('loaded');
+    }
+    
+    console.log('✨ Pantalla principal visible');
+    
+    // 5. Cargar imágenes secundarias en segundo plano
+    lazyLoadSecondaryImages();
+  }, isSlowDevice ? 800 : 500); // Más tiempo para dispositivos lentos
+}
+
+// ============================
+// FUNCIONES DE UTILIDAD
+// ============================
 
 function setBackgroundImage(backgroundImage) {
   const envelopeScreen = document.querySelector('.envelope-screen');
@@ -71,63 +371,42 @@ function adjustMaskClipPath() {
   if (!envelope) return;
   
   const envelopeRect = envelope.getBoundingClientRect();
-  const envelopeBottom = envelopeRect.bottom;
-  const windowHeight = window.innerHeight;
-  
-  const maskStart = Math.max(0, (envelopeBottom / windowHeight) * 100);
+  const maskStart = Math.max(0, (envelopeRect.bottom / window.innerHeight) * 100);
   
   const mask = document.querySelector('.envelope-mask');
   if (mask) {
-    mask.style.clipPath = `polygon(
-      0% 100%, 
-      100% 100%, 
-      100% ${maskStart}%, 
-      0% ${maskStart}%
-    )`;
+    mask.style.clipPath = `polygon(0% 100%, 100% 100%, 100% ${maskStart}%, 0% ${maskStart}%)`;
   }
 }
 
-// Inicializar la aplicación cuando todo esté cargado
-window.addEventListener('load', () => {
-  preloadImages().then(backgroundImage => {
-    setBackgroundImage(backgroundImage);
-    adjustMaskClipPath();
-    
-    setTimeout(() => {
-      const loadingScreen = document.getElementById('loadingScreen');
-      const envelopeScreen = document.getElementById('envelopeScreen');
-      
-      if (loadingScreen) loadingScreen.classList.add('hidden');
-      if (envelopeScreen) envelopeScreen.classList.add('loaded');
-    }, 500);
-  });
-});
+function getBackgroundImage() {
+  return window.innerWidth > window.innerHeight ? 'media/mesa.jpg' : 'media/mesa2.jpg';
+}
 
+// ============================
+// MANEJO DE EVENTOS DE VENTANA
+// ============================
+
+let resizeTimeout;
 window.addEventListener('resize', () => {
-  const isLandscape = screen.availWidth > screen.availHeight;
-  const finalIsLandscape = (screen.availWidth && screen.availHeight) 
-    ? isLandscape 
-    : window.innerWidth > window.innerHeight;
-  
-  const backgroundImage = finalIsLandscape ? 'media/mesa.jpg' : 'media/mesa2.jpg';
-  setBackgroundImage(backgroundImage);
-  setTimeout(adjustMaskClipPath, 100);
+  clearTimeout(resizeTimeout);
+  resizeTimeout = setTimeout(() => {
+    setBackgroundImage(getBackgroundImage());
+    adjustMaskClipPath();
+  }, 100);
 });
 
 window.addEventListener('orientationchange', () => {
   setTimeout(() => {
-    const isLandscape = screen.availWidth > screen.availHeight;
-    const finalIsLandscape = (screen.availWidth && screen.availHeight) 
-      ? isLandscape 
-      : window.innerWidth > window.innerHeight;
-    
-    const backgroundImage = finalIsLandscape ? 'media/mesa.jpg' : 'media/mesa2.jpg';
-    setBackgroundImage(backgroundImage);
+    setBackgroundImage(getBackgroundImage());
     adjustMaskClipPath();
   }, 300);
 });
 
-// Obtener elementos del DOM
+// ============================
+// INTERACTIVIDAD DEL SOBRE
+// ============================
+
 const seal = document.getElementById('seal');
 const envelope = document.getElementById('envelope');
 const envelopeScreen = document.getElementById('envelopeScreen');
@@ -140,177 +419,156 @@ const videoBackground = document.getElementById('videoBackground');
 const overlay = document.getElementById('overlay');
 const dateSubtitleContainer = document.getElementById('dateSubtitleContainer');
 
-// Referencias a los iconos
-const muteIcon = muteButton.querySelector('i');
-const eyeIcon = eyeButton.querySelector('i');
+// Prevenir múltiples clics en el sello
+let sealClicked = false;
 
-// Estado inicial: elementos visibles
-let elementsVisible = true;
-
-// FUNCIÓN ACTUALIZADA: para alternar la visibilidad de los elementos
-function toggleElementsVisibility() {
-  if (elementsVisible) {
-    // Ocultar elementos (excepto el título y el texto)
-    buttonsContainer.classList.add('hidden');
-    overlay.classList.add('hidden');
-    videoBackground.classList.add('video-clear');
-    
-    // Mover el texto a la parte baja
-    dateSubtitleContainer.classList.add('hidden-interface');
-    
-    // Cambiar icono a ojo cerrado
-    eyeIcon.className = 'fas fa-eye-slash';
-  } else {
-    // Mostrar elementos
-    buttonsContainer.classList.remove('hidden');
-    overlay.classList.remove('hidden');
-    videoBackground.classList.remove('video-clear');
-    
-    // Mover el texto de vuelta a su posición original
-    dateSubtitleContainer.classList.remove('hidden-interface');
-    
-    // Cambiar icono a ojo abierto
-    eyeIcon.className = 'fas fa-eye';
-  }
-  
-  elementsVisible = !elementsVisible;
-}
-
-// Event listener para el botón de ojo
-eyeButton.addEventListener('click', toggleElementsVisibility);
-
-// Función para controlar el mute/desmute
-function toggleMute() {
-  if (video.muted) {
-    video.muted = false;
-    muteIcon.className = 'fas fa-volume-up';
-  } else {
-    video.muted = true;
-    muteIcon.className = 'fas fa-volume-mute';
-  }
-}
-
-// Event listener para el botón de mute
-muteButton.addEventListener('click', toggleMute);
-
-// Animación del sobre
 seal.addEventListener('click', () => {
-  console.log("Sello clickeado - iniciando animación");
+  if (sealClicked) return;
+  sealClicked = true;
   
+  console.log("💌 Abriendo invitación...");
+  
+  // Animación del sello
   seal.classList.add('broken');
 
+  // Abrir sobre
   setTimeout(() => {
-    console.log("Abriendo solapa...");
     envelope.classList.add('open');
   }, 800);
 
+  // Mostrar contenido principal
   setTimeout(() => {
-    console.log("Mostrando contenido principal...");
     envelopeScreen.style.opacity = '0';
+    
     setTimeout(() => {
       envelopeScreen.style.display = 'none';
       mainContent.classList.add('visible');
+      
+      // 1. Manejo del video optimizado
+      if (isSlowDevice) {
+        video.preload = 'auto';
+        video.load();
+      }
+      
       video.muted = false;
-      video.play();
+      
+      // Intentar reproducir el video
+      const playPromise = video.play();
+      if (playPromise !== undefined) {
+        playPromise.catch(() => {
+          // Si autoplay falla, mostrar controles
+          video.controls = true;
+        });
+      }
+      
       document.body.style.overflow = 'hidden';
       
-      // Mostrar los botones cuando el video esté listo
-      video.addEventListener('loadeddata', () => {
-        setTimeout(() => {
-          buttonsContainer.classList.add('visible');
-          muteButton.classList.add('visible');
-          eyeButton.classList.add('visible');
-        }, 500);
-      });
+      // 2. Iniciar música de fondo junto con el video
+      setTimeout(() => {
+        playBackgroundMusic().catch(error => {
+          console.log('Música no pudo iniciarse automáticamente:', error.message);
+        });
+      }, 500); // Pequeño delay para mejor experiencia
       
-      // Si el video ya está cargado, mostrar los botones inmediatamente
-      if (video.readyState >= 3) {
-        setTimeout(() => {
-          buttonsContainer.classList.add('visible');
-          muteButton.classList.add('visible');
-          eyeButton.classList.add('visible');
-        }, 500);
-      }
-    }, 1000);
+      // 3. Mostrar controles después de un momento
+      setTimeout(() => {
+        buttonsContainer.classList.add('visible');
+        muteButton.classList.add('visible');
+        eyeButton.classList.add('visible');
+      }, 500);
+    }, isSlowDevice ? 100 : 300);
   }, 4000);
 });
 
-// Referencias a los botones y menús
-const dondeBtn = document.getElementById('dondeBtn');
-const itinerarioBtn = document.getElementById('itinerarioBtn');
-const asistenciaBtn = document.getElementById('asistenciaBtn');
-const infoBtn = document.getElementById('infoBtn');
+// ============================
+// CONTROLES DE VIDEO Y MÚSICA
+// ============================
 
-const dondeMenu = document.getElementById('dondeMenu');
-const itinerarioMenu = document.getElementById('itinerarioMenu');
-const asistenciaMenu = document.getElementById('asistenciaMenu');
-const infoMenu = document.getElementById('infoMenu');
+const muteIcon = muteButton.querySelector('i');
+const eyeIcon = eyeButton.querySelector('i');
+let elementsVisible = true;
 
-const closeDonde = document.getElementById('closeDonde');
-const closeItinerario = document.getElementById('closeItinerario');
-const closeAsistencia = document.getElementById('closeAsistencia');
-const closeInfo = document.getElementById('closeInfo');
-
-// Funciones para abrir menús
-dondeBtn.addEventListener('click', () => {
-  dondeMenu.classList.add('active');
-});
-
-itinerarioBtn.addEventListener('click', () => {
-  itinerarioMenu.classList.add('active');
-});
-
-asistenciaBtn.addEventListener('click', () => {
-  asistenciaMenu.classList.add('active');
-});
-
-infoBtn.addEventListener('click', () => {
-  infoMenu.classList.add('active');
-});
-
-// Funciones para cerrar menús
-closeDonde.addEventListener('click', () => {
-  dondeMenu.classList.remove('active');
-});
-
-closeItinerario.addEventListener('click', () => {
-  itinerarioMenu.classList.remove('active');
-});
-
-closeAsistencia.addEventListener('click', () => {
-  asistenciaMenu.classList.remove('active');
-});
-
-closeInfo.addEventListener('click', () => {
-  infoMenu.classList.remove('active');
-});
-
-// Cerrar menús al hacer clic fuera del contenido
-dondeMenu.addEventListener('click', (e) => {
-  if (e.target === dondeMenu) {
-    dondeMenu.classList.remove('active');
+// MODIFICADO: Ahora el botón de mute controla tanto video como música
+muteButton.addEventListener('click', async () => {
+  if (isMusicPlaying) {
+    // Si la música está sonando, pausar todo
+    pauseBackgroundMusic();
+    video.muted = true;
+    muteIcon.className = 'fas fa-volume-mute';
+  } else {
+    // Si está en silencio, reanudar todo
+    await resumeBackgroundMusic();
+    video.muted = false;
+    muteIcon.className = 'fas fa-volume-up';
   }
 });
 
-itinerarioMenu.addEventListener('click', (e) => {
-  if (e.target === itinerarioMenu) {
-    itinerarioMenu.classList.remove('active');
+// Función para alternar visibilidad
+eyeButton.addEventListener('click', () => {
+  if (elementsVisible) {
+    buttonsContainer.classList.add('hidden');
+    overlay.classList.add('hidden');
+    videoBackground.classList.add('video-clear');
+    dateSubtitleContainer.classList.add('hidden-interface');
+    eyeIcon.className = 'fas fa-eye-slash';
+  } else {
+    buttonsContainer.classList.remove('hidden');
+    overlay.classList.remove('hidden');
+    videoBackground.classList.remove('video-clear');
+    dateSubtitleContainer.classList.remove('hidden-interface');
+    eyeIcon.className = 'fas fa-eye';
+  }
+  elementsVisible = !elementsVisible;
+});
+
+// ============================
+// SISTEMA DE MENÚS
+// ============================
+
+// Configuración de menús
+const menus = {
+  donde: {
+    btn: document.getElementById('dondeBtn'),
+    menu: document.getElementById('dondeMenu'),
+    close: document.getElementById('closeDonde')
+  },
+  itinerario: {
+    btn: document.getElementById('itinerarioBtn'),
+    menu: document.getElementById('itinerarioMenu'),
+    close: document.getElementById('closeItinerario')
+  },
+  asistencia: {
+    btn: document.getElementById('asistenciaBtn'),
+    menu: document.getElementById('asistenciaMenu'),
+    close: document.getElementById('closeAsistencia')
+  },
+  info: {
+    btn: document.getElementById('infoBtn'),
+    menu: document.getElementById('infoMenu'),
+    close: document.getElementById('closeInfo')
+  }
+};
+
+// Configurar todos los menús
+Object.values(menus).forEach(({ btn, menu, close }) => {
+  if (btn && menu) {
+    btn.addEventListener('click', () => menu.classList.add('active'));
+    close.addEventListener('click', () => menu.classList.remove('active'));
+    
+    // Cerrar al hacer clic fuera
+    menu.addEventListener('click', (e) => {
+      if (e.target === menu) {
+        menu.classList.remove('active');
+      }
+    });
   }
 });
 
-asistenciaMenu.addEventListener('click', (e) => {
-  if (e.target === asistenciaMenu) {
-    asistenciaMenu.classList.remove('active');
-  }
-});
+// ============================
+// FORMULARIO DE ASISTENCIA
+// ============================
 
-infoMenu.addEventListener('click', (e) => {
-  if (e.target === infoMenu) {
-    infoMenu.classList.remove('active');
-  }
-});
-
-// Lógica para el formulario de asistencia - CORREGIDA
+// Elementos del formulario
 const agregarComensalBtn = document.getElementById('agregarComensal');
 const enviarAsistenciaBtn = document.getElementById('enviarAsistencia');
 const listaComensales = document.getElementById('listaComensales');
@@ -326,63 +584,53 @@ const optionButtons = document.querySelectorAll('.option-button');
 const nombreComensalInput = document.getElementById('nombreComensal');
 
 let comensales = [];
-let asistira = true; // Por defecto marcado como "Sí"
+let asistira = true;
 
-// Función para manejar la opción de asistencia
+// Manejar opción de asistencia
 function manejarOpcionAsistencia(opcion) {
   asistira = opcion === 'si';
   asistenciaOpcionField.value = opcion;
   
-  // Actualizar botones
   optionButtons.forEach(btn => {
-    if (btn.dataset.value === opcion) {
-      btn.classList.add('active');
-    } else {
-      btn.classList.remove('active');
-    }
+    btn.classList.toggle('active', btn.dataset.value === opcion);
   });
   
-  // Mostrar/ocultar campos según la opción
   if (asistira) {
     asistenciaFields.classList.remove('hidden');
     noAsistenciaText.style.display = 'none';
     nombreGrupo.style.display = 'block';
     enviarAsistenciaBtn.textContent = 'Confirmar asistencia';
-    actualizarBotonEnviar();
   } else {
     asistenciaFields.classList.add('hidden');
     noAsistenciaText.style.display = 'block';
     nombreGrupo.style.display = 'block';
     enviarAsistenciaBtn.textContent = 'Enviar';
-    actualizarBotonEnviar();
   }
+  
+  actualizarBotonEnviar();
 }
 
-// Event listeners para los botones de opción
+// Configurar botones de opción
 optionButtons.forEach(button => {
   button.addEventListener('click', () => {
     manejarOpcionAsistencia(button.dataset.value);
   });
 });
 
-// Función para agregar un comensal
+// Agregar comensal
 function agregarComensal() {
   const nombre = nombreComensalInput.value.trim();
-  const intolerancias = document.getElementById('intolerancias').value.trim();
-  const menuInfantil = document.getElementById('menuInfantil').checked;
-  const cancion = document.getElementById('cancion').value.trim();
-  
   if (!nombre) {
     alert('Por favor, introduce al menos el nombre del comensal.');
     return;
   }
   
   const comensal = {
-    id: Date.now(), // ID único basado en timestamp
+    id: Date.now(),
     nombre,
-    intolerancias,
-    menuInfantil,
-    cancion
+    intolerancias: document.getElementById('intolerancias').value.trim(),
+    menuInfantil: document.getElementById('menuInfantil').checked,
+    cancion: document.getElementById('cancion').value.trim()
   };
   
   comensales.push(comensal);
@@ -391,14 +639,7 @@ function agregarComensal() {
   actualizarBotonEnviar();
 }
 
-// Función para eliminar un comensal
-function eliminarComensal(id) {
-  comensales = comensales.filter(comensal => comensal.id !== id);
-  actualizarListaComensales();
-  actualizarBotonEnviar();
-}
-
-// Función para actualizar la lista de comensales en la interfaz
+// Actualizar lista de comensales
 function actualizarListaComensales() {
   listaComensales.innerHTML = '';
   
@@ -422,15 +663,9 @@ function actualizarListaComensales() {
     detallesElement.className = 'comensal-details';
     
     let detalles = [];
-    if (comensal.intolerancias) {
-      detalles.push(`Intolerancias: ${comensal.intolerancias}`);
-    }
-    if (comensal.menuInfantil) {
-      detalles.push('Menú infantil');
-    }
-    if (comensal.cancion) {
-      detalles.push(`Canción: ${comensal.cancion}`);
-    }
+    if (comensal.intolerancias) detalles.push(`Intolerancias: ${comensal.intolerancias}`);
+    if (comensal.menuInfantil) detalles.push('Menú infantil');
+    if (comensal.cancion) detalles.push(`Canción: ${comensal.cancion}`);
     
     detallesElement.textContent = detalles.join(' | ');
     
@@ -449,7 +684,14 @@ function actualizarListaComensales() {
   });
 }
 
-// Función para limpiar el formulario después de agregar un comensal
+// Eliminar comensal
+function eliminarComensal(id) {
+  comensales = comensales.filter(comensal => comensal.id !== id);
+  actualizarListaComensales();
+  actualizarBotonEnviar();
+}
+
+// Limpiar formulario
 function limpiarFormulario() {
   nombreComensalInput.value = '';
   document.getElementById('intolerancias').value = '';
@@ -457,123 +699,112 @@ function limpiarFormulario() {
   document.getElementById('cancion').value = '';
 }
 
-// Función para actualizar el estado del botón de enviar - CORREGIDA
+// Actualizar estado del botón de enviar
 function actualizarBotonEnviar() {
   if (asistira) {
-    // Para "Sí": solo necesita que haya al menos un comensal en la lista
     enviarAsistenciaBtn.disabled = comensales.length === 0;
   } else {
-    // Para "No": necesita que el campo de nombre esté completo
-    const nombre = nombreComensalInput.value.trim();
-    enviarAsistenciaBtn.disabled = !nombre;
+    enviarAsistenciaBtn.disabled = !nombreComensalInput.value.trim();
   }
 }
 
-// Función para enviar los datos a Netlify usando fetch - CORREGIDA
+// Enviar a Netlify
 async function enviarAsistenciaNetlify() {
   try {
-    // Preparar los datos según la opción seleccionada
+    // Preparar datos según la opción
     if (asistira) {
-      // Para "Sí": enviar la lista de comensales
       comensalesDataField.value = JSON.stringify(comensales);
-      nombreNoAsistenteField.value = ''; // Limpiar campo de nombre para "No"
+      nombreNoAsistenteField.value = '';
     } else {
-      // Para "No": enviar solo el nombre
-      comensalesDataField.value = ''; // Limpiar campo de comensales
+      comensalesDataField.value = '';
       nombreNoAsistenteField.value = nombreComensalInput.value.trim();
     }
     
-    // Crear FormData desde el formulario oculto
+    // Enviar usando fetch
     const formData = new FormData(netlifyForm);
-    
-    // Enviar los datos usando fetch
     const response = await fetch('/', {
       method: 'POST',
       body: formData,
     });
     
-    if (response.ok) {
-      console.log('Datos enviados correctamente a Netlify');
-      return true;
-    } else {
-      console.error('Error al enviar datos a Netlify');
-      return false;
-    }
+    return response.ok;
   } catch (error) {
-    console.error('Error de red:', error);
+    console.error('Error al enviar:', error);
     return false;
   }
 }
 
-// Función para enviar la confirmación de asistencia - CORREGIDA
+// Enviar asistencia
 async function enviarAsistencia() {
-  // Validaciones según la opción seleccionada
+  // Validaciones
   if (asistira && comensales.length === 0) {
-    alert('Por favor, añade al menos un comensal antes de confirmar la asistencia.');
+    alert('Por favor, añade al menos un comensal.');
     return;
   }
   
   if (!asistira && !nombreComensalInput.value.trim()) {
-    alert('Por favor, introduce tu nombre antes de enviar.');
+    alert('Por favor, introduce tu nombre.');
     return;
   }
   
   // Mostrar mensaje de confirmación
   mensajeConfirmacion.style.display = 'block';
   
-  // Enviar datos a Netlify en segundo plano
+  // Enviar a Netlify
   const exito = await enviarAsistenciaNetlify();
+  console.log(exito ? '✅ Enviado a Netlify' : '⚠️ Guardado localmente');
   
-  if (exito) {
-    console.log('Respuesta enviada correctamente a Netlify');
-  } else {
-    console.log('Respuesta enviada localmente (error en envío a Netlify)');
-  }
-  
-  // Limpiar el formulario después de enviar
+  // Limpiar formulario
   comensales = [];
   actualizarListaComensales();
   limpiarFormulario();
   actualizarBotonEnviar();
   
-  // Ocultar el mensaje después de unos segundos
+  // Ocultar mensaje después de 3 segundos
   setTimeout(() => {
     mensajeConfirmacion.style.display = 'none';
-    asistenciaMenu.classList.remove('active');
+    document.getElementById('asistenciaMenu').classList.remove('active');
   }, 3000);
 }
 
-// Event listeners para el formulario de asistencia
+// Event listeners del formulario
 agregarComensalBtn.addEventListener('click', agregarComensal);
 enviarAsistenciaBtn.addEventListener('click', enviarAsistencia);
 
-// Permitir agregar comensal con la tecla Enter en el campo de nombre
-nombreComensalInput.addEventListener('keypress', function(e) {
+// Permitir Enter para agregar/enviar
+nombreComensalInput.addEventListener('keypress', (e) => {
   if (e.key === 'Enter') {
-    if (asistira) {
-      agregarComensal();
-    } else {
-      enviarAsistencia();
-    }
+    asistira ? agregarComensal() : enviarAsistencia();
   }
 });
 
-// Actualizar estado del botón cuando cambie la lista de comensales
-document.addEventListener('DOMContentLoaded', function() {
-  // Observar cambios en la lista de comensales
-  const observer = new MutationObserver(function(mutations) {
-    mutations.forEach(function(mutation) {
-      if (mutation.type === 'childList') {
-        actualizarBotonEnviar();
-      }
-    });
-  });
-  
-  observer.observe(listaComensales, { childList: true, subtree: true });
-});
+// Observar cambios para actualizar botón
+const observer = new MutationObserver(actualizarBotonEnviar);
+observer.observe(listaComensales, { childList: true, subtree: true });
 
-// Actualizar estado del botón cuando cambie el campo de nombre
 nombreComensalInput.addEventListener('input', actualizarBotonEnviar);
 
-// Inicializar el estado del botón
+// Inicializar estado
 actualizarBotonEnviar();
+
+// ============================
+// INICIALIZACIÓN FINAL
+// ============================
+
+// Iniciar cuando el DOM esté listo
+document.addEventListener('DOMContentLoaded', () => {
+  initializeApp();
+});
+
+// Manejar la pausa de música cuando la página no está visible
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden && isMusicPlaying) {
+    // Pausar música cuando la pestaña no está activa
+    backgroundMusic.pause();
+  } else if (!document.hidden && isMusicPlaying) {
+    // Reanudar cuando la pestaña vuelve a estar activa
+    backgroundMusic.play().catch(e => console.log('No se pudo reanudar automáticamente'));
+  }
+});
+
+console.log('🎉 Aplicación de boda cargada y optimizada con música');

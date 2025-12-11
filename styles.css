@@ -1301,3 +1301,78 @@ header p {
 .main-menu-button:hover::before {
   opacity: 1;
 }
+
+/* Optimizaciones para dispositivos lentos */
+.low-performance * {
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.01ms !important;
+}
+
+.low-performance .video-background {
+  opacity: 0.8;
+}
+
+.low-performance .background-image {
+  filter: none;
+}
+
+/* Estados de carga */
+body.loading {
+  cursor: wait;
+}
+
+body.loading * {
+  pointer-events: none;
+}
+
+#loadingScreen {
+  transition: opacity 0.3s ease;
+}
+
+#loadingScreen.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.envelope-screen.loaded {
+  opacity: 1;
+  transition: opacity 0.5s ease;
+}
+
+/* Prevenir FOUC (Flash of Unstyled Content) */
+[data-loaded="false"] {
+  opacity: 0;
+  visibility: hidden;
+}
+
+[data-loaded="true"] {
+  opacity: 1;
+  visibility: visible;
+  transition: opacity 0.3s ease;
+}
+
+/* Optimizar imágenes para carga progresiva */
+img[loading="lazy"] {
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+img[loading="lazy"].loaded {
+  opacity: 1;
+}
+
+/* Mejorar rendimiento de desplazamiento */
+* {
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+/* Desactivar efectos para dispositivos móviles antiguos */
+@media (max-width: 768px) and (max-height: 1024px) {
+  .low-performance .shadow,
+  .low-performance .blur,
+  .low-performance .gradient {
+    display: none !important;
+  }
+}

@@ -11,6 +11,39 @@
   <!-- Enlazar archivo CSS -->
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="media.css">
+
+  <!-- Optimizaciones para mejorar carga -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+  <link rel="preconnect" href="https://maps.google.com">
+
+  <!-- Precargar recursos críticos -->
+  <link rel="preload" as="image" href="media/boton.png" type="image/png">
+  <link rel="preload" as="image" href="media/title.png" type="image/png">
+
+  <!-- Polifill opcional para navegadores antiguos -->
+  <script>
+    // Detectar navegadores muy antiguos
+    if (!window.Promise || !window.fetch) {
+      document.write('<script src="https://cdnjs.cloudflare.com/ajax/libs/es6-promise/4.2.8/es6-promise.auto.min.js"><\/script>');
+      document.write('<script src="https://cdnjs.cloudflare.com/ajax/libs/fetch/3.0.0/fetch.min.js"><\/script>');
+    }
+  </script>
+
+  <!-- Fallback sin JavaScript -->
+  <noscript>
+    <style>
+      .loading-screen { display: none !important; }
+      .envelope-screen { display: block !important; opacity: 1 !important; }
+      .no-js-message { 
+        display: block; 
+        padding: 20px; 
+        text-align: center; 
+        color: #fff; 
+        background: rgba(0,0,0,0.8);
+      }
+    </style>
+  </noscript>
 </head>
 <body>
 
@@ -136,7 +169,7 @@
             <i class="fas fa-map-marker-alt"></i>
             Ver en Maps
           </button>
-          <img src="media/cason.png" alt="El Casón de la Vega" class="location-image">
+          <img src="media/cason.jpg" alt="El Casón de la Vega" class="location-image">
         </div>
       </div>
     </div>
