@@ -178,7 +178,7 @@
     <div class="menu-overlay" id="itinerarioMenu">
       <div class="menu-content">
         <button class="close-button" id="closeItinerario">×</button>
-        <h2>Itinerario</h2>
+        <div class="location-title">Itinerario</div>
         
         <div class="timeline">
           <!-- Punto 1: Ceremonia -->
@@ -228,11 +228,11 @@
       </div>
     </div>
 
-    <!-- Menú Asistencia - CORREGIDO -->
+    <!-- Menú Asistencia - ACTUALIZADO CON CAMPO DE ACOMPAÑANTES -->
     <div class="menu-overlay" id="asistenciaMenu">
       <div class="menu-content">
         <button class="close-button" id="closeAsistencia">×</button>
-        <h2>Confirmar Asistencia</h2>
+        <div class="location-title">Confirmar Asistencia</div>
         <p>Por favor, confirma tu asistencia antes del <strong>15 de noviembre de 2026</strong>.</p>
         
         <!-- Formulario Netlify oculto para el envío -->
@@ -262,6 +262,22 @@
           <div class="form-group" id="nombreGrupo">
             <label for="nombreComensal">Nombre y apellidos del comensal:</label>
             <input type="text" id="nombreComensal" placeholder="Ej: Juan Pérez García">
+          </div>
+          
+          <!-- NUEVO: Campo para número de acompañantes -->
+          <div class="form-group" id="acompanantesGrupo">
+            <label for="numAcompanantes">Número de acompañantes (incluyéndote):</label>
+            <div class="acompanantes-input-group">
+              <button type="button" class="acompanantes-btn" id="decrementBtn">-</button>
+              <input type="number" id="numAcompanantes" min="1" max="10" value="1" readonly>
+              <button type="button" class="acompanantes-btn" id="incrementBtn">+</button>
+            </div>
+            <div class="acompanantes-info">
+              <span id="comensalesContador">Comensales añadidos: <strong>0</strong> de <strong>1</strong></span>
+            </div>
+            <div class="acompanantes-alert" id="acompanantesAlert">
+              ⚠️ Necesitas añadir todos los comensales antes de confirmar
+            </div>
           </div>
           
           <div class="asistencia-fields" id="asistenciaFields">
@@ -300,7 +316,7 @@
     <div class="menu-overlay" id="infoMenu">
       <div class="menu-content">
         <button class="close-button" id="closeInfo">×</button>
-        <h2>Información Adicional</h2>
+        <div class="location-title">Información Adicional</div>
         
         <div class="info-timeline">
           <!-- Punto 1: Código de vestimenta -->

@@ -565,7 +565,7 @@ Object.values(menus).forEach(({ btn, menu, close }) => {
 });
 
 // ============================
-// FORMULARIO DE ASISTENCIA
+// FORMULARIO DE ASISTENCIA (ACTUALIZADO CON ACOMPAÑANTES)
 // ============================
 
 // Elementos del formulario
@@ -583,8 +583,74 @@ const nombreGrupo = document.getElementById('nombreGrupo');
 const optionButtons = document.querySelectorAll('.option-button');
 const nombreComensalInput = document.getElementById('nombreComensal');
 
+// NUEVAS VARIABLES para el control de acompañantes
+const numAcompanantesInput = document.getElementById('numAcompanantes');
+const decrementBtn = document.getElementById('decrementBtn');
+const incrementBtn = document.getElementById('incrementBtn');
+const comensalesContador = document.getElementById('comensalesContador');
+const acompanantesAlert = document.getElementById('acompanantesAlert');
+const acompanantesGrupo = document.getElementById('acompanantesGrupo');
+
 let comensales = [];
 let asistira = true;
+let numAcompanantes = 1; // Valor por defecto
+
+// Inicializar el campo de acompañantes
+function inicializarControlAcompanantes() {
+  // Configurar botones de incremento/decremento
+  decrementBtn.addEventListener('click', () => {
+    if (numAcompanantes > 1) {
+      numAcompanantes--;
+      actualizarControlAcompanantes();
+    }
+  });
+  
+  incrementBtn.addEventListener('click', () => {
+    if (numAcompanantes < 10) {
+      numAcompanantes++;
+      actualizarControlAcompanantes();
+    }
+  });
+  
+  // Actualizar botones de +/- según límites
+  function actualizarBotones() {
+    decrementBtn.disabled = numAcompanantes <= 1;
+    incrementBtn.disabled = numAcompanantes >= 10;
+  }
+  
+  // Actualizar todo el control
+  function actualizarControlAcompanantes() {
+    numAcompanantesInput.value = numAcompanantes;
+    actualizarContadorComensales();
+    actualizarBotones();
+    actualizarBotonEnviar();
+  }
+  
+  // Inicializar
+  actualizarControlAcompanantes();
+}
+
+// Actualizar contador de comensales añadidos
+function actualizarContadorComensales() {
+  const total = numAcompanantes;
+  const añadidos = comensales.length;
+  
+  comensalesContador.innerHTML = `Comensales añadidos: <strong>${añadidos}</strong> de <strong>${total}</strong>`;
+  
+  // Mostrar/ocultar alerta según necesidad
+  if (asistira && total > añadidos) {
+    acompanantesAlert.style.display = 'block';
+  } else {
+    acompanantesAlert.style.display = 'none';
+  }
+  
+  // Actualizar clase del botón de enviar
+  if (asistira && total > añadidos) {
+    enviarAsistenciaBtn.classList.add('incomplete');
+  } else {
+    enviarAsistenciaBtn.classList.remove('incomplete');
+  }
+}
 
 // Manejar opción de asistencia
 function manejarOpcionAsistencia(opcion) {
@@ -597,17 +663,20 @@ function manejarOpcionAsistencia(opcion) {
   
   if (asistira) {
     asistenciaFields.classList.remove('hidden');
+    acompanantesGrupo.classList.remove('hidden');
     noAsistenciaText.style.display = 'none';
     nombreGrupo.style.display = 'block';
     enviarAsistenciaBtn.textContent = 'Confirmar asistencia';
   } else {
     asistenciaFields.classList.add('hidden');
+    acompanantesGrupo.classList.add('hidden');
     noAsistenciaText.style.display = 'block';
     nombreGrupo.style.display = 'block';
     enviarAsistenciaBtn.textContent = 'Enviar';
   }
   
   actualizarBotonEnviar();
+  actualizarContadorComensales();
 }
 
 // Configurar botones de opción
@@ -625,6 +694,12 @@ function agregarComensal() {
     return;
   }
   
+  // Verificar que no se exceda el número de acompañantes
+  if (comensales.length >= numAcompanantes) {
+    alert(`Ya has añadido el número máximo de ${numAcompanantes} comensales.`);
+    return;
+  }
+  
   const comensal = {
     id: Date.now(),
     nombre,
@@ -637,6 +712,7 @@ function agregarComensal() {
   actualizarListaComensales();
   limpiarFormulario();
   actualizarBotonEnviar();
+  actualizarContadorComensales();
 }
 
 // Actualizar lista de comensales
@@ -689,6 +765,7 @@ function eliminarComensal(id) {
   comensales = comensales.filter(comensal => comensal.id !== id);
   actualizarListaComensales();
   actualizarBotonEnviar();
+  actualizarContadorComensales();
 }
 
 // Limpiar formulario
@@ -702,8 +779,20 @@ function limpiarFormulario() {
 // Actualizar estado del botón de enviar
 function actualizarBotonEnviar() {
   if (asistira) {
-    enviarAsistenciaBtn.disabled = comensales.length === 0;
+    // Para "Sí" asistencia: habilitado solo si se han añadido todos los comensales
+    const totalAcompanantes = numAcompanantes;
+    const añadidos = comensales.length;
+    
+    enviarAsistenciaBtn.disabled = añadidos < totalAcompanantes;
+    
+    // Actualizar texto del botón si faltan comensales
+    if (añadidos < totalAcompanantes) {
+      enviarAsistenciaBtn.setAttribute('title', `Faltan ${totalAcompanantes - añadidos} comensales por añadir`);
+    } else {
+      enviarAsistenciaBtn.removeAttribute('title');
+    }
   } else {
+    // Para "No" asistencia: habilitado si hay nombre
     enviarAsistenciaBtn.disabled = !nombreComensalInput.value.trim();
   }
 }
@@ -737,9 +826,14 @@ async function enviarAsistenciaNetlify() {
 // Enviar asistencia
 async function enviarAsistencia() {
   // Validaciones
-  if (asistira && comensales.length === 0) {
-    alert('Por favor, añade al menos un comensal.');
-    return;
+  if (asistira) {
+    const totalAcompanantes = numAcompanantes;
+    const añadidos = comensales.length;
+    
+    if (añadidos < totalAcompanantes) {
+      alert(`Faltan ${totalAcompanantes - añadidos} comensales por añadir. Por favor, añade todos los comensales antes de confirmar.`);
+      return;
+    }
   }
   
   if (!asistira && !nombreComensalInput.value.trim()) {
@@ -756,9 +850,12 @@ async function enviarAsistencia() {
   
   // Limpiar formulario
   comensales = [];
+  numAcompanantes = 1; // Resetear a valor por defecto
+  numAcompanantesInput.value = '1';
   actualizarListaComensales();
   limpiarFormulario();
   actualizarBotonEnviar();
+  actualizarContadorComensales();
   
   // Ocultar mensaje después de 3 segundos
   setTimeout(() => {
@@ -783,6 +880,9 @@ const observer = new MutationObserver(actualizarBotonEnviar);
 observer.observe(listaComensales, { childList: true, subtree: true });
 
 nombreComensalInput.addEventListener('input', actualizarBotonEnviar);
+
+// Inicializar control de acompañantes
+inicializarControlAcompanantes();
 
 // Inicializar estado
 actualizarBotonEnviar();
