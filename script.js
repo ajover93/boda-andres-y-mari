@@ -243,8 +243,9 @@ function createMusicEnableButton() {
 // ============================
 
 // Precargar solo imágenes críticas para el inicio
+// Función actualizada para precargar imágenes críticas
 function preloadCriticalImages() {
-  return new Promise((resolve) => {
+  return new Promise((resolve, reject) => {
     const isLandscape = window.innerWidth > window.innerHeight;
     const backgroundImage = isLandscape ? 'media/mesa.jpg' : 'media/mesa2.jpg';
     
@@ -252,31 +253,80 @@ function preloadCriticalImages() {
     const criticalImages = [
       backgroundImage,
       'media/sello.png',
+      'media/invitacion.jpg', // AÑADIDA: Precargar invitación también
       'media/title.png',
-      'media/boton.png' // Para los botones del menú principal
+      'media/btn1.png', // Añadir imágenes de botones
+      'media/btn2.png',
+      'media/btn3.png',
+      'media/btn4.png'
     ];
     
     let loaded = 0;
     const total = criticalImages.length;
+    let hasError = false;
+    
+    // Timeout global para toda la carga
+    const globalTimeout = setTimeout(() => {
+      console.warn('⚠️ Timeout en precarga de imágenes');
+      if (!hasError && loaded < total) {
+        console.log(`Cargadas ${loaded} de ${total} imágenes`);
+        resolve(backgroundImage);
+      }
+    }, 10000); // 10 segundos máximo
     
     // Función para verificar si todas están cargadas
     const checkAllLoaded = () => {
       loaded++;
+      
+      // Actualizar texto de carga si existe
+      const loadingText = document.querySelector('.loading-text');
+      if (loadingText) {
+        loadingText.textContent = `Cargando invitación... ${Math.round((loaded/total)*100)}%`;
+      }
+      
       if (loaded === total) {
-        console.log('✅ Imágenes críticas cargadas');
+        clearTimeout(globalTimeout);
+        console.log('✅ Todas las imágenes críticas cargadas');
         resolve(backgroundImage);
       }
     };
     
-    // Precargar cada imagen
+    // Función para manejar errores
+    const handleImageError = (src) => {
+      console.error(`❌ Error al cargar imagen: ${src}`);
+      hasError = true;
+      checkAllLoaded();
+    };
+    
+    // Precargar cada imagen con timeout individual
     criticalImages.forEach(src => {
       const img = new Image();
-      img.onload = checkAllLoaded;
-      img.onerror = checkAllLoaded; // Continuar incluso si falla
+      
+      // Timeout individual por imagen
+      const individualTimeout = setTimeout(() => {
+        if (!img.complete) {
+          console.warn(`⚠️ Timeout en imagen: ${src}`);
+          handleImageError(src);
+        }
+      }, 5000);
+      
+      img.onload = () => {
+        clearTimeout(individualTimeout);
+        console.log(`✅ Cargada: ${src}`);
+        checkAllLoaded();
+      };
+      
+      img.onerror = () => {
+        clearTimeout(individualTimeout);
+        handleImageError(src);
+      };
+      
       img.src = src;
       
-      // Timeout de seguridad
-      setTimeout(checkAllLoaded, 3000);
+      // Forzar la carga para imágenes críticas
+      if (src === backgroundImage || src === 'media/invitacion.jpg') {
+        img.loading = 'eager';
+      }
     });
   });
 }
@@ -284,7 +334,6 @@ function preloadCriticalImages() {
 // Cargar imágenes secundarias después del inicio
 function lazyLoadSecondaryImages() {
   const secondaryImages = [
-    'media/invitacion.jpg',
     'media/papel-textura-interior.jpg',
     'media/papel-textura-exterior.jpg',
     'media/iglesia.jpg',
@@ -300,18 +349,22 @@ function lazyLoadSecondaryImages() {
   // Usar requestIdleCallback si está disponible, sino setTimeout
   const scheduleLoad = (callback) => {
     if ('requestIdleCallback' in window) {
-      requestIdleCallback(callback, { timeout: 2000 });
+      requestIdleCallback(callback, { timeout: 3000 });
     } else {
-      setTimeout(callback, 1000);
+      setTimeout(callback, 1500);
     }
   };
   
   scheduleLoad(() => {
     secondaryImages.forEach(src => {
       const img = new Image();
+      img.loading = 'lazy'; // Usar carga lazy
       img.src = src;
+      img.onload = () => {
+        console.log(`📦 Cargada imagen secundaria: ${src}`);
+      };
     });
-    console.log('📦 Imágenes secundarias cargadas en segundo plano');
+    console.log('📦 Imágenes secundarias en proceso de carga');
   });
 }
 

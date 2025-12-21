@@ -232,6 +232,7 @@ body {
   opacity: 0;
 }
 
+/* Estilo para la imagen de invitación - MEJORADO */
 .invitation-image {
   position: absolute;
   top: 100%;
@@ -243,15 +244,14 @@ body {
   transition: top 2.5s cubic-bezier(0.2, 0.7, 0.3, 1) 1.5s;
   border-radius: 4px;
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-  opacity: 0;
+  opacity: 0; /* Siempre oculta inicialmente */
+  visibility: visible; /* Pero visible para el DOM */
 }
 
-.envelope-screen.loaded .invitation-image {
-  opacity: 1;
-}
-
+/* Solo cuando el sobre se abre, mostrar la invitación */
 .envelope.open .invitation-image {
   top: -25%;
+  opacity: 1; /* ¡Ahora sí se muestra completamente! */
 }
 
 .open-text {
@@ -1476,4 +1476,33 @@ img[loading="lazy"].loaded {
 /* Asegurar que el campo de acompañantes esté oculto por defecto cuando no se asiste */
 #acompanantesGrupo.hidden {
   display: none !important;
+}
+
+/* Estilos para la imagen de invitación - MEJORADO */
+.invitation-image {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 70%;
+  max-width: 350px;
+  z-index: 3;
+  transition: top 2.5s cubic-bezier(0.2, 0.7, 0.3, 1) 1.5s, opacity 0.3s ease;
+  border-radius: 4px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+  opacity: 0; /* SIEMPRE oculta inicialmente */
+  visibility: visible; /* Pero visible para el DOM */
+}
+
+/* Cuando el sobre está cargado, solo mostrar la silueta */
+.envelope-screen.loaded .invitation-image {
+  opacity: 0.3; /* Muy sutil, solo para dar referencia */
+  filter: brightness(0.8);
+}
+
+/* Solo mostrar completamente cuando el sobre se abre */
+.envelope.open .invitation-image {
+  top: -25%;
+  opacity: 1; /* ¡Ahora sí se muestra completamente! */
+  filter: brightness(1);
 }
