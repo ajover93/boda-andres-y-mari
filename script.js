@@ -659,7 +659,7 @@ function inicializarControlAcompanantes() {
   });
   
   incrementBtn.addEventListener('click', () => {
-    if (numAcompanantes < 2) {
+    if (numAcompanantes < 4) {
       numAcompanantes++;
       actualizarControlAcompanantes();
     }
@@ -668,7 +668,7 @@ function inicializarControlAcompanantes() {
   // Actualizar botones de +/- según límites
   function actualizarBotones() {
     decrementBtn.disabled = numAcompanantes <= 1;
-    incrementBtn.disabled = numAcompanantes >= 2;
+    incrementBtn.disabled = numAcompanantes >= 4;
   }
   
   // Actualizar todo el control
