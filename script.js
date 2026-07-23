@@ -4,7 +4,6 @@
 
 // Detectar si es un dispositivo lento
 const isSlowDevice = (() => {
-  // Heurísticas para detectar dispositivos antiguos/lentos
   const ua = navigator.userAgent;
   const isOldAndroid = /Android [2-4]/.test(ua);
   const isOldIOS = /iOS [7-9]/.test(ua);
@@ -20,7 +19,6 @@ if (isSlowDevice) {
   console.log('Dispositivo lento detectado - aplicando optimizaciones');
   document.documentElement.classList.add('slow-device');
   
-  // Crear estilo para optimizaciones
   const style = document.createElement('style');
   style.textContent = `
     .slow-device * {
@@ -39,12 +37,10 @@ if (isSlowDevice) {
 // SISTEMA DE MÚSICA DE FONDO
 // ============================
 
-// Variables globales para la música
 let backgroundMusic = null;
 let isMusicPlaying = false;
-let musicVolume = 0.5; // Volumen por defecto al 50%
+let musicVolume = 0.5;
 
-// Inicializar el reproductor de música
 function initializeMusic() {
   if (backgroundMusic) return backgroundMusic;
   
@@ -52,14 +48,12 @@ function initializeMusic() {
   backgroundMusic.loop = true;
   backgroundMusic.volume = musicVolume;
   
-  // Optimizar para dispositivos lentos
   if (isSlowDevice) {
-    backgroundMusic.preload = 'none'; // No precargar en dispositivos lentos
+    backgroundMusic.preload = 'none';
   } else {
-    backgroundMusic.preload = 'metadata'; // Precargar solo metadatos
+    backgroundMusic.preload = 'metadata';
   }
   
-  // Manejar eventos de música
   backgroundMusic.addEventListener('canplaythrough', () => {
     console.log('🎵 Música cargada y lista para reproducir');
   });
@@ -71,34 +65,24 @@ function initializeMusic() {
   return backgroundMusic;
 }
 
-// Reproducir música de fondo
 async function playBackgroundMusic() {
   try {
     const music = initializeMusic();
     
     if (!isMusicPlaying) {
-      // En navegadores modernos, necesitamos interacción del usuario primero
-      music.volume = 0; // Empezar en silencio
+      music.volume = 0;
       await music.play();
-      
-      // Fade in suave del volumen
       fadeVolumeIn(music, 0, musicVolume, 2000);
-      
       isMusicPlaying = true;
       console.log('🎵 Música de fondo iniciada');
-      
-      // Actualizar icono del botón de mute si existe
       updateMusicButtonIcon(true);
     }
   } catch (error) {
     console.log('⚠️ No se pudo reproducir la música automáticamente:', error.message);
-    
-    // Crear un botón de "activar música" si falla el autoplay
     createMusicEnableButton();
   }
 }
 
-// Función para fade in del volumen
 function fadeVolumeIn(audio, startVolume, endVolume, duration) {
   const steps = 20;
   const stepTime = duration / steps;
@@ -118,7 +102,6 @@ function fadeVolumeIn(audio, startVolume, endVolume, duration) {
   }, stepTime);
 }
 
-// Función para fade out del volumen
 function fadeVolumeOut(audio, startVolume, endVolume, duration) {
   const steps = 20;
   const stepTime = duration / steps;
@@ -141,7 +124,6 @@ function fadeVolumeOut(audio, startVolume, endVolume, duration) {
   }, stepTime);
 }
 
-// Pausar música de fondo
 function pauseBackgroundMusic() {
   if (backgroundMusic && isMusicPlaying) {
     fadeVolumeOut(backgroundMusic, musicVolume, 0, 1000);
@@ -149,7 +131,6 @@ function pauseBackgroundMusic() {
   }
 }
 
-// Reanudar música de fondo
 async function resumeBackgroundMusic() {
   if (backgroundMusic && !isMusicPlaying) {
     try {
@@ -165,7 +146,6 @@ async function resumeBackgroundMusic() {
   }
 }
 
-// Alternar música (play/pause)
 async function toggleBackgroundMusic() {
   if (isMusicPlaying) {
     pauseBackgroundMusic();
@@ -174,7 +154,6 @@ async function toggleBackgroundMusic() {
   }
 }
 
-// Actualizar icono del botón de música
 function updateMusicButtonIcon(playing) {
   const muteIcon = document.querySelector('.mute-button i');
   if (muteIcon) {
@@ -182,9 +161,7 @@ function updateMusicButtonIcon(playing) {
   }
 }
 
-// Crear botón para activar música si falla el autoplay
 function createMusicEnableButton() {
-  // Verificar si ya existe
   if (document.getElementById('enableMusicBtn')) return;
   
   const enableBtn = document.createElement('button');
@@ -230,7 +207,6 @@ function createMusicEnableButton() {
   
   document.body.appendChild(enableBtn);
   
-  // Auto-ocultar después de 10 segundos
   setTimeout(() => {
     if (enableBtn.parentNode) {
       enableBtn.style.opacity = '0.5';
@@ -242,20 +218,17 @@ function createMusicEnableButton() {
 // PRECARGA INTELIGENTE DE IMÁGENES
 // ============================
 
-// Precargar solo imágenes críticas para el inicio
-// Función actualizada para precargar imágenes críticas
 function preloadCriticalImages() {
   return new Promise((resolve, reject) => {
     const isLandscape = window.innerWidth > window.innerHeight;
     const backgroundImage = isLandscape ? 'media/mesa.jpg' : 'media/mesa2.jpg';
     
-    // Imágenes críticas para mostrar la pantalla inicial
     const criticalImages = [
       backgroundImage,
       'media/sello.png',
-      'media/invitacion.jpg', // AÑADIDA: Precargar invitación también
+      'media/invitacion.jpg',
       'media/title.png',
-      'media/btn1.png', // Añadir imágenes de botones
+      'media/btn1.png',
       'media/btn2.png',
       'media/btn3.png',
       'media/btn4.png'
@@ -472,7 +445,6 @@ const videoBackground = document.getElementById('videoBackground');
 const overlay = document.getElementById('overlay');
 const dateSubtitleContainer = document.getElementById('dateSubtitleContainer');
 
-// Prevenir múltiples clics en el sello
 let sealClicked = false;
 
 seal.addEventListener('click', () => {
@@ -480,16 +452,12 @@ seal.addEventListener('click', () => {
   sealClicked = true;
   
   console.log("💌 Abriendo invitación...");
-  
-  // Animación del sello
   seal.classList.add('broken');
 
-  // Abrir sobre
   setTimeout(() => {
     envelope.classList.add('open');
   }, 800);
 
-  // Mostrar contenido principal
   setTimeout(() => {
     envelopeScreen.style.opacity = '0';
     
@@ -497,7 +465,6 @@ seal.addEventListener('click', () => {
       envelopeScreen.style.display = 'none';
       mainContent.classList.add('visible');
       
-      // 1. Manejo del video optimizado
       if (isSlowDevice) {
         video.preload = 'auto';
         video.load();
@@ -505,25 +472,21 @@ seal.addEventListener('click', () => {
       
       video.muted = false;
       
-      // Intentar reproducir el video
       const playPromise = video.play();
       if (playPromise !== undefined) {
         playPromise.catch(() => {
-          // Si autoplay falla, mostrar controles
           video.controls = true;
         });
       }
       
       document.body.style.overflow = 'hidden';
       
-      // 2. Iniciar música de fondo junto con el video
       setTimeout(() => {
         playBackgroundMusic().catch(error => {
           console.log('Música no pudo iniciarse automáticamente:', error.message);
         });
-      }, 500); // Pequeño delay para mejor experiencia
+      }, 500);
       
-      // 3. Mostrar controles después de un momento
       setTimeout(() => {
         buttonsContainer.classList.add('visible');
         muteButton.classList.add('visible');
@@ -541,22 +504,18 @@ const muteIcon = muteButton.querySelector('i');
 const eyeIcon = eyeButton.querySelector('i');
 let elementsVisible = true;
 
-// MODIFICADO: Ahora el botón de mute controla tanto video como música
 muteButton.addEventListener('click', async () => {
   if (isMusicPlaying) {
-    // Si la música está sonando, pausar todo
     pauseBackgroundMusic();
     video.muted = true;
     muteIcon.className = 'fas fa-volume-mute';
   } else {
-    // Si está en silencio, reanudar todo
     await resumeBackgroundMusic();
     video.muted = false;
     muteIcon.className = 'fas fa-volume-up';
   }
 });
 
-// Función para alternar visibilidad
 eyeButton.addEventListener('click', () => {
   if (elementsVisible) {
     buttonsContainer.classList.add('hidden');
@@ -578,7 +537,6 @@ eyeButton.addEventListener('click', () => {
 // SISTEMA DE MENÚS
 // ============================
 
-// Configuración de menús
 const menus = {
   donde: {
     btn: document.getElementById('dondeBtn'),
@@ -602,13 +560,11 @@ const menus = {
   }
 };
 
-// Configurar todos los menús
 Object.values(menus).forEach(({ btn, menu, close }) => {
   if (btn && menu) {
     btn.addEventListener('click', () => menu.classList.add('active'));
     close.addEventListener('click', () => menu.classList.remove('active'));
     
-    // Cerrar al hacer clic fuera
     menu.addEventListener('click', (e) => {
       if (e.target === menu) {
         menu.classList.remove('active');
@@ -636,7 +592,7 @@ const nombreGrupo = document.getElementById('nombreGrupo');
 const optionButtons = document.querySelectorAll('.option-button');
 const nombreComensalInput = document.getElementById('nombreComensal');
 
-// NUEVAS VARIABLES para el control de acompañantes
+// Control de acompañantes
 const numAcompanantesInput = document.getElementById('numAcompanantes');
 const decrementBtn = document.getElementById('decrementBtn');
 const incrementBtn = document.getElementById('incrementBtn');
@@ -644,13 +600,31 @@ const comensalesContador = document.getElementById('comensalesContador');
 const acompanantesAlert = document.getElementById('acompanantesAlert');
 const acompanantesGrupo = document.getElementById('acompanantesGrupo');
 
+// 💡 1. DEFINICIÓN GLOBAL DE VARIABLES DE LÍMITE (Evita el ReferenceError)
+const urlParams = new URLSearchParams(window.location.search);
+const maxPermitido = parseInt(urlParams.get('max')) || 1;
+
 let comensales = [];
 let asistira = true;
-let numAcompanantes = 1; // Valor por defecto
+let numAcompanantes = maxPermitido; // Inicia con el valor asignado por URL
 
-// Inicializar el campo de acompañantes
+// Inicializar el campo de acompañantes adaptado al límite recibido
 function inicializarControlAcompanantes() {
-  // Configurar botones de incremento/decremento
+  // Si no puede llevar acompañantes (max 1), ocultamos el submenú
+  if (maxPermitido <= 1) {
+    if (acompanantesGrupo) {
+      acompanantesGrupo.style.display = 'none';
+    }
+    numAcompanantes = 1;
+    if (numAcompanantesInput) numAcompanantesInput.value = 1;
+    return;
+  }
+
+  // Si puede llevar acompañantes (> 1):
+  if (numAcompanantesInput) {
+    numAcompanantesInput.max = maxPermitido;
+  }
+
   decrementBtn.addEventListener('click', () => {
     if (numAcompanantes > 1) {
       numAcompanantes--;
@@ -659,19 +633,17 @@ function inicializarControlAcompanantes() {
   });
   
   incrementBtn.addEventListener('click', () => {
-    if (numAcompanantes < 4) {
+    if (numAcompanantes < maxPermitido) {
       numAcompanantes++;
       actualizarControlAcompanantes();
     }
   });
   
-  // Actualizar botones de +/- según límites
   function actualizarBotones() {
     decrementBtn.disabled = numAcompanantes <= 1;
-    incrementBtn.disabled = numAcompanantes >= 4;
+    incrementBtn.disabled = numAcompanantes >= maxPermitido;
   }
   
-  // Actualizar todo el control
   function actualizarControlAcompanantes() {
     numAcompanantesInput.value = numAcompanantes;
     actualizarContadorComensales();
@@ -679,7 +651,6 @@ function inicializarControlAcompanantes() {
     actualizarBotonEnviar();
   }
   
-  // Inicializar
   actualizarControlAcompanantes();
 }
 
@@ -690,14 +661,12 @@ function actualizarContadorComensales() {
   
   comensalesContador.innerHTML = `Comensales añadidos: <strong>${añadidos}</strong> de <strong>${total}</strong>`;
   
-  // Mostrar/ocultar alerta según necesidad
   if (asistira && total > añadidos) {
     acompanantesAlert.style.display = 'block';
   } else {
     acompanantesAlert.style.display = 'none';
   }
   
-  // Actualizar clase del botón de enviar
   if (asistira && total > añadidos) {
     enviarAsistenciaBtn.classList.add('incomplete');
   } else {
@@ -716,13 +685,17 @@ function manejarOpcionAsistencia(opcion) {
   
   if (asistira) {
     asistenciaFields.classList.remove('hidden');
-    acompanantesGrupo.classList.remove('hidden');
+    if (maxPermitido > 1) {
+      acompanantesGrupo.classList.remove('hidden');
+      acompanantesGrupo.style.display = 'block';
+    }
     noAsistenciaText.style.display = 'none';
     nombreGrupo.style.display = 'block';
     enviarAsistenciaBtn.textContent = 'Confirmar asistencia';
   } else {
     asistenciaFields.classList.add('hidden');
     acompanantesGrupo.classList.add('hidden');
+    acompanantesGrupo.style.display = 'none';
     noAsistenciaText.style.display = 'block';
     nombreGrupo.style.display = 'block';
     enviarAsistenciaBtn.textContent = 'Enviar';
@@ -732,7 +705,6 @@ function manejarOpcionAsistencia(opcion) {
   actualizarContadorComensales();
 }
 
-// Configurar botones de opción
 optionButtons.forEach(button => {
   button.addEventListener('click', () => {
     manejarOpcionAsistencia(button.dataset.value);
@@ -747,7 +719,6 @@ function agregarComensal() {
     return;
   }
   
-  // Verificar que no se exceda el número de acompañantes
   if (comensales.length >= numAcompanantes) {
     alert(`Ya has añadido el número máximo de ${numAcompanantes} comensales.`);
     return;
@@ -768,7 +739,6 @@ function agregarComensal() {
   actualizarContadorComensales();
 }
 
-// Actualizar lista de comensales
 function actualizarListaComensales() {
   listaComensales.innerHTML = '';
   
@@ -813,7 +783,6 @@ function actualizarListaComensales() {
   });
 }
 
-// Eliminar comensal
 function eliminarComensal(id) {
   comensales = comensales.filter(comensal => comensal.id !== id);
   actualizarListaComensales();
@@ -821,7 +790,6 @@ function eliminarComensal(id) {
   actualizarContadorComensales();
 }
 
-// Limpiar formulario
 function limpiarFormulario() {
   nombreComensalInput.value = '';
   document.getElementById('intolerancias').value = '';
@@ -829,31 +797,25 @@ function limpiarFormulario() {
   document.getElementById('cancion').value = '';
 }
 
-// Actualizar estado del botón de enviar
 function actualizarBotonEnviar() {
   if (asistira) {
-    // Para "Sí" asistencia: habilitado solo si se han añadido todos los comensales
     const totalAcompanantes = numAcompanantes;
     const añadidos = comensales.length;
     
     enviarAsistenciaBtn.disabled = añadidos < totalAcompanantes;
     
-    // Actualizar texto del botón si faltan comensales
     if (añadidos < totalAcompanantes) {
       enviarAsistenciaBtn.setAttribute('title', `Faltan ${totalAcompanantes - añadidos} comensales por añadir`);
     } else {
       enviarAsistenciaBtn.removeAttribute('title');
     }
   } else {
-    // Para "No" asistencia: habilitado si hay nombre
     enviarAsistenciaBtn.disabled = !nombreComensalInput.value.trim();
   }
 }
 
-// Enviar a Netlify
 async function enviarAsistenciaNetlify() {
   try {
-    // Preparar datos según la opción
     if (asistira) {
       comensalesDataField.value = JSON.stringify(comensales);
       nombreNoAsistenteField.value = '';
@@ -862,7 +824,6 @@ async function enviarAsistenciaNetlify() {
       nombreNoAsistenteField.value = nombreComensalInput.value.trim();
     }
     
-    // Enviar usando fetch
     const formData = new FormData(netlifyForm);
     const response = await fetch('/', {
       method: 'POST',
@@ -876,9 +837,7 @@ async function enviarAsistenciaNetlify() {
   }
 }
 
-// Enviar asistencia
 async function enviarAsistencia() {
-  // Validaciones
   if (asistira) {
     const totalAcompanantes = numAcompanantes;
     const añadidos = comensales.length;
@@ -894,23 +853,20 @@ async function enviarAsistencia() {
     return;
   }
   
-  // Mostrar mensaje de confirmación
   mensajeConfirmacion.style.display = 'block';
   
-  // Enviar a Netlify
   const exito = await enviarAsistenciaNetlify();
   console.log(exito ? '✅ Enviado a Netlify' : '⚠️ Guardado localmente');
   
-  // Limpiar formulario
   comensales = [];
-  numAcompanantes = 1; // Resetear a valor por defecto
-  numAcompanantesInput.value = '1';
+  numAcompanantes = maxPermitido;
+  if (numAcompanantesInput) numAcompanantesInput.value = maxPermitido.toString();
+  
   actualizarListaComensales();
   limpiarFormulario();
   actualizarBotonEnviar();
   actualizarContadorComensales();
   
-  // Ocultar mensaje después de 3 segundos
   setTimeout(() => {
     mensajeConfirmacion.style.display = 'none';
     document.getElementById('asistenciaMenu').classList.remove('active');
@@ -921,41 +877,33 @@ async function enviarAsistencia() {
 agregarComensalBtn.addEventListener('click', agregarComensal);
 enviarAsistenciaBtn.addEventListener('click', enviarAsistencia);
 
-// Permitir Enter para agregar/enviar
 nombreComensalInput.addEventListener('keypress', (e) => {
   if (e.key === 'Enter') {
     asistira ? agregarComensal() : enviarAsistencia();
   }
 });
 
-// Observar cambios para actualizar botón
 const observer = new MutationObserver(actualizarBotonEnviar);
 observer.observe(listaComensales, { childList: true, subtree: true });
 
 nombreComensalInput.addEventListener('input', actualizarBotonEnviar);
 
-// Inicializar control de acompañantes
+// Inicializar control de acompañantes y botones
 inicializarControlAcompanantes();
-
-// Inicializar estado
 actualizarBotonEnviar();
 
 // ============================
 // INICIALIZACIÓN FINAL
 // ============================
 
-// Iniciar cuando el DOM esté listo
 document.addEventListener('DOMContentLoaded', () => {
   initializeApp();
 });
 
-// Manejar la pausa de música cuando la página no está visible
 document.addEventListener('visibilitychange', () => {
   if (document.hidden && isMusicPlaying) {
-    // Pausar música cuando la pestaña no está activa
     backgroundMusic.pause();
   } else if (!document.hidden && isMusicPlaying) {
-    // Reanudar cuando la pestaña vuelve a estar activa
     backgroundMusic.play().catch(e => console.log('No se pudo reanudar automáticamente'));
   }
 });
