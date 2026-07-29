@@ -2,7 +2,6 @@
 // CONFIGURACIÓN Y DETECCIÓN
 // ============================
 
-// Detectar si es un dispositivo lento
 const isSlowDevice = (() => {
   const ua = navigator.userAgent;
   const isOldAndroid = /Android [2-4]/.test(ua);
@@ -14,7 +13,6 @@ const isSlowDevice = (() => {
   return isOldAndroid || isOldIOS || isOldBrowser || lowCores || lowMemory;
 })();
 
-// Aplicar optimizaciones para dispositivos lentos
 if (isSlowDevice) {
   console.log('Dispositivo lento detectado - aplicando optimizaciones');
   document.documentElement.classList.add('slow-device');
@@ -146,14 +144,6 @@ async function resumeBackgroundMusic() {
   }
 }
 
-async function toggleBackgroundMusic() {
-  if (isMusicPlaying) {
-    pauseBackgroundMusic();
-  } else {
-    await resumeBackgroundMusic();
-  }
-}
-
 function updateMusicButtonIcon(playing) {
   const muteIcon = document.querySelector('.mute-button i');
   if (muteIcon) {
@@ -195,23 +185,7 @@ function createMusicEnableButton() {
     }
   });
   
-  enableBtn.addEventListener('mouseenter', () => {
-    enableBtn.style.background = 'rgba(0, 0, 0, 0.9)';
-    enableBtn.style.transform = 'scale(1.05)';
-  });
-  
-  enableBtn.addEventListener('mouseleave', () => {
-    enableBtn.style.background = 'rgba(0, 0, 0, 0.7)';
-    enableBtn.style.transform = 'scale(1)';
-  });
-  
   document.body.appendChild(enableBtn);
-  
-  setTimeout(() => {
-    if (enableBtn.parentNode) {
-      enableBtn.style.opacity = '0.5';
-    }
-  }, 10000);
 }
 
 // ============================
@@ -219,7 +193,7 @@ function createMusicEnableButton() {
 // ============================
 
 function preloadCriticalImages() {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve) => {
     const isLandscape = window.innerWidth > window.innerHeight;
     const backgroundImage = isLandscape ? 'media/mesa.jpg' : 'media/mesa2.jpg';
     
@@ -236,75 +210,21 @@ function preloadCriticalImages() {
     
     let loaded = 0;
     const total = criticalImages.length;
-    let hasError = false;
     
-    // Timeout global para toda la carga
-    const globalTimeout = setTimeout(() => {
-      console.warn('⚠️ Timeout en precarga de imágenes');
-      if (!hasError && loaded < total) {
-        console.log(`Cargadas ${loaded} de ${total} imágenes`);
-        resolve(backgroundImage);
-      }
-    }, 10000); // 10 segundos máximo
-    
-    // Función para verificar si todas están cargadas
     const checkAllLoaded = () => {
       loaded++;
-      
-      // Actualizar texto de carga si existe
-      const loadingText = document.querySelector('.loading-text');
-      if (loadingText) {
-        loadingText.textContent = `Cargando invitación... ${Math.round((loaded/total)*100)}%`;
-      }
-      
-      if (loaded === total) {
-        clearTimeout(globalTimeout);
-        console.log('✅ Todas las imágenes críticas cargadas');
-        resolve(backgroundImage);
-      }
+      if (loaded === total) resolve(backgroundImage);
     };
-    
-    // Función para manejar errores
-    const handleImageError = (src) => {
-      console.error(`❌ Error al cargar imagen: ${src}`);
-      hasError = true;
-      checkAllLoaded();
-    };
-    
-    // Precargar cada imagen con timeout individual
+
     criticalImages.forEach(src => {
       const img = new Image();
-      
-      // Timeout individual por imagen
-      const individualTimeout = setTimeout(() => {
-        if (!img.complete) {
-          console.warn(`⚠️ Timeout en imagen: ${src}`);
-          handleImageError(src);
-        }
-      }, 5000);
-      
-      img.onload = () => {
-        clearTimeout(individualTimeout);
-        console.log(`✅ Cargada: ${src}`);
-        checkAllLoaded();
-      };
-      
-      img.onerror = () => {
-        clearTimeout(individualTimeout);
-        handleImageError(src);
-      };
-      
+      img.onload = checkAllLoaded;
+      img.onerror = checkAllLoaded;
       img.src = src;
-      
-      // Forzar la carga para imágenes críticas
-      if (src === backgroundImage || src === 'media/invitacion.jpg') {
-        img.loading = 'eager';
-      }
     });
   });
 }
 
-// Cargar imágenes secundarias después del inicio
 function lazyLoadSecondaryImages() {
   const secondaryImages = [
     'media/papel-textura-interior.jpg',
@@ -315,30 +235,15 @@ function lazyLoadSecondaryImages() {
     'media/wcocktail.png',
     'media/wdinner.png',
     'media/wparty.png',
-    'media/wdress.png',
-    'media/whotel.png'
+    'media/wdress.png'
   ];
   
-  // Usar requestIdleCallback si está disponible, sino setTimeout
-  const scheduleLoad = (callback) => {
-    if ('requestIdleCallback' in window) {
-      requestIdleCallback(callback, { timeout: 3000 });
-    } else {
-      setTimeout(callback, 1500);
-    }
-  };
-  
-  scheduleLoad(() => {
+  setTimeout(() => {
     secondaryImages.forEach(src => {
       const img = new Image();
-      img.loading = 'lazy'; // Usar carga lazy
       img.src = src;
-      img.onload = () => {
-        console.log(`📦 Cargada imagen secundaria: ${src}`);
-      };
     });
-    console.log('📦 Imágenes secundarias en proceso de carga');
-  });
+  }, 1500);
 }
 
 // ============================
@@ -346,50 +251,27 @@ function lazyLoadSecondaryImages() {
 // ============================
 
 async function initializeApp() {
-  console.log('🚀 Inicializando aplicación...');
-  
-  // 1. Precargar imágenes críticas
   const backgroundImage = await preloadCriticalImages();
-  
-  // 2. Configurar fondo inmediatamente
   setBackgroundImage(backgroundImage);
-  
-  // 3. Ajustar máscara
   adjustMaskClipPath();
   
-  // 4. Mostrar contenido después de un mínimo de tiempo (mejor UX)
   setTimeout(() => {
     const loadingScreen = document.getElementById('loadingScreen');
     const envelopeScreen = document.getElementById('envelopeScreen');
     
-    if (loadingScreen) {
-      loadingScreen.classList.add('hidden');
-    }
-    if (envelopeScreen) {
-      envelopeScreen.classList.add('loaded');
-    }
+    if (loadingScreen) loadingScreen.classList.add('hidden');
+    if (envelopeScreen) envelopeScreen.classList.add('loaded');
     
-    console.log('✨ Pantalla principal visible');
-    
-    // 5. Cargar imágenes secundarias en segundo plano
     lazyLoadSecondaryImages();
-  }, isSlowDevice ? 800 : 500); // Más tiempo para dispositivos lentos
+  }, isSlowDevice ? 800 : 500);
 }
-
-// ============================
-// FUNCIONES DE UTILIDAD
-// ============================
 
 function setBackgroundImage(backgroundImage) {
   const envelopeScreen = document.querySelector('.envelope-screen');
   const envelopeMask = document.querySelector('.envelope-mask');
   
-  if (envelopeScreen) {
-    envelopeScreen.style.backgroundImage = `url('${backgroundImage}')`;
-  }
-  if (envelopeMask) {
-    envelopeMask.style.backgroundImage = `url('${backgroundImage}')`;
-  }
+  if (envelopeScreen) envelopeScreen.style.backgroundImage = `url('${backgroundImage}')`;
+  if (envelopeMask) envelopeMask.style.backgroundImage = `url('${backgroundImage}')`;
 }
 
 function adjustMaskClipPath() {
@@ -405,30 +287,6 @@ function adjustMaskClipPath() {
   }
 }
 
-function getBackgroundImage() {
-  return window.innerWidth > window.innerHeight ? 'media/mesa.jpg' : 'media/mesa2.jpg';
-}
-
-// ============================
-// MANEJO DE EVENTOS DE VENTANA
-// ============================
-
-let resizeTimeout;
-window.addEventListener('resize', () => {
-  clearTimeout(resizeTimeout);
-  resizeTimeout = setTimeout(() => {
-    setBackgroundImage(getBackgroundImage());
-    adjustMaskClipPath();
-  }, 100);
-});
-
-window.addEventListener('orientationchange', () => {
-  setTimeout(() => {
-    setBackgroundImage(getBackgroundImage());
-    adjustMaskClipPath();
-  }, 300);
-});
-
 // ============================
 // INTERACTIVIDAD DEL SOBRE
 // ============================
@@ -441,60 +299,45 @@ const video = document.getElementById('videoFondo');
 const buttonsContainer = document.getElementById('buttonsContainer');
 const muteButton = document.getElementById('muteButton');
 const eyeButton = document.getElementById('eyeButton');
-const videoBackground = document.getElementById('videoBackground');
-const overlay = document.getElementById('overlay');
-const dateSubtitleContainer = document.getElementById('dateSubtitleContainer');
 
 let sealClicked = false;
 
-seal.addEventListener('click', () => {
-  if (sealClicked) return;
-  sealClicked = true;
-  
-  console.log("💌 Abriendo invitación...");
-  seal.classList.add('broken');
-
-  setTimeout(() => {
-    envelope.classList.add('open');
-  }, 800);
-
-  setTimeout(() => {
-    envelopeScreen.style.opacity = '0';
+if (seal) {
+  seal.addEventListener('click', () => {
+    if (sealClicked) return;
+    sealClicked = true;
     
+    seal.classList.add('broken');
+
+    setTimeout(() => { envelope.classList.add('open'); }, 800);
+
     setTimeout(() => {
-      envelopeScreen.style.display = 'none';
-      mainContent.classList.add('visible');
-      
-      if (isSlowDevice) {
-        video.preload = 'auto';
-        video.load();
-      }
-      
-      video.muted = false;
-      
-      const playPromise = video.play();
-      if (playPromise !== undefined) {
-        playPromise.catch(() => {
-          video.controls = true;
-        });
-      }
-      
-      document.body.style.overflow = 'hidden';
+      envelopeScreen.style.opacity = '0';
       
       setTimeout(() => {
-        playBackgroundMusic().catch(error => {
-          console.log('Música no pudo iniciarse automáticamente:', error.message);
-        });
-      }, 500);
-      
-      setTimeout(() => {
-        buttonsContainer.classList.add('visible');
-        muteButton.classList.add('visible');
-        eyeButton.classList.add('visible');
-      }, 500);
-    }, isSlowDevice ? 100 : 300);
-  }, 4000);
-});
+        envelopeScreen.style.display = 'none';
+        mainContent.classList.add('visible');
+        
+        if (isSlowDevice) {
+          video.preload = 'auto';
+          video.load();
+        }
+        
+        video.muted = false;
+        video.play().catch(() => { video.controls = true; });
+        document.body.style.overflow = 'hidden';
+        
+        setTimeout(() => playBackgroundMusic(), 500);
+        
+        setTimeout(() => {
+          buttonsContainer.classList.add('visible');
+          muteButton.classList.add('visible');
+          eyeButton.classList.add('visible');
+        }, 500);
+      }, isSlowDevice ? 100 : 300);
+    }, 4000);
+  });
+}
 
 // ============================
 // CONTROLES DE VIDEO Y MÚSICA
@@ -517,6 +360,10 @@ muteButton.addEventListener('click', async () => {
 });
 
 eyeButton.addEventListener('click', () => {
+  const overlay = document.getElementById('overlay');
+  const videoBackground = document.getElementById('videoBackground');
+  const dateSubtitleContainer = document.getElementById('dateSubtitleContainer');
+
   if (elementsVisible) {
     buttonsContainer.classList.add('hidden');
     overlay.classList.add('hidden');
@@ -538,49 +385,27 @@ eyeButton.addEventListener('click', () => {
 // ============================
 
 const menus = {
-  donde: {
-    btn: document.getElementById('dondeBtn'),
-    menu: document.getElementById('dondeMenu'),
-    close: document.getElementById('closeDonde')
-  },
-  itinerario: {
-    btn: document.getElementById('itinerarioBtn'),
-    menu: document.getElementById('itinerarioMenu'),
-    close: document.getElementById('closeItinerario')
-  },
-  asistencia: {
-    btn: document.getElementById('asistenciaBtn'),
-    menu: document.getElementById('asistenciaMenu'),
-    close: document.getElementById('closeAsistencia')
-  },
-  info: {
-    btn: document.getElementById('infoBtn'),
-    menu: document.getElementById('infoMenu'),
-    close: document.getElementById('closeInfo')
-  }
+  donde: { btn: document.getElementById('dondeBtn'), menu: document.getElementById('dondeMenu'), close: document.getElementById('closeDonde') },
+  itinerario: { btn: document.getElementById('itinerarioBtn'), menu: document.getElementById('itinerarioMenu'), close: document.getElementById('closeItinerario') },
+  asistencia: { btn: document.getElementById('asistenciaBtn'), menu: document.getElementById('asistenciaMenu'), close: document.getElementById('closeAsistencia') },
+  info: { btn: document.getElementById('infoBtn'), menu: document.getElementById('infoMenu'), close: document.getElementById('closeInfo') }
 };
 
 Object.values(menus).forEach(({ btn, menu, close }) => {
   if (btn && menu) {
     btn.addEventListener('click', () => menu.classList.add('active'));
     close.addEventListener('click', () => menu.classList.remove('active'));
-    
     menu.addEventListener('click', (e) => {
-      if (e.target === menu) {
-        menu.classList.remove('active');
-      }
+      if (e.target === menu) menu.classList.remove('active');
     });
   }
 });
 
 // ============================
-// FORMULARIO DE ASISTENCIA (ACTUALIZADO CON ACOMPAÑANTES)
+// FORMULARIO DE ASISTENCIA DINÁMICO CON SELECTOR
 // ============================
 
-// Elementos del formulario
-const agregarComensalBtn = document.getElementById('agregarComensal');
 const enviarAsistenciaBtn = document.getElementById('enviarAsistencia');
-const listaComensales = document.getElementById('listaComensales');
 const mensajeConfirmacion = document.getElementById('mensajeConfirmacion');
 const netlifyForm = document.getElementById('netlifyForm');
 const comensalesDataField = document.getElementById('comensalesData');
@@ -588,42 +413,34 @@ const asistenciaOpcionField = document.getElementById('asistenciaOpcion');
 const nombreNoAsistenteField = document.getElementById('nombreNoAsistente');
 const noAsistenciaText = document.getElementById('noAsistenciaText');
 const asistenciaFields = document.getElementById('asistenciaFields');
-const nombreGrupo = document.getElementById('nombreGrupo');
 const optionButtons = document.querySelectorAll('.option-button');
-const nombreComensalInput = document.getElementById('nombreComensal');
+const comensalesFormContainer = document.getElementById('comensalesFormContainer');
 
-// Control de acompañantes
 const numAcompanantesInput = document.getElementById('numAcompanantes');
 const decrementBtn = document.getElementById('decrementBtn');
 const incrementBtn = document.getElementById('incrementBtn');
-const comensalesContador = document.getElementById('comensalesContador');
-const acompanantesAlert = document.getElementById('acompanantesAlert');
 const acompanantesGrupo = document.getElementById('acompanantesGrupo');
+const nombreNoAsistenteGrupo = document.getElementById('nombreNoAsistenteGrupo');
+const nombreNoAsistenteInput = document.getElementById('nombreNoAsistenteInput');
 
-// 💡 1. DEFINICIÓN GLOBAL DE VARIABLES DE LÍMITE (Evita el ReferenceError)
+// Límite máximo permitido según la URL (ej: ?max=4)
 const urlParams = new URLSearchParams(window.location.search);
 const maxPermitido = parseInt(urlParams.get('max')) || 1;
 
-let comensales = [];
 let asistira = true;
-let numAcompanantes = maxPermitido; // Inicia con el valor asignado por URL
+let numAcompanantes = maxPermitido; // Por defecto inicia con el máximo asignado a esa invitación
 
-// Inicializar el campo de acompañantes adaptado al límite recibido
+// Inicializa el contador y los eventos de los botones - y +
 function inicializarControlAcompanantes() {
-  // Si no puede llevar acompañantes (max 1), ocultamos el submenú
   if (maxPermitido <= 1) {
-    if (acompanantesGrupo) {
-      acompanantesGrupo.style.display = 'none';
-    }
+    if (acompanantesGrupo) acompanantesGrupo.style.display = 'none';
     numAcompanantes = 1;
     if (numAcompanantesInput) numAcompanantesInput.value = 1;
+    renderizarCamposComensales();
     return;
   }
 
-  // Si puede llevar acompañantes (> 1):
-  if (numAcompanantesInput) {
-    numAcompanantesInput.max = maxPermitido;
-  }
+  if (numAcompanantesInput) numAcompanantesInput.max = maxPermitido;
 
   decrementBtn.addEventListener('click', () => {
     if (numAcompanantes > 1) {
@@ -631,205 +448,134 @@ function inicializarControlAcompanantes() {
       actualizarControlAcompanantes();
     }
   });
-  
+
   incrementBtn.addEventListener('click', () => {
     if (numAcompanantes < maxPermitido) {
       numAcompanantes++;
       actualizarControlAcompanantes();
     }
   });
-  
-  function actualizarBotones() {
-    decrementBtn.disabled = numAcompanantes <= 1;
-    incrementBtn.disabled = numAcompanantes >= maxPermitido;
-  }
-  
-  function actualizarControlAcompanantes() {
-    numAcompanantesInput.value = numAcompanantes;
-    actualizarContadorComensales();
-    actualizarBotones();
-    actualizarBotonEnviar();
-  }
-  
+
   actualizarControlAcompanantes();
 }
 
-// Actualizar contador de comensales añadidos
-function actualizarContadorComensales() {
-  const total = numAcompanantes;
-  const añadidos = comensales.length;
+function actualizarControlAcompanantes() {
+  numAcompanantesInput.value = numAcompanantes;
+  decrementBtn.disabled = numAcompanantes <= 1;
+  incrementBtn.disabled = numAcompanantes >= maxPermitido;
+  renderizarCamposComensales();
+}
+
+// Renderiza los campos dinámicamente según 'numAcompanantes' seleccionado
+function renderizarCamposComensales() {
+  if (!comensalesFormContainer) return;
   
-  comensalesContador.innerHTML = `Comensales añadidos: <strong>${añadidos}</strong> de <strong>${total}</strong>`;
-  
-  if (asistira && total > añadidos) {
-    acompanantesAlert.style.display = 'block';
-  } else {
-    acompanantesAlert.style.display = 'none';
+  // Guardar datos temporalmente antes de renderizar para no borrar la información que el usuario ya haya escrito
+  const valoresPrevios = [];
+  for (let i = 0; i < maxPermitido; i++) {
+    const nom = document.getElementById(`nombre_${i}`);
+    if (nom) {
+      valoresPrevios.push({
+        nombre: nom.value,
+        intolerancias: document.getElementById(`intolerancias_${i}`)?.value || '',
+        menuInfantil: document.getElementById(`menuInfantil_${i}`)?.checked || false,
+        cancion: document.getElementById(`cancion_${i}`)?.value || ''
+      });
+    }
   }
-  
-  if (asistira && total > añadidos) {
-    enviarAsistenciaBtn.classList.add('incomplete');
-  } else {
-    enviarAsistenciaBtn.classList.remove('incomplete');
+
+  comensalesFormContainer.innerHTML = '';
+
+  for (let i = 0; i < numAcompanantes; i++) {
+    const etiqueta = i === 0 ? 'Nombre y apellidos del comensal (tú)' : `Nombre y apellidos del comensal (acompañante ${i})`;
+    const datos = valoresPrevios[i] || {};
+
+    const comensalBlock = document.createElement('div');
+    comensalBlock.className = 'comensal-block';
+    comensalBlock.style.cssText = 'margin-bottom: 25px; padding-bottom: 15px; border-bottom: 1px dashed rgba(255,255,255,0.2);';
+
+    comensalBlock.innerHTML = `
+      <div class="form-group">
+        <label for="nombre_${i}">${etiqueta}:</label>
+        <input type="text" id="nombre_${i}" class="input-comensal-nombre" placeholder="Ej: Juan Pérez García" value="${datos.nombre || ''}" required>
+      </div>
+
+      <div class="form-group">
+        <label for="intolerancias_${i}">Intolerancias/Alergias alimentarias (opcional):</label>
+        <input type="text" id="intolerancias_${i}" placeholder="Ej: Sin gluten, alergia a los frutos secos" value="${datos.intolerancias || ''}">
+      </div>
+
+      <div class="checkbox-group" style="margin: 10px 0;">
+        <input type="checkbox" id="menuInfantil_${i}" ${datos.menuInfantil ? 'checked' : ''}>
+        <label for="menuInfantil_${i}">Este comensal tomará menú infantil</label>
+      </div>
+
+      <div class="form-group">
+        <label for="cancion_${i}">Canción que no puede faltar (opcional):</label>
+        <input type="text" id="cancion_${i}" placeholder="Ej: 'Bohemian Rhapsody' - Queen" value="${datos.cancion || ''}">
+      </div>
+    `;
+
+    comensalesFormContainer.appendChild(comensalBlock);
   }
 }
 
-// Manejar opción de asistencia
+// Manejo de la opción Sí / No
 function manejarOpcionAsistencia(opcion) {
   asistira = opcion === 'si';
   asistenciaOpcionField.value = opcion;
-  
+
   optionButtons.forEach(btn => {
     btn.classList.toggle('active', btn.dataset.value === opcion);
   });
-  
+
   if (asistira) {
-    asistenciaFields.classList.remove('hidden');
+    asistenciaFields.style.display = 'block';
     if (maxPermitido > 1) {
-      acompanantesGrupo.classList.remove('hidden');
       acompanantesGrupo.style.display = 'block';
     }
     noAsistenciaText.style.display = 'none';
-    nombreGrupo.style.display = 'block';
+    nombreNoAsistenteGrupo.style.display = 'none';
     enviarAsistenciaBtn.textContent = 'Confirmar asistencia';
   } else {
-    asistenciaFields.classList.add('hidden');
-    acompanantesGrupo.classList.add('hidden');
+    asistenciaFields.style.display = 'none';
     acompanantesGrupo.style.display = 'none';
     noAsistenciaText.style.display = 'block';
-    nombreGrupo.style.display = 'block';
+    nombreNoAsistenteGrupo.style.display = 'block';
     enviarAsistenciaBtn.textContent = 'Enviar';
   }
-  
-  actualizarBotonEnviar();
-  actualizarContadorComensales();
 }
 
 optionButtons.forEach(button => {
-  button.addEventListener('click', () => {
-    manejarOpcionAsistencia(button.dataset.value);
-  });
+  button.addEventListener('click', () => manejarOpcionAsistencia(button.dataset.value));
 });
 
-// Agregar comensal
-function agregarComensal() {
-  const nombre = nombreComensalInput.value.trim();
-  if (!nombre) {
-    alert('Por favor, introduce al menos el nombre del comensal.');
-    return;
-  }
-  
-  if (comensales.length >= numAcompanantes) {
-    alert(`Ya has añadido el número máximo de ${numAcompanantes} comensales.`);
-    return;
-  }
-  
-  const comensal = {
-    id: Date.now(),
-    nombre,
-    intolerancias: document.getElementById('intolerancias').value.trim(),
-    menuInfantil: document.getElementById('menuInfantil').checked,
-    cancion: document.getElementById('cancion').value.trim()
-  };
-  
-  comensales.push(comensal);
-  actualizarListaComensales();
-  limpiarFormulario();
-  actualizarBotonEnviar();
-  actualizarContadorComensales();
-}
-
-function actualizarListaComensales() {
-  listaComensales.innerHTML = '';
-  
-  if (comensales.length === 0) {
-    listaComensales.innerHTML = '<div class="empty-list">Aún no has añadido ningún comensal</div>';
-    return;
-  }
-  
-  comensales.forEach(comensal => {
-    const comensalItem = document.createElement('div');
-    comensalItem.className = 'comensal-item';
-    
-    const comensalInfo = document.createElement('div');
-    comensalInfo.className = 'comensal-info';
-    
-    const nombreElement = document.createElement('div');
-    nombreElement.className = 'comensal-name';
-    nombreElement.textContent = comensal.nombre;
-    
-    const detallesElement = document.createElement('div');
-    detallesElement.className = 'comensal-details';
-    
-    let detalles = [];
-    if (comensal.intolerancias) detalles.push(`Intolerancias: ${comensal.intolerancias}`);
-    if (comensal.menuInfantil) detalles.push('Menú infantil');
-    if (comensal.cancion) detalles.push(`Canción: ${comensal.cancion}`);
-    
-    detallesElement.textContent = detalles.join(' | ');
-    
-    comensalInfo.appendChild(nombreElement);
-    comensalInfo.appendChild(detallesElement);
-    
-    const deleteButton = document.createElement('button');
-    deleteButton.className = 'delete-button';
-    deleteButton.textContent = '×';
-    deleteButton.addEventListener('click', () => eliminarComensal(comensal.id));
-    
-    comensalItem.appendChild(comensalInfo);
-    comensalItem.appendChild(deleteButton);
-    
-    listaComensales.appendChild(comensalItem);
-  });
-}
-
-function eliminarComensal(id) {
-  comensales = comensales.filter(comensal => comensal.id !== id);
-  actualizarListaComensales();
-  actualizarBotonEnviar();
-  actualizarContadorComensales();
-}
-
-function limpiarFormulario() {
-  nombreComensalInput.value = '';
-  document.getElementById('intolerancias').value = '';
-  document.getElementById('menuInfantil').checked = false;
-  document.getElementById('cancion').value = '';
-}
-
-function actualizarBotonEnviar() {
-  if (asistira) {
-    const totalAcompanantes = numAcompanantes;
-    const añadidos = comensales.length;
-    
-    enviarAsistenciaBtn.disabled = añadidos < totalAcompanantes;
-    
-    if (añadidos < totalAcompanantes) {
-      enviarAsistenciaBtn.setAttribute('title', `Faltan ${totalAcompanantes - añadidos} comensales por añadir`);
-    } else {
-      enviarAsistenciaBtn.removeAttribute('title');
-    }
-  } else {
-    enviarAsistenciaBtn.disabled = !nombreComensalInput.value.trim();
-  }
-}
-
+// Enviar respuestas a Netlify
 async function enviarAsistenciaNetlify() {
   try {
     if (asistira) {
-      comensalesDataField.value = JSON.stringify(comensales);
+      const listaComensales = [];
+      for (let i = 0; i < numAcompanantes; i++) {
+        listaComensales.push({
+          nombre: document.getElementById(`nombre_${i}`).value.trim(),
+          intolerancias: document.getElementById(`intolerancias_${i}`).value.trim(),
+          menuInfantil: document.getElementById(`menuInfantil_${i}`).checked,
+          cancion: document.getElementById(`cancion_${i}`).value.trim()
+        });
+      }
+      comensalesDataField.value = JSON.stringify(listaComensales);
       nombreNoAsistenteField.value = '';
     } else {
       comensalesDataField.value = '';
-      nombreNoAsistenteField.value = nombreComensalInput.value.trim();
+      nombreNoAsistenteField.value = nombreNoAsistenteInput.value.trim();
     }
-    
+
     const formData = new FormData(netlifyForm);
     const response = await fetch('/', {
       method: 'POST',
       body: formData,
     });
-    
+
     return response.ok;
   } catch (error) {
     console.error('Error al enviar:', error);
@@ -839,58 +585,39 @@ async function enviarAsistenciaNetlify() {
 
 async function enviarAsistencia() {
   if (asistira) {
-    const totalAcompanantes = numAcompanantes;
-    const añadidos = comensales.length;
-    
-    if (añadidos < totalAcompanantes) {
-      alert(`Faltan ${totalAcompanantes - añadidos} comensales por añadir. Por favor, añade todos los comensales antes de confirmar.`);
+    // Validar que todos los comensales visibles tengan el nombre relleno
+    for (let i = 0; i < numAcompanantes; i++) {
+      const nombreVal = document.getElementById(`nombre_${i}`).value.trim();
+      if (!nombreVal) {
+        const campoLabel = i === 0 ? 'tu nombre (Comensal principal)' : `el nombre del acompañante ${i}`;
+        alert(`Por favor, rellena ${campoLabel}.`);
+        document.getElementById(`nombre_${i}`).focus();
+        return;
+      }
+    }
+  } else {
+    if (!nombreNoAsistenteInput.value.trim()) {
+      alert('Por favor, introduce tu nombre.');
+      nombreNoAsistenteInput.focus();
       return;
     }
   }
-  
-  if (!asistira && !nombreComensalInput.value.trim()) {
-    alert('Por favor, introduce tu nombre.');
-    return;
-  }
-  
+
   mensajeConfirmacion.style.display = 'block';
-  
+
   const exito = await enviarAsistenciaNetlify();
   console.log(exito ? '✅ Enviado a Netlify' : '⚠️ Guardado localmente');
-  
-  comensales = [];
-  numAcompanantes = maxPermitido;
-  if (numAcompanantesInput) numAcompanantesInput.value = maxPermitido.toString();
-  
-  actualizarListaComensales();
-  limpiarFormulario();
-  actualizarBotonEnviar();
-  actualizarContadorComensales();
-  
+
   setTimeout(() => {
     mensajeConfirmacion.style.display = 'none';
     document.getElementById('asistenciaMenu').classList.remove('active');
   }, 3000);
 }
 
-// Event listeners del formulario
-agregarComensalBtn.addEventListener('click', agregarComensal);
 enviarAsistenciaBtn.addEventListener('click', enviarAsistencia);
 
-nombreComensalInput.addEventListener('keypress', (e) => {
-  if (e.key === 'Enter') {
-    asistira ? agregarComensal() : enviarAsistencia();
-  }
-});
-
-const observer = new MutationObserver(actualizarBotonEnviar);
-observer.observe(listaComensales, { childList: true, subtree: true });
-
-nombreComensalInput.addEventListener('input', actualizarBotonEnviar);
-
-// Inicializar control de acompañantes y botones
+// Inicializar control de acompañantes
 inicializarControlAcompanantes();
-actualizarBotonEnviar();
 
 // ============================
 // INICIALIZACIÓN FINAL
@@ -904,8 +631,6 @@ document.addEventListener('visibilitychange', () => {
   if (document.hidden && isMusicPlaying) {
     backgroundMusic.pause();
   } else if (!document.hidden && isMusicPlaying) {
-    backgroundMusic.play().catch(e => console.log('No se pudo reanudar automáticamente'));
+    backgroundMusic.play().catch(() => {});
   }
 });
-
-console.log('🎉 Aplicación de boda cargada y optimizada con música');

@@ -27,7 +27,6 @@
 
   <!-- Polifill opcional para navegadores antiguos -->
   <script>
-    // Detectar navegadores muy antiguos
     if (!window.Promise || !window.fetch) {
       document.write('<script src="https://cdnjs.cloudflare.com/ajax/libs/es6-promise/4.2.8/es6-promise.auto.min.js"><\/script>');
       document.write('<script src="https://cdnjs.cloudflare.com/ajax/libs/fetch/3.0.0/fetch.min.js"><\/script>');
@@ -96,7 +95,7 @@
       <i class="fas fa-volume-up"></i>
     </button>
     
-    <!-- NUEVO: Botón de ojo para mostrar/ocultar elementos -->
+    <!-- Botón de ojo para mostrar/ocultar elementos -->
     <button class="eye-button" id="eyeButton">
       <i class="fas fa-eye"></i>
     </button>
@@ -113,9 +112,7 @@
         <!-- Título principal -->
         <img src="media/title.png" alt="Boda de Andrés & María del Carmen" class="title-image" id="titleImage">
         
-        <!-- NUEVO: Contenedor para fecha y subtítulo (justo debajo del título) -->
         <div class="date-subtitle-container" id="dateSubtitleContainer">
-          <!-- FECHA ELEGANTE -->
           <div class="wedding-date" id="weddingDate">5 de diciembre de 2026</div>
           <div class="wedding-subtitle" id="weddingSubtitle">¡Nos casamos!</div>
         </div>
@@ -141,7 +138,7 @@
     </header>
 
     <!-- MENÚS SUPERPUESTOS -->
-    <!-- Menú Dónde - ACTUALIZADO -->
+    <!-- Menú Dónde -->
     <div class="menu-overlay" id="dondeMenu">
       <div class="menu-content">
         <button class="close-button" id="closeDonde">×</button>
@@ -178,14 +175,13 @@
       </div>
     </div>
 
-    <!-- Menú Itinerario (reemplaza Cronograma) -->
+    <!-- Menú Itinerario -->
     <div class="menu-overlay" id="itinerarioMenu">
       <div class="menu-content">
         <button class="close-button" id="closeItinerario">×</button>
         <div class="location-title">Horario</div>
         
         <div class="timeline">
-          <!-- Punto 1: Ceremonia -->
           <div class="timeline-item">
             <div class="timeline-icon">
               <img src="media/wring.png" alt="Ceremonia">
@@ -196,7 +192,6 @@
             </div>
           </div>
           
-          <!-- Punto 2: Cocktail -->
           <div class="timeline-item">
             <div class="timeline-icon">
               <img src="media/wcocktail.png" alt="Cocktail">
@@ -207,7 +202,6 @@
             </div>
           </div>
           
-          <!-- Punto 3: Banquete -->
           <div class="timeline-item">
             <div class="timeline-icon">
               <img src="media/wdinner.png" alt="Banquete">
@@ -218,7 +212,6 @@
             </div>
           </div>
           
-          <!-- Punto 4: Fiesta -->
           <div class="timeline-item">
             <div class="timeline-icon">
               <img src="media/wparty.png" alt="Fiesta">
@@ -232,7 +225,7 @@
       </div>
     </div>
 
-    <!-- Menú Asistencia - ACTUALIZADO CON CAMPO DE ACOMPAÑANTES -->
+    <!-- Menú Asistencia -->
     <div class="menu-overlay" id="asistenciaMenu">
       <div class="menu-content">
         <button class="close-button" id="closeAsistencia">×</button>
@@ -257,54 +250,31 @@
             <button type="button" class="option-button active" data-value="si">Sí</button>
             <button type="button" class="option-button" data-value="no">No</button>
           </div>
-          <div class="no-asistencia-text" id="noAsistenciaText">
+          <div class="no-asistencia-text" id="noAsistenciaText" style="display: none;">
             Aunque no puedas asistir, nos ayuda mucho a organizarnos si al menos introduces el nombre de la persona que recibió la invitación.
           </div>
         </div>
         
         <div class="asistencia-form">
-          <div class="form-group" id="nombreGrupo">
-            <label for="nombreComensal">Nombre y apellidos del comensal:</label>
-            <input type="text" id="nombreComensal" placeholder="Ej: Juan Pérez García">
+          <!-- Campo si NO asiste -->
+          <div class="form-group" id="nombreNoAsistenteGrupo" style="display: none;">
+            <label for="nombreNoAsistenteInput">Tu nombre y apellidos:</label>
+            <input type="text" id="nombreNoAsistenteInput" placeholder="Ej: Juan Pérez García">
           </div>
-          
-          <!-- NUEVO: Campo para número de acompañantes -->
+
+          <!-- PRIMERO: Selector de número de comensales (situado encima) -->
           <div class="form-group" id="acompanantesGrupo">
-            <label for="numAcompanantes">Número de acompañantes (incluyéndote):</label>
+            <label for="numAcompanantes">¿Cuántas personas asistirán en total (incluyéndote)?</label>
             <div class="acompanantes-input-group">
               <button type="button" class="acompanantes-btn" id="decrementBtn">-</button>
-              <input type="number" id="numAcompanantes" min="1" max="10" value="1" readonly>
+              <input type="number" id="numAcompanantes" min="1" value="1" readonly>
               <button type="button" class="acompanantes-btn" id="incrementBtn">+</button>
             </div>
-            <div class="acompanantes-info">
-              <span id="comensalesContador">Comensales añadidos: <strong>0</strong> de <strong>1</strong></span>
-            </div>
-            <div class="acompanantes-alert" id="acompanantesAlert">
-              ⚠️ Necesitas añadir todos los comensales antes de confirmar
-            </div>
           </div>
-          
+
+          <!-- SEGUNDO: Lista interactiva y dinámica de comensales -->
           <div class="asistencia-fields" id="asistenciaFields">
-            <div class="form-group">
-              <label for="intolerancias">Intolerancias/Alergias alimentarias (opcional):</label>
-              <input type="text" id="intolerancias" placeholder="Ej: Sin gluten, alergia a los frutos secos">
-            </div>
-            
-            <div class="checkbox-group">
-              <input type="checkbox" id="menuInfantil">
-              <label for="menuInfantil">Este comensal tomará menú infantil</label>
-            </div>
-            
-            <div class="form-group">
-              <label for="cancion">Canción que no puede faltar (opcional):</label>
-              <input type="text" id="cancion" placeholder="Ej: 'Bohemian Rhapsody' - Queen">
-            </div>
-            
-            <button type="button" class="add-button" id="agregarComensal">Añadir comensal</button>
-            
-            <div class="comensales-list" id="listaComensales">
-              <div class="empty-list">Aún no has añadido ningún comensal</div>
-            </div>
+            <div id="comensalesFormContainer"></div>
           </div>
         </div>
         
@@ -316,14 +286,13 @@
       </div>
     </div>
 
-    <!-- Menú + Info (reemplaza Detalles) -->
+    <!-- Menú + Info -->
     <div class="menu-overlay" id="infoMenu">
       <div class="menu-content">
         <button class="close-button" id="closeInfo">×</button>
         <div class="location-title">Información adicional</div>
         
         <div class="info-timeline">
-          <!-- Punto 1: Código de vestimenta -->
           <div class="info-item">
             <div class="info-icon">
               <img src="media/wdress.png" alt="Vestimenta">
@@ -335,27 +304,6 @@
               </div>
             </div>
           </div>
-          
-          <!-- HOTEL TEMPORALMENTE DESACTIVADO 
-           !-- Punto 2: Alojamiento
-          <div class="info-item">
-            <div class="info-icon">
-              <img src="media/whotel.png" alt="Alojamiento">
-            </div>
-            <div class="info-content">
-              <div class="info-title">Alojamiento</div>
-              <div class="info-text">
-                Os recomendamos el Hotel Restaurante Santos
-              </div>
-              <div class="info-button-container">
-                <button class="maps-button" onclick="window.open('https://maps.google.com/?q=Hotel+Restaurante+Santos+Santomera', '_blank')">
-                  <i class="fas fa-map-marker-alt"></i>
-                  Ver en Maps
-                </button>
-              </div>
-            </div>
-          </div>
-          -->
         </div>
       </div>
     </div>
