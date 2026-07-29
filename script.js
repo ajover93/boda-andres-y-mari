@@ -487,7 +487,7 @@ function renderizarCamposComensales() {
   comensalesFormContainer.innerHTML = '';
 
   for (let i = 0; i < numAcompanantes; i++) {
-    const etiqueta = i === 0 ? 'Nombre y apellidos del comensal (tú)' : `Nombre y apellidos del comensal (acompañante ${i})`;
+    const etiqueta = i === 0 ? 'Nombre y apellidos del comensal (tú)' : `Nombre y apellidos del comensal (invitado ${i})`;
     const datos = valoresPrevios[i] || {};
 
     const comensalBlock = document.createElement('div');
@@ -589,7 +589,7 @@ async function enviarAsistencia() {
     for (let i = 0; i < numAcompanantes; i++) {
       const nombreVal = document.getElementById(`nombre_${i}`).value.trim();
       if (!nombreVal) {
-        const campoLabel = i === 0 ? 'tu nombre (Comensal principal)' : `el nombre del acompañante ${i}`;
+        const campoLabel = i === 0 ? 'tu nombre (Comensal principal)' : `el nombre del invitado ${i}`;
         alert(`Por favor, rellena ${campoLabel}.`);
         document.getElementById(`nombre_${i}`).focus();
         return;
@@ -616,7 +616,7 @@ async function enviarAsistencia() {
 
 enviarAsistenciaBtn.addEventListener('click', enviarAsistencia);
 
-// Inicializar control de acompañantes
+// Inicializar control de invitados
 inicializarControlAcompanantes();
 
 // ============================
