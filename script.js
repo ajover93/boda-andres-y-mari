@@ -611,7 +611,7 @@ async function enviarAsistencia() {
   setTimeout(() => {
     mensajeConfirmacion.style.display = 'none';
     document.getElementById('asistenciaMenu').classList.remove('active');
-  }, 3000);
+  }, 6000);
 }
 
 enviarAsistenciaBtn.addEventListener('click', enviarAsistencia);
