@@ -604,7 +604,14 @@ async function enviarAsistencia() {
     }
   }
 
+  // 1. Mostrar mensaje de confirmación
   mensajeConfirmacion.style.display = 'block';
+
+  // 2. Hacer scroll automático hasta el final del menú modal
+  const menuContent = document.querySelector('#asistenciaMenu .menu-content');
+  if (menuContent) {
+    menuContent.scrollTop = menuContent.scrollHeight;
+  }
 
   const exito = await enviarAsistenciaNetlify();
   console.log(exito ? '✅ Enviado a Netlify' : '⚠️ Guardado localmente');
