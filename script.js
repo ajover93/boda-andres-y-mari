@@ -587,7 +587,7 @@ async function enviarAsistencia() {
   if (asistira) {
     // Validar que todos los comensales visibles tengan el nombre relleno
     for (let i = 0; i < numAcompanantes; i++) {
-      const nombreVal = document.getElementById(`nombre_${i}`)?.value.trim();
+      const nombreVal = document.getElementById(`nombre_${i}`).value.trim();
       if (!nombreVal) {
         const campoLabel = i === 0 ? 'tu nombre (Comensal principal)' : `el nombre del invitado ${i}`;
         alert(`Por favor, rellena ${campoLabel}.`);
@@ -603,19 +603,14 @@ async function enviarAsistencia() {
     }
   }
 
-  // 1. Cerramos el submenú de asistencia inmediatamente
-  document.getElementById('asistenciaMenu').classList.remove('active');
-
-  // 2. Mostramos el mensaje flotante centrado en pantalla
   mensajeConfirmacion.style.display = 'block';
 
-  // 3. Enviamos los datos a Netlify
   const exito = await enviarAsistenciaNetlify();
   console.log(exito ? '✅ Enviado a Netlify' : '⚠️ Guardado localmente');
 
-  // 4. Ocultamos el mensaje emergente tras 3 segundos
   setTimeout(() => {
     mensajeConfirmacion.style.display = 'none';
+    document.getElementById('asistenciaMenu').classList.remove('active');
   }, 3000);
 }
 
