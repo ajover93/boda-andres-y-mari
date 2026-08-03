@@ -521,14 +521,14 @@ function renderizarCamposComensales() {
 }
 
 // Manejo de la opción Sí / No
+const radioAsistencia = document.querySelectorAll('input[name="asistencia_radio"]');
+
+// Manejo de la opción Sí / No
 function manejarOpcionAsistencia(opcion) {
   asistira = opcion === 'si';
   asistenciaOpcionField.value = opcion;
 
-  optionButtons.forEach(btn => {
-    btn.classList.toggle('active', btn.dataset.value === opcion);
-  });
-
+  // Actualizar visibilidad de elementos según la selección
   if (asistira) {
     asistenciaFields.style.display = 'block';
     if (maxPermitido > 1) {
@@ -546,8 +546,9 @@ function manejarOpcionAsistencia(opcion) {
   }
 }
 
-optionButtons.forEach(button => {
-  button.addEventListener('click', () => manejarOpcionAsistencia(button.dataset.value));
+// Escuchar cambios en los Radio Buttons
+radioAsistencia.forEach(radio => {
+  radio.addEventListener('change', (e) => manejarOpcionAsistencia(e.target.value));
 });
 
 // Enviar respuestas a Netlify

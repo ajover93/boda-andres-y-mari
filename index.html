@@ -246,9 +246,15 @@
         <!-- Opción de asistencia -->
         <div class="asistencia-option">
           <div class="asistencia-question">¿Asistirás?</div>
-          <div class="option-buttons">
-            <button type="button" class="option-button active" data-value="si">Sí</button>
-            <button type="button" class="option-button" data-value="no">No</button>
+          <div class="radio-asistencia-group">
+            <label class="radio-option">
+              <input type="radio" name="asistencia_radio" value="si" checked>
+              <span class="radio-label">Sí</span>
+            </label>
+            <label class="radio-option">
+              <input type="radio" name="asistencia_radio" value="no">
+              <span class="radio-label">No</span>
+            </label>
           </div>
           <div class="no-asistencia-text" id="noAsistenciaText" style="display: none;">
             Aunque no puedas asistir, nos ayuda mucho a organizarnos si al menos introduces el nombre de la persona que recibió la invitación.
