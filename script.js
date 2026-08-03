@@ -604,6 +604,23 @@ async function enviarAsistencia() {
     }
   }
 
+  // ⚠️ COMPROBACIÓN Y POPUP DE SEGURIDAD
+  const yaHaEnviado = localStorage.getItem('rsvp_enviado');
+  if (yaHaEnviado) {
+    const confirmarReenvio = confirm(
+      'Ya hemos recibido una respuesta previa desde este dispositivo.\n\n' +
+      '¿Estás seguro de que deseas volver a enviarla para corregir o cambiar tus datos?'
+    );
+    
+    // Si el usuario pulsa "Cancelar" en el popup, detendremos el envío
+    if (!confirmarReenvio) {
+      return;
+    }
+  }
+
+  // Guardar en el almacenamiento local del navegador que ha respondido
+  localStorage.setItem('rsvp_enviado', 'true');
+
   // 1. Mostrar mensaje de confirmación
   mensajeConfirmacion.style.display = 'block';
 
@@ -619,6 +636,7 @@ async function enviarAsistencia() {
   setTimeout(() => {
     mensajeConfirmacion.style.display = 'none';
     document.getElementById('asistenciaMenu').classList.remove('active');
+    comprobarEnvioPrevio();
   }, 6000);
 }
 
